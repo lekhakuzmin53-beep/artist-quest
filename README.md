@@ -1,4 +1,4 @@
-# Dungeon AI SaaS — Инструкция по деплою
+# Artist Quest SaaS — Инструкция по деплою
 
 ## Что это
 Полноценный веб-сервис с авторизацией, оплатой через ЮКассу и AI-игрой на Claude API.
@@ -43,7 +43,7 @@ git init
 git add .
 git commit -m "init"
 # Создай репо на github.com и запушь:
-git remote add origin https://github.com/ВАШ_ЮЗЕР/dungeon-ai.git
+git remote add origin https://github.com/ВАШ_ЮЗЕР/artist-quest.git
 git push -u origin main
 ```
 
@@ -194,5 +194,3 @@ npm run dev
 **База не инициализируется** → Проверь что `DATABASE_URL` задан и PostgreSQL поднят
 
 **"Ключ недействителен"** при сохранении своего ключа → Проверь что ключ активен на console.anthropic.com и пополнен баланс Anthropic
-#   a r t i s t - q u e s t  
- 

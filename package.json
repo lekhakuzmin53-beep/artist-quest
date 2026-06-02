@@ -1,7 +1,7 @@
 {
-  "name": "dungeon-ai-saas",
+  "name": "artist-quest",
   "version": "1.0.0",
-  "description": "Dungeon AI — SaaS платформа на Claude",
+  "description": "Artist Quest — SaaS платформа на Claude",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
