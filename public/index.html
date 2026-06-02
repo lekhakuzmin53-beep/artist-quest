@@ -5,503 +5,700 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Artist Quest</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap"/>
+<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;500;600&family=IM+Fell+English:ital@0;1&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden}
 
-/* ── THEMES ───────────────────────────────────── */
+/* ══ THEMES ══════════════════════════════════════════ */
 :root{
-  --bg:#0e0c14;--bg2:#15121f;--bg3:#1c1829;
-  --border:rgba(100,80,180,.18);--border2:rgba(100,80,180,.35);
-  --text:#d4cce8;--text2:#8b80aa;--text3:#4a4266;
-  --ac:#7c5cbf;--ac2:#a07de0;--ac3:#c4aaff;
-  --danger:#b33;--rad:8px;--mo:rgba(5,4,10,.88)
-}
-[data-theme=ash]{
-  --bg:#111110;--bg2:#191817;--bg3:#222120;
-  --border:rgba(150,140,120,.15);--border2:rgba(150,140,120,.3);
-  --text:#ddd8cc;--text2:#8c8678;--text3:#504c44;
-  --ac:#c8a86a;--ac2:#e0c488;--ac3:#f0daa8
+  --bg:#1a1208;--bg2:#221a0e;--bg3:#2d2210;
+  --border:rgba(180,140,60,.2);--border2:rgba(180,140,60,.4);--border3:rgba(180,140,60,.7);
+  --text:#e8d8a0;--text2:#b89a60;--text3:#7a6030;
+  --ac:#c8a840;--ac2:#e8c860;--ac3:#f8e080;
+  --danger:#cc4444;--success:#44aa44;
+  --rad:4px;--mo:rgba(8,6,2,.92);
+  --paper:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E")
 }
 [data-theme=blood]{
-  --bg:#0f0808;--bg2:#180d0d;--bg3:#201212;
-  --border:rgba(160,40,40,.2);--border2:rgba(160,40,40,.38);
-  --text:#ead4d4;--text2:#9a6868;--text3:#5a3636;
-  --ac:#b03030;--ac2:#d05050;--ac3:#f08080
+  --bg:#160808;--bg2:#1f0c0c;--bg3:#2a1010;
+  --border:rgba(180,40,40,.2);--border2:rgba(180,40,40,.4);--border3:rgba(180,40,40,.7);
+  --text:#f0d0d0;--text2:#c07070;--text3:#703030;
+  --ac:#cc3333;--ac2:#ee5555;--ac3:#ffaaaa
 }
 [data-theme=ocean]{
-  --bg:#060d16;--bg2:#0b1522;--bg3:#10202e;
-  --border:rgba(30,100,180,.2);--border2:rgba(30,100,180,.38);
-  --text:#cddcea;--text2:#6890aa;--text3:#365566;
-  --ac:#2878bb;--ac2:#4a9ad8;--ac3:#80c0f0
+  --bg:#060e18;--bg2:#0a1628;--bg3:#0f2038;
+  --border:rgba(40,120,200,.2);--border2:rgba(40,120,200,.4);--border3:rgba(40,120,200,.7);
+  --text:#c8ddf0;--text2:#6090c0;--text3:#305870;
+  --ac:#2888cc;--ac2:#44aaee;--ac3:#88ccff
 }
-[data-theme=parchment]{
-  --bg:#f0e8d0;--bg2:#e8dfc0;--bg3:#ddd4b0;
-  --border:rgba(120,90,40,.18);--border2:rgba(120,90,40,.35);
-  --text:#2c1c0e;--text2:#7a5a38;--text3:#a88060;
-  --ac:#8b5a20;--ac2:#c08040;--ac3:#e0a860;--mo:rgba(20,12,4,.8)
+[data-theme=forest]{
+  --bg:#080f06;--bg2:#0f1a0a;--bg3:#162610;
+  --border:rgba(60,140,40,.2);--border2:rgba(60,140,40,.4);--border3:rgba(60,140,40,.7);
+  --text:#d0e8c0;--text2:#70a860;--text3:#386830;
+  --ac:#40a030;--ac2:#60c848;--ac3:#a0f070
+}
+[data-theme=void]{
+  --bg:#0a080f;--bg2:#120f1a;--bg3:#1a1528;
+  --border:rgba(120,80,200,.2);--border2:rgba(120,80,200,.4);--border3:rgba(120,80,200,.7);
+  --text:#d8c8f8;--text2:#9070c0;--text3:#503880;
+  --ac:#8855cc;--ac2:#aa77ee;--ac3:#cc99ff
+}
+[data-theme=ash]{
+  --bg:#0e0e0e;--bg2:#161616;--bg3:#222222;
+  --border:rgba(140,130,110,.2);--border2:rgba(140,130,110,.4);--border3:rgba(140,130,110,.7);
+  --text:#d8d4c8;--text2:#908870;--text3:#504e44;
+  --ac:#b8a870;--ac2:#d8c888;--ac3:#f0e0a0
 }
 
-body{font-family:'Crimson Pro',Georgia,serif;font-size:16px;line-height:1.7;color:var(--text);background:var(--bg);transition:background .3s,color .3s}
+body{font-family:'Crimson Pro',Georgia,serif;font-size:16px;line-height:1.7;color:var(--text);background:var(--bg) var(--paper);transition:background .3s,color .3s}
 
-/* ── UTILS ────────────────────────────────────── */
+/* ══ SCROLLBAR ═══════════════════════════════════════ */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--border3);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--ac)}
+
+/* ══ UTILS ═══════════════════════════════════════════ */
 .hidden{display:none!important}
 .page{display:none;width:100%;height:100%}
 .page.active{display:flex;flex-direction:column}
-.err{color:var(--danger);font-size:13px;margin-top:5px;font-style:italic}
+.err{color:var(--danger);font-size:13px;margin-top:6px;line-height:1.5;font-style:italic}
+.suc{color:var(--success);font-size:13px;margin-top:6px;font-style:italic}
 
-/* ── BUTTONS ──────────────────────────────────── */
+/* ══ ORNAMENT DIVIDER ════════════════════════════════ */
+.ornament{text-align:center;color:var(--text3);font-size:13px;letter-spacing:.3em;margin:4px 0;user-select:none}
+
+/* ══ RUNE BORDER (decorative) ════════════════════════ */
+.rune-box{
+  border:.5px solid var(--border2);border-radius:var(--rad);
+  position:relative;background:var(--bg2)
+}
+.rune-box::before,.rune-box::after{
+  content:'✦';position:absolute;font-size:10px;color:var(--text3);line-height:1
+}
+.rune-box::before{top:-6px;left:8px;background:var(--bg2);padding:0 4px}
+.rune-box::after{bottom:-6px;right:8px;background:var(--bg2);padding:0 4px}
+
+/* ══ BUTTONS ═════════════════════════════════════════ */
 .btn{
   display:inline-flex;align-items:center;gap:6px;
-  padding:7px 16px;background:var(--bg2);
+  padding:7px 18px;background:var(--bg3);
   border:.5px solid var(--border2);border-radius:var(--rad);
-  font-family:'Cinzel',serif;font-size:11px;letter-spacing:.05em;
+  font-family:'Cinzel',serif;font-size:11px;letter-spacing:.06em;
   cursor:pointer;color:var(--text2);transition:all .15s;white-space:nowrap
 }
-.btn:hover{border-color:var(--ac2);color:var(--text);background:var(--bg3)}
-.btn.primary{border-color:var(--ac);color:var(--ac)}
-.btn.primary:hover{background:var(--bg3);color:var(--ac2)}
+.btn:hover{border-color:var(--ac2);color:var(--ac2);background:var(--bg3)}
+.btn.primary{
+  border-color:var(--ac);color:var(--ac);
+  box-shadow:0 0 8px rgba(200,168,64,.15)
+}
+.btn.primary:hover{border-color:var(--ac2);color:var(--ac2);box-shadow:0 0 14px rgba(200,168,64,.3)}
 .btn.ghost{background:none;border-color:transparent;color:var(--text3)}
 .btn.ghost:hover{background:var(--bg2);color:var(--text2);border-color:var(--border)}
 .btn.danger{border-color:var(--danger);color:var(--danger)}
+.btn.danger:hover{background:rgba(200,60,60,.1)}
 .btn.full{width:100%;justify-content:center}
-.btn:disabled{opacity:.4;cursor:default}
+.btn:disabled{opacity:.38;cursor:default;pointer-events:none}
 
-/* ── INPUTS ───────────────────────────────────── */
+/* ══ INPUTS ══════════════════════════════════════════ */
 .input{
-  width:100%;background:var(--bg2);
+  width:100%;background:var(--bg);
   border:.5px solid var(--border2);border-radius:var(--rad);
-  padding:9px 12px;font-family:'Crimson Pro',serif;font-size:15px;color:var(--text)
+  padding:9px 13px;font-family:'Crimson Pro',serif;font-size:15px;color:var(--text)
 }
-.input:focus{outline:none;border-color:var(--ac2)}
-.fl{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.07em;color:var(--text3);text-transform:uppercase;margin-bottom:5px}
+.input:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 2px rgba(200,168,64,.1)}
+.input::placeholder{color:var(--text3)}
+.fl{
+  font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;
+  color:var(--text3);text-transform:uppercase;margin-bottom:6px
+}
+select.input{cursor:pointer}
 
-/* ── MODALS ───────────────────────────────────── */
+/* ══ MODALS ══════════════════════════════════════════ */
 .modal-wrap{display:none;position:fixed;inset:0;background:var(--mo);align-items:center;justify-content:center;z-index:9999;padding:16px}
 .modal-wrap.open{display:flex}
-.modal{background:var(--bg);border:.5px solid var(--border2);border-radius:12px;width:min(560px,96vw);max-height:92vh;display:flex;flex-direction:column;overflow:hidden}
-.mh{padding:14px 18px;border-bottom:.5px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
-.mh h2{font-family:'Cinzel',serif;font-size:15px;color:var(--text);font-weight:500}
-.mcx{background:none;border:none;cursor:pointer;color:var(--text3);font-size:20px;line-height:1;padding:2px 6px;border-radius:4px}
-.mcx:hover{color:var(--text);background:var(--bg2)}
-.mb{padding:16px 18px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:14px}
-.mf{padding:10px 18px;border-top:.5px solid var(--border);display:flex;justify-content:flex-end;gap:8px;background:var(--bg2);flex-shrink:0}
-.slider-row{display:flex;align-items:center;gap:10px}
-.slider-row input[type=range]{flex:1;accent-color:var(--ac)}
-.sv{font-family:'Cinzel',serif;font-size:11px;color:var(--ac);min-width:24px;text-align:right}
+.modal{
+  background:var(--bg);border:.5px solid var(--border2);border-radius:6px;
+  width:min(580px,96vw);max-height:92vh;display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,.7),inset 0 1px 0 rgba(200,168,64,.1)
+}
+.mh{
+  padding:14px 20px;border-bottom:.5px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;flex-shrink:0;
+  background:var(--bg2)
+}
+.mh h2{font-family:'Cinzel',serif;font-size:14px;color:var(--ac);font-weight:500;letter-spacing:.06em}
+.mcx{background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;padding:2px 6px;border-radius:3px;line-height:1}
+.mcx:hover{color:var(--text);background:var(--bg3)}
+.mb{padding:18px 20px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:14px}
+.mf{padding:10px 20px;border-top:.5px solid var(--border);display:flex;justify-content:flex-end;gap:8px;background:var(--bg2);flex-shrink:0}
 
-/* Tags & MC */
-.tag{padding:4px 12px;border:.5px solid var(--border2);border-radius:20px;font-size:12px;cursor:pointer;color:var(--text2);background:var(--bg2);transition:all .15s;font-family:'Crimson Pro',serif}
-.tag:hover{border-color:var(--ac2)}.tag.on{background:var(--bg3);border-color:var(--ac);color:var(--text)}
+/* Slider */
+.slider-row{display:flex;align-items:center;gap:10px}
+.slider-row input[type=range]{flex:1;accent-color:var(--ac);height:3px}
+.sv{font-family:'Cinzel',serif;font-size:11px;color:var(--ac);min-width:20px;text-align:right}
+
+/* Tags */
+.tag{padding:4px 12px;border:.5px solid var(--border2);border-radius:20px;font-size:12px;cursor:pointer;color:var(--text2);background:var(--bg2);transition:all .15s;font-family:'IM Fell English',serif}
+.tag:hover{border-color:var(--ac2)}.tag.on{background:var(--bg3);border-color:var(--ac);color:var(--ac)}
 .tag-row{display:flex;flex-wrap:wrap;gap:5px}
+
+/* MC Cards */
 .mc{padding:9px 12px;border:.5px solid var(--border2);border-radius:var(--rad);cursor:pointer;transition:all .15s;background:var(--bg2)}
 .mc:hover{border-color:var(--ac2);background:var(--bg3)}.mc.sel{border:1.5px solid var(--ac);background:var(--bg3)}
-.mc .mn{font-family:'Cinzel',serif;font-size:11px;color:var(--text);margin-bottom:2px}
-.mc .md{font-size:11px;color:var(--text2);line-height:1.3}
+.mc .mn{font-family:'Cinzel',serif;font-size:10px;color:var(--text);margin-bottom:2px;letter-spacing:.04em}
+.mc .md{font-size:11px;color:var(--text2);line-height:1.3;font-style:italic}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
 
 /* Setup tabs */
-.stabs{display:flex;gap:3px;flex-wrap:wrap;border-bottom:.5px solid var(--border);padding-bottom:8px;margin-bottom:4px}
-.stb{padding:5px 14px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.04em;cursor:pointer;background:none;border:.5px solid var(--border2);border-radius:20px;color:var(--text3);transition:all .15s}
+.stabs{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:6px}
+.stb{padding:5px 14px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.05em;cursor:pointer;background:none;border:.5px solid var(--border2);border-radius:20px;color:var(--text3);transition:all .15s}
 .stb:hover{color:var(--text)}.stb.on{border-color:var(--ac);color:var(--ac);background:var(--bg3)}
 .tc{display:none;flex-direction:column;gap:12px}.tc.on{display:flex}
 
-/* ── AUTH PAGE ────────────────────────────────── */
-#auth-page{background:var(--bg);align-items:center;justify-content:center;overflow-y:auto}
-.auth-wrap{width:min(380px,92vw);display:flex;flex-direction:column;gap:24px;padding:32px 0}
-.auth-logo{text-align:center}
-.auth-logo h1{font-family:'Cinzel',serif;font-size:38px;font-weight:600;color:var(--text);letter-spacing:.04em}
-.auth-logo p{font-size:14px;color:var(--text3);font-style:italic;margin-top:4px}
-.auth-card{background:var(--bg2);border:.5px solid var(--border2);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:14px}
-.auth-tabs{display:flex;gap:0;border:.5px solid var(--border2);border-radius:var(--rad);overflow:hidden;margin-bottom:4px}
-.auth-tab{flex:1;padding:8px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.05em;cursor:pointer;background:none;border:none;color:var(--text3);transition:all .15s}
+/* ══ AUTH PAGE ════════════════════════════════════════ */
+#auth-page{background:var(--bg);align-items:center;justify-content:center;overflow-y:auto;position:relative}
+#auth-page::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 30%,rgba(200,168,64,.06) 0%,transparent 70%);
+  pointer-events:none
+}
+.auth-wrap{width:min(400px,92vw);display:flex;flex-direction:column;gap:0;position:relative;z-index:1}
+
+/* Title with decorative border */
+.auth-title-wrap{text-align:center;padding:32px 20px 20px;position:relative}
+.auth-title-wrap::before,.auth-title-wrap::after{
+  content:'';display:block;height:.5px;background:linear-gradient(90deg,transparent,var(--border3),transparent);margin:10px 0
+}
+.auth-logo{font-family:'Cinzel',serif;font-size:42px;font-weight:600;color:var(--ac);letter-spacing:.08em;text-shadow:0 0 20px rgba(200,168,64,.3)}
+.auth-logo span{color:var(--text);font-size:22px;display:block;font-weight:400;letter-spacing:.2em;margin-top:-4px}
+.auth-sub{font-size:13px;color:var(--text3);font-style:italic;margin-top:6px}
+
+.auth-card{
+  background:var(--bg2);border:.5px solid var(--border2);
+  padding:24px;display:flex;flex-direction:column;gap:14px;
+  box-shadow:0 4px 24px rgba(0,0,0,.4)
+}
+.auth-tabs{display:flex;border:.5px solid var(--border2);border-radius:var(--rad);overflow:hidden;margin-bottom:2px}
+.auth-tab{flex:1;padding:8px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.07em;cursor:pointer;background:none;border:none;color:var(--text3);transition:all .15s}
 .auth-tab.on{background:var(--bg3);color:var(--ac)}
 .auth-form{display:flex;flex-direction:column;gap:10px}
-.theme-row{display:flex;align-items:center;justify-content:center;gap:10px;padding-top:4px}
-.theme-dot{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:border-color .15s;flex-shrink:0}
-.theme-dot:hover,.theme-dot.on{border-color:var(--ac2)}
-.theme-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.06em;color:var(--text3)}
 
-/* ── HEADER (cabinet + game) ──────────────────── */
+/* Theme selector */
+.theme-section{padding:16px 20px;border-top:.5px solid var(--border)}
+.theme-section-title{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.12em;color:var(--text3);text-transform:uppercase;text-align:center;margin-bottom:12px}
+.theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.theme-card{
+  border:.5px solid var(--border2);border-radius:var(--rad);overflow:hidden;cursor:pointer;
+  transition:all .2s;position:relative
+}
+.theme-card:hover{border-color:var(--ac);transform:translateY(-1px)}
+.theme-card.on{border-color:var(--ac);box-shadow:0 0 10px rgba(200,168,64,.3)}
+.theme-card.on::after{content:'✓';position:absolute;top:4px;right:6px;font-size:12px;color:var(--ac);font-weight:bold}
+.theme-preview{height:48px;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.05em;padding:4px}
+.theme-name{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.06em;text-align:center;padding:5px 4px;border-top:.5px solid rgba(255,255,255,.06)}
+/* Custom theme builder */
+.custom-theme-btn{
+  grid-column:1/-1;padding:8px;border:.5px dashed var(--border2);border-radius:var(--rad);
+  cursor:pointer;font-family:'Cinzel',serif;font-size:9px;letter-spacing:.06em;
+  color:var(--text3);background:none;text-align:center;transition:all .15s
+}
+.custom-theme-btn:hover{border-color:var(--ac2);color:var(--ac2)}
+.color-picker-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.color-picker-row label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.06em;color:var(--text3);flex:1}
+.color-picker-row input[type=color]{width:36px;height:28px;border:none;background:none;cursor:pointer;border-radius:3px}
+
+/* ══ SITE HEADER ══════════════════════════════════════ */
 .site-header{
   display:flex;align-items:center;gap:12px;
-  padding:0 20px;height:50px;
+  padding:0 18px;height:48px;
   background:var(--bg2);border-bottom:.5px solid var(--border);
-  flex-shrink:0;position:relative;z-index:100
+  flex-shrink:0;position:relative;z-index:200
 }
-.site-header .logo{font-family:'Cinzel',serif;font-size:16px;color:var(--text);font-weight:500;letter-spacing:.04em;flex:1}
-.site-header .logo span{color:var(--ac)}
-/* Balance in header */
-.hdr-balance{
-  display:flex;align-items:center;gap:6px;padding:4px 12px;
+.site-header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--border3),transparent);pointer-events:none}
+.logo{font-family:'Cinzel',serif;font-size:17px;color:var(--ac);font-weight:500;letter-spacing:.06em;flex:1;text-shadow:0 0 12px rgba(200,168,64,.2)}
+.logo span{color:var(--text2);font-size:12px;margin-left:4px;font-weight:400}
+
+/* Balance badge */
+.hdr-bal{
+  display:flex;align-items:center;gap:5px;padding:4px 12px;
   border:.5px solid var(--border2);border-radius:20px;
-  font-family:'Cinzel',serif;font-size:11px;color:var(--text2);cursor:default
+  font-family:'Cinzel',serif;font-size:10px;color:var(--text2);cursor:default;
+  transition:all .2s
 }
-.hdr-balance.low{border-color:var(--danger);color:var(--danger)}
-/* User menu */
-.user-menu-wrap{position:relative}
+.hdr-bal.low{border-color:var(--danger);color:var(--danger);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:none}50%{box-shadow:0 0 6px rgba(200,60,60,.4)}}
+
+/* User dropdown */
+.user-wrap{position:relative}
 .user-btn{
-  display:flex;align-items:center;gap:6px;padding:5px 10px;
+  display:flex;align-items:center;gap:7px;padding:5px 11px;
   background:var(--bg2);border:.5px solid var(--border2);border-radius:var(--rad);
-  font-family:'Cinzel',serif;font-size:11px;color:var(--text2);cursor:pointer;transition:all .15s
+  font-family:'Cinzel',serif;font-size:10px;color:var(--text2);cursor:pointer;transition:all .15s;letter-spacing:.04em
 }
-.user-btn:hover{border-color:var(--ac2);color:var(--text)}
-.user-btn .chevron{font-size:9px;opacity:.5}
-.user-dropdown{
-  display:none;position:absolute;top:calc(100% + 6px);right:0;
-  background:var(--bg2);border:.5px solid var(--border2);border-radius:10px;
-  min-width:160px;overflow:hidden;z-index:999;
-  box-shadow:0 8px 24px rgba(0,0,0,.4)
+.user-btn:hover{border-color:var(--ac2);color:var(--ac2)}
+.user-btn .ch{font-size:8px;opacity:.5;transition:transform .2s}
+.user-btn.open .ch{transform:rotate(180deg)}
+.user-dd{
+  display:none;position:absolute;top:calc(100% + 5px);right:0;
+  background:var(--bg2);border:.5px solid var(--border2);border-radius:6px;
+  min-width:180px;overflow:hidden;z-index:999;
+  box-shadow:0 8px 32px rgba(0,0,0,.6)
 }
-.user-dropdown.open{display:block}
-.user-dropdown a,.user-dropdown button{
-  display:flex;align-items:center;gap:8px;width:100%;padding:9px 14px;
-  background:none;border:none;font-family:'Crimson Pro',serif;font-size:14px;
-  color:var(--text2);cursor:pointer;text-align:left;transition:background .1s;text-decoration:none
+.user-dd.open{display:block}
+.user-dd button{
+  display:flex;align-items:center;gap:8px;width:100%;padding:9px 15px;
+  background:none;border:none;font-family:'IM Fell English',serif;font-size:13px;
+  color:var(--text2);cursor:pointer;text-align:left;transition:background .1s
 }
-.user-dropdown a:hover,.user-dropdown button:hover{background:var(--bg3);color:var(--text)}
-.user-dropdown .sep{height:.5px;background:var(--border);margin:2px 0}
-.user-dropdown .danger-item{color:var(--danger)!important}
+.user-dd button:hover{background:var(--bg3);color:var(--text)}
+.user-dd .sep{height:.5px;background:var(--border);margin:2px 0}
+.user-dd .red{color:var(--danger)!important}
+.user-dd .red:hover{background:rgba(200,60,60,.08)!important}
 
-/* ── CABINET ──────────────────────────────────── */
+/* ══ CABINET PAGE ═════════════════════════════════════ */
 #cabinet-page{background:var(--bg)}
-.cab-body{padding:24px 20px;max-width:860px;margin:0 auto;width:100%;display:flex;flex-direction:column;gap:20px;overflow-y:auto;flex:1}
-.cab-section{background:var(--bg2);border:.5px solid var(--border2);border-radius:12px;overflow:hidden}
-.cab-section-hdr{
-  padding:12px 18px;border-bottom:.5px solid var(--border);
-  display:flex;justify-content:space-between;align-items:center;
-  background:var(--bg3);cursor:pointer;user-select:none
+.cab-scroll{flex:1;overflow-y:auto;padding:24px 20px}
+.cab-inner{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+
+/* Section accordion */
+.cab-sec{border:.5px solid var(--border2);border-radius:var(--rad);overflow:hidden}
+.cab-sec-hdr{
+  display:flex;align-items:center;gap:10px;padding:12px 16px;
+  background:var(--bg2);cursor:pointer;user-select:none;transition:background .15s
 }
-.cab-section-hdr h3{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.06em;color:var(--text2);text-transform:uppercase}
-.cab-section-hdr .sec-chevron{font-size:12px;color:var(--text3);transition:transform .2s}
-.cab-section-body{padding:18px}
-.cab-section.collapsed .cab-section-body{display:none}
-.cab-section.collapsed .sec-chevron{transform:rotate(-90deg)}
+.cab-sec-hdr:hover{background:var(--bg3)}
+.cab-sec-hdr .sec-icon{font-size:16px;width:22px;text-align:center}
+.cab-sec-hdr .sec-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.06em;color:var(--text2);flex:1;text-transform:uppercase}
+.cab-sec-hdr .sec-badge{font-size:10px;color:var(--text3);font-family:'Cinzel',serif}
+.cab-sec-hdr .sec-ch{font-size:10px;color:var(--text3);transition:transform .2s}
+.cab-sec.collapsed .cab-sec-hdr .sec-ch{transform:rotate(-90deg)}
+.cab-sec-body{padding:18px 16px;border-top:.5px solid var(--border)}
+.cab-sec.collapsed .cab-sec-body{display:none}
 
-/* Balance display */
-.bal-display{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
-.bal-num{font-family:'Cinzel',serif;font-size:36px;color:var(--ac);font-weight:600}
-.bal-label{font-size:13px;color:var(--text3)}
-.bal-used{font-size:13px;color:var(--text3);margin-top:2px}
+/* Balance */
+.bal-big{font-family:'Cinzel',serif;font-size:42px;color:var(--ac);font-weight:600;line-height:1;text-shadow:0 0 20px rgba(200,168,64,.2)}
+.bal-label{font-size:13px;color:var(--text3);margin-top:4px;font-style:italic}
+.bal-used{font-size:12px;color:var(--text3);margin-top:2px}
 
-/* Topup packages */
+/* Packages */
 .pkg-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
-@media(max-width:600px){.pkg-grid{grid-template-columns:repeat(2,1fr)}}
-.pkg{padding:14px 10px;border:.5px solid var(--border2);border-radius:var(--rad);cursor:pointer;transition:all .15s;background:var(--bg);text-align:center}
-.pkg:hover{border-color:var(--ac);background:var(--bg3)}
-.pkg.sel{border-color:var(--ac);background:var(--bg3)}
+@media(max-width:550px){.pkg-grid{grid-template-columns:repeat(2,1fr)}}
+.pkg{
+  padding:14px 8px;border:.5px solid var(--border2);border-radius:var(--rad);
+  cursor:pointer;transition:all .2s;background:var(--bg);text-align:center
+}
+.pkg:hover{border-color:var(--ac);background:var(--bg3);transform:translateY(-2px);box-shadow:0 4px 12px rgba(200,168,64,.1)}
+.pkg.sel{border-color:var(--ac);background:var(--bg3);box-shadow:0 0 10px rgba(200,168,64,.15)}
 .pkg-rub{font-family:'Cinzel',serif;font-size:20px;color:var(--text);font-weight:500}
-.pkg-tok{font-size:11px;color:var(--text3);margin-top:3px}
-.topup-row{display:flex;gap:8px;align-items:center}
+.pkg-tok{font-size:10px;color:var(--text3);margin-top:4px;letter-spacing:.03em}
+.topup-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 
 /* Saves */
-.saves-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
-.save-card{padding:12px;border:.5px solid var(--border2);border-radius:var(--rad);background:var(--bg);transition:all .15s}
+.saves-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:8px}
+.save-card{padding:12px;border:.5px solid var(--border2);border-radius:var(--rad);background:var(--bg);transition:all .15s;position:relative}
 .save-card.has:hover{border-color:var(--ac2);background:var(--bg3);cursor:pointer}
-.save-card.empty{opacity:.38;border-style:dashed}
-.save-card-slot{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.06em;color:var(--text3);text-transform:uppercase;margin-bottom:5px}
-.save-card-name{font-family:'Cinzel',serif;font-size:12px;color:var(--text);margin-bottom:2px}
-.save-card-meta{font-size:11px;color:var(--text3)}
-.save-card-acts{display:flex;gap:4px;margin-top:8px}
+.save-card.empty{opacity:.35;border-style:dashed}
+.save-slot{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.07em;color:var(--text3);text-transform:uppercase;margin-bottom:5px}
+.save-name{font-family:'Cinzel',serif;font-size:12px;color:var(--text);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.save-meta{font-size:10px;color:var(--text3);font-style:italic}
+.save-acts{display:flex;gap:4px;margin-top:8px}
 
 /* Payments */
-.pay-row{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--bg3);border-radius:var(--rad);font-size:13px;margin-bottom:5px}
-.pay-badge{font-size:10px;padding:2px 8px;border-radius:20px;border:.5px solid}
-.pay-badge.ok{border-color:var(--ac);color:var(--ac)}
+.pay-item{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--bg3);border-radius:var(--rad);margin-bottom:5px;font-size:13px}
+.pay-badge{font-size:9px;padding:2px 8px;border-radius:20px;border:.5px solid;font-family:'Cinzel',serif;letter-spacing:.04em}
+.pay-badge.ok{border-color:var(--success);color:var(--success)}
 .pay-badge.pending{border-color:var(--text3);color:var(--text3)}
 
-/* API key */
-.apikey-status{font-size:13px;margin-bottom:10px}
-.apikey-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+/* AI Keys panel */
+.provider-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+@media(max-width:500px){.provider-grid{grid-template-columns:1fr}}
+.provider-card{
+  padding:12px 14px;border:.5px solid var(--border2);border-radius:var(--rad);cursor:pointer;
+  transition:all .15s;background:var(--bg);position:relative
+}
+.provider-card:hover{border-color:var(--ac2);background:var(--bg3)}
+.provider-card.active{border-color:var(--ac);background:var(--bg3)}
+.provider-card.active::after{content:'✓';position:absolute;top:8px;right:10px;color:var(--success);font-size:13px}
+.provider-name{font-family:'Cinzel',serif;font-size:11px;color:var(--text);margin-bottom:3px;letter-spacing:.04em}
+.provider-status{font-size:11px;color:var(--text3);font-style:italic}
+.provider-status.ok{color:var(--success)}
+.model-select-wrap{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
 
-/* ── GAME PAGE ────────────────────────────────── */
+/* Error card */
+.err-card{
+  background:rgba(200,60,60,.08);border:.5px solid rgba(200,60,60,.3);
+  border-radius:var(--rad);padding:12px 14px;margin-top:8px
+}
+.err-card .err-title{font-family:'Cinzel',serif;font-size:11px;color:var(--danger);margin-bottom:4px;letter-spacing:.04em}
+.err-card .err-msg{font-size:13px;color:#e08080;line-height:1.5}
+.err-card .err-action{font-size:12px;color:var(--text3);margin-top:6px;font-style:italic}
+.err-card .err-action::before{content:'→ '}
+
+/* ══ GAME PAGE ════════════════════════════════════════ */
 #game-page{overflow:hidden}
-.g-layout{display:grid;grid-template-columns:190px 1fr 170px;height:calc(100% - 50px);overflow:hidden}
+.g-layout{display:grid;grid-template-columns:200px 1fr 180px;height:calc(100vh - 48px)}
 .g-panel{display:flex;flex-direction:column;overflow:hidden;background:var(--bg2)}
 .g-panel.left{border-right:.5px solid var(--border)}
 .g-panel.right{border-left:.5px solid var(--border)}
-.g-panel-hdr{padding:6px 10px;border-bottom:.5px solid var(--border);font-family:'Cinzel',serif;font-size:9px;letter-spacing:.07em;color:var(--text3);text-transform:uppercase;background:var(--bg3);flex-shrink:0}
+.g-panel-hdr{
+  padding:5px 10px;border-bottom:.5px solid var(--border);
+  font-family:'Cinzel',serif;font-size:8px;letter-spacing:.1em;
+  color:var(--text3);text-transform:uppercase;background:var(--bg3);flex-shrink:0;
+  display:flex;justify-content:space-between;align-items:center
+}
 .g-main{display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
-
-/* World info */
-.world-info{padding:8px 10px;border-bottom:.5px solid var(--border);flex-shrink:0}
-.world-name{font-family:'Cinzel',serif;font-size:11px;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.world-genre{font-size:10px;color:var(--text3);font-style:italic}
-
-/* Characters */
-.char-list{flex:1;overflow-y:auto;padding:5px}
-.char-item{padding:5px 8px;border:.5px solid var(--border);border-radius:5px;margin-bottom:3px;cursor:pointer;transition:all .15s;background:var(--bg)}
+.world-info{padding:10px 12px;border-bottom:.5px solid var(--border);flex-shrink:0}
+.world-name{font-family:'Cinzel',serif;font-size:12px;color:var(--ac);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.world-genre{font-size:10px;color:var(--text3);font-style:italic;margin-top:1px}
+.world-provider{font-size:9px;color:var(--text3);margin-top:2px;font-family:'Cinzel',serif;letter-spacing:.04em}
+.char-list{flex:1;overflow-y:auto;padding:6px}
+.char-item{
+  padding:6px 9px;border:.5px solid var(--border);border-radius:var(--rad);margin-bottom:4px;
+  cursor:pointer;transition:all .15s;background:var(--bg)
+}
 .char-item:hover{border-color:var(--border2);background:var(--bg3)}
-.char-item.on{border-color:var(--ac)}
-.char-name{font-family:'Cinzel',serif;font-size:10px;color:var(--text);margin-bottom:1px}
+.char-item.on{border-color:var(--ac);background:rgba(200,168,64,.04)}
+.char-name{font-family:'Cinzel',serif;font-size:10px;color:var(--text);margin-bottom:1px;letter-spacing:.03em}
 .char-desc{font-size:10px;color:var(--text3);font-style:italic;line-height:1.3}
-
-/* Game actions sidebar */
+.g-notes-wrap{overflow-y:auto;flex:1;padding:6px;font-size:10px;color:var(--text3);font-style:italic;line-height:1.5}
 .g-actions{padding:5px;border-top:.5px solid var(--border);flex-shrink:0;display:flex;flex-direction:column;gap:2px}
-.g-act-btn{display:flex;align-items:center;gap:7px;width:100%;padding:6px 8px;background:none;border:none;border-radius:5px;font-family:'Crimson Pro',serif;font-size:12px;color:var(--text3);cursor:pointer;transition:all .12s;text-align:left}
-.g-act-btn:hover{background:var(--bg3);color:var(--text2)}
+.g-act{
+  display:flex;align-items:center;gap:8px;width:100%;padding:6px 9px;
+  background:none;border:none;border-radius:var(--rad);
+  font-family:'IM Fell English',serif;font-size:12px;color:var(--text3);cursor:pointer;
+  transition:all .12s;text-align:left
+}
+.g-act:hover{background:var(--bg3);color:var(--text2)}
 
 /* Story */
-.story{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:10px}
-.story-block{animation:fadeup .3s ease}
-@keyframes fadeup{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-.story-narrator{font-size:15px;color:var(--text);font-style:italic;line-height:1.85}
-.story-player{background:var(--bg2);border-left:2px solid var(--ac);padding:6px 10px;border-radius:0 6px 6px 0}
-.story-player-name{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.06em;color:var(--text3);text-transform:uppercase;margin-bottom:2px}
-.story-player-text{font-size:14px;color:var(--text)}
-.story-system{font-size:11px;color:var(--text3);font-style:italic;text-align:center;padding:3px}
-.think-block{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg2);border-radius:6px;font-size:13px;color:var(--text3);font-style:italic}
-.dots span{animation:blink 1.2s infinite;opacity:0}
-.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+.hc-bar{background:none;border:.5px solid var(--danger);padding:3px 14px;font-family:'Cinzel',serif;font-size:9px;color:var(--danger);text-align:center;flex-shrink:0;margin:6px 12px 0;letter-spacing:.06em}
+.story{flex:1;overflow-y:auto;padding:14px 18px;display:flex;flex-direction:column;gap:12px}
+.sblock{animation:fadeup .3s ease}
+@keyframes fadeup{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* Narrator text — ornate */
+.snarrator{
+  font-family:'IM Fell English',serif;font-size:16px;color:var(--text);
+  font-style:italic;line-height:1.9;
+  padding-left:14px;border-left:1px solid var(--border3)
+}
+/* Player action */
+.splayer{
+  background:var(--bg2);border:.5px solid var(--border2);
+  padding:7px 12px;border-radius:var(--rad);
+  border-left:2px solid var(--ac)
+}
+.splayer-name{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.08em;color:var(--text3);text-transform:uppercase;margin-bottom:3px}
+.splayer-text{font-size:14px;color:var(--text)}
+/* System */
+.ssystem{font-size:11px;color:var(--text3);font-style:italic;text-align:center;padding:2px;opacity:.7}
+/* Error in story */
+.serror{
+  background:rgba(200,60,60,.07);border:.5px solid rgba(200,60,60,.25);
+  border-radius:var(--rad);padding:10px 14px
+}
+.serror-title{font-family:'Cinzel',serif;font-size:10px;color:var(--danger);margin-bottom:4px;letter-spacing:.04em}
+.serror-msg{font-size:13px;color:#e08080;line-height:1.5}
+.serror-action{font-size:11px;color:var(--text3);margin-top:5px;font-style:italic}
+/* Think */
+.sthink{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg2);border-radius:var(--rad);font-size:12px;color:var(--text3);font-style:italic;border:.5px solid var(--border)}
+.sdots span{animation:blink 1.2s infinite;opacity:0}
+.sdots span:nth-child(2){animation-delay:.2s}.sdots span:nth-child(3){animation-delay:.4s}
 @keyframes blink{0%,80%,100%{opacity:0}40%{opacity:1}}
-.hc-bar{background:none;border:.5px solid var(--danger);padding:3px 12px;font-family:'Cinzel',serif;font-size:10px;color:var(--danger);text-align:center;flex-shrink:0;margin:5px 12px 0}
 
 /* Input area */
-.input-area{border-top:.5px solid var(--border);padding:8px 12px;background:var(--bg2);flex-shrink:0;display:flex;flex-direction:column;gap:6px}
-.qa-row{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
-.qa-btn{padding:3px 10px;border:.5px solid var(--border);border-radius:20px;font-size:11px;cursor:pointer;color:var(--text3);background:none;transition:all .15s;font-family:'Crimson Pro',serif}
-.qa-btn:hover{border-color:var(--border2);color:var(--text2)}
+.input-area{
+  border-top:.5px solid var(--border);padding:10px 14px;
+  background:var(--bg2);flex-shrink:0;display:flex;flex-direction:column;gap:7px
+}
+/* Quick actions row */
+.qa-row{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.qa-cat{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.06em;color:var(--text3);margin-right:2px;align-self:center}
+.qa-btn{
+  padding:3px 10px;border:.5px solid var(--border);border-radius:20px;
+  font-size:11px;cursor:pointer;color:var(--text3);background:none;
+  transition:all .15s;font-family:'IM Fell English',serif
+}
+.qa-btn:hover{border-color:var(--border2);color:var(--text2);background:var(--bg3)}
+.qa-btn.move{border-color:rgba(100,180,100,.3);color:rgba(140,200,140,.8)}
+.qa-btn.talk{border-color:rgba(100,140,200,.3);color:rgba(140,170,220,.8)}
+.qa-btn.examine{border-color:rgba(180,140,60,.3);color:rgba(200,168,80,.8)}
+.qa-btn.custom{border-color:var(--border2);color:var(--text3)}
+.qa-controls{display:flex;gap:4px;flex-shrink:0;margin-left:auto}
 .input-row{display:flex;gap:6px;align-items:flex-end}
-#pi{flex:1;resize:none;min-height:36px;max-height:100px;font-size:14px;background:var(--bg);border:.5px solid var(--border2);padding:7px 11px;border-radius:var(--rad);color:var(--text);font-family:'Crimson Pro',serif}
-#pi:focus{outline:none;border-color:var(--ac2)}
-.send-btn{padding:7px 14px;height:36px;background:none;border:.5px solid var(--ac);border-radius:var(--rad);color:var(--ac);font-family:'Cinzel',serif;font-size:11px;cursor:pointer;transition:all .15s;white-space:nowrap}
-.send-btn:hover{background:var(--bg3)}.send-btn:disabled{opacity:.4;cursor:default}
-.send-mode{display:flex;gap:3px}
-.smb{padding:2px 8px;border:.5px solid var(--border);border-radius:20px;font-size:10px;font-family:'Cinzel',serif;cursor:pointer;color:var(--text3);background:none;transition:all .15s}
+#pi{
+  flex:1;resize:none;min-height:36px;max-height:110px;font-size:14px;
+  background:var(--bg);border:.5px solid var(--border2);
+  padding:7px 11px;border-radius:var(--rad);color:var(--text);
+  font-family:'IM Fell English',serif
+}
+#pi:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 2px rgba(200,168,64,.08)}
+#pi::placeholder{color:var(--text3);font-style:italic}
+.send-btn{
+  padding:7px 16px;height:36px;background:none;border:.5px solid var(--ac);
+  border-radius:var(--rad);color:var(--ac);font-family:'Cinzel',serif;font-size:10px;
+  cursor:pointer;transition:all .15s;white-space:nowrap;letter-spacing:.04em
+}
+.send-btn:hover{background:rgba(200,168,64,.08);border-color:var(--ac2);color:var(--ac2)}
+.send-btn:disabled{opacity:.35;cursor:default}
+.smb{padding:2px 9px;border:.5px solid var(--border);border-radius:20px;font-size:9px;font-family:'Cinzel',serif;cursor:pointer;color:var(--text3);background:none;transition:all .15s;letter-spacing:.04em}
 .smb.on{border-color:var(--ac);color:var(--ac)}
 
 /* Right panel */
-.journal-list{flex:1;overflow-y:auto;padding:5px;display:flex;flex-direction:column;gap:3px}
-.journal-item{padding:5px 7px;background:var(--bg3);border-radius:5px;font-size:10px;color:var(--text2);line-height:1.35;border:.5px solid var(--border)}
-.journal-item-label{font-family:'Cinzel',serif;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:1px}
-.right-bottom{padding:8px;border-top:.5px solid var(--border);display:flex;flex-direction:column;gap:5px;flex-shrink:0}
+.jlist{flex:1;overflow-y:auto;padding:5px;display:flex;flex-direction:column;gap:3px}
+.jitem{padding:5px 7px;background:var(--bg3);border-radius:var(--rad);font-size:10px;color:var(--text2);line-height:1.4;border:.5px solid var(--border)}
+.jitem-lbl{font-family:'Cinzel',serif;font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:2px}
 
-/* Notif */
-#notif{position:fixed;bottom:16px;right:16px;z-index:99999;padding:8px 16px;border-radius:8px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.04em;pointer-events:none;opacity:0;transition:opacity .35s;background:var(--bg2);border:.5px solid var(--ac)}
+/* Notif toast */
+#notif{
+  position:fixed;bottom:18px;right:18px;z-index:99999;
+  padding:9px 18px;border-radius:var(--rad);
+  font-family:'Cinzel',serif;font-size:10px;letter-spacing:.05em;
+  pointer-events:none;opacity:0;transition:opacity .35s;
+  background:var(--bg2);border:.5px solid var(--ac);
+  box-shadow:0 4px 16px rgba(0,0,0,.5)
+}
 </style>
 </head>
 <body>
 
-<!-- ══════════ AUTH PAGE ══════════ -->
+<!-- ══════════ AUTH ══════════ -->
 <div id="auth-page" class="page active">
   <div class="auth-wrap">
-    <div class="auth-logo">
-      <h1>Artist <span style="color:var(--ac)">Quest</span></h1>
-      <p>Интерактивный нарратив на Claude</p>
+    <div class="auth-title-wrap">
+      <div class="auth-logo">Artist<span>◆ Quest ◆</span></div>
+      <div class="auth-sub">Интерактивный нарратив на нейросетях</div>
     </div>
     <div class="auth-card">
       <div class="auth-tabs">
-        <button class="auth-tab on" onclick="switchAuthTab('login')">Войти</button>
-        <button class="auth-tab" onclick="switchAuthTab('register')">Регистрация</button>
+        <button class="auth-tab on" onclick="switchTab('login')">Войти</button>
+        <button class="auth-tab" onclick="switchTab('register')">Регистрация</button>
       </div>
-      <!-- LOGIN -->
       <div id="login-form" class="auth-form">
         <div><div class="fl">Email</div><input class="input" id="l-email" type="email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doLogin()"/></div>
         <div><div class="fl">Пароль</div><input class="input" id="l-pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/></div>
         <div id="l-err" class="err hidden"></div>
-        <button class="btn primary full" onclick="doLogin()">Войти</button>
+        <button class="btn primary full" onclick="doLogin()">⟶ Войти в игру</button>
       </div>
-      <!-- REGISTER -->
       <div id="reg-form" class="auth-form hidden">
-        <div><div class="fl">Имя пользователя</div><input class="input" id="r-name" type="text" placeholder="Арвин Тёмный"/></div>
+        <div><div class="fl">Имя путника</div><input class="input" id="r-name" type="text" placeholder="Арвин Тёмный"/></div>
         <div><div class="fl">Email</div><input class="input" id="r-email" type="email" placeholder="your@email.com"/></div>
         <div><div class="fl">Пароль (мин. 6 символов)</div><input class="input" id="r-pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doRegister()"/></div>
         <div id="r-err" class="err hidden"></div>
-        <button class="btn primary full" onclick="doRegister()">Создать аккаунт</button>
+        <button class="btn primary full" onclick="doRegister()">✦ Начать путь</button>
       </div>
     </div>
-    <div class="theme-row">
-      <span class="theme-label">Тема</span>
-      <div class="theme-dot on" style="background:#0e0c14" title="Тёмная" onclick="setTheme('',this)"></div>
-      <div class="theme-dot" style="background:#111110" title="Пепел" onclick="setTheme('ash',this)"></div>
-      <div class="theme-dot" style="background:#0f0808" title="Кровь" onclick="setTheme('blood',this)"></div>
-      <div class="theme-dot" style="background:#060d16" title="Океан" onclick="setTheme('ocean',this)"></div>
-      <div class="theme-dot" style="background:#f0e8d0;border:.5px solid #ccc" title="Пергамент" onclick="setTheme('parchment',this)"></div>
+    <div class="theme-section">
+      <div class="theme-section-title">Облик мира</div>
+      <div class="theme-grid" id="theme-grid"></div>
     </div>
   </div>
 </div>
 
-<!-- ══════════ CABINET PAGE ══════════ -->
+<!-- ══════════ CABINET ══════════ -->
 <div id="cabinet-page" class="page">
-  <!-- Header -->
   <div class="site-header">
-    <div class="logo">Artist <span>Quest</span></div>
-    <div id="hdr-bal" class="hdr-balance" style="display:none"></div>
-    <button class="btn primary" onclick="startNewGame()" style="gap:4px">▶ Новая игра</button>
-    <div class="user-menu-wrap">
-      <div class="user-btn" onclick="toggleUserMenu()" id="user-btn">
-        <span id="cab-username">—</span>
-        <span class="chevron">▾</span>
+    <div class="logo">Artist Quest <span>◆ Таверна</span></div>
+    <div id="hdr-bal" class="hdr-bal" style="display:none"></div>
+    <button class="btn primary" onclick="openNewGame()">✦ Новое приключение</button>
+    <div class="user-wrap">
+      <div class="user-btn" id="user-btn" onclick="toggleDD('user-dd','user-btn')">
+        <span id="cab-name">—</span><span class="ch">▾</span>
       </div>
-      <div class="user-dropdown" id="user-dropdown">
-        <button onclick="loadSavesModal()">💾 Загрузить игру</button>
+      <div class="user-dd" id="user-dd">
+        <button onclick="closeDD();openSaves()">📖 Загрузить игру</button>
+        <button onclick="closeDD();expandSec('sec-keys')">🔑 Мои нейросети</button>
+        <button onclick="closeDD();expandSec('sec-tokens')">💎 Пополнить баланс</button>
         <div class="sep"></div>
-        <button onclick="closeUserMenu();scrollToSection('section-tokens')">💎 Пополнить баланс</button>
-        <button onclick="closeUserMenu();scrollToSection('section-apikey')">🔑 Свой API ключ</button>
-        <div class="sep"></div>
-        <button class="danger-item" onclick="doLogout()">Выйти</button>
+        <button class="red" onclick="doLogout()">⟵ Выйти</button>
       </div>
     </div>
   </div>
-  <!-- Body -->
-  <div class="cab-body" id="cab-body">
+  <div class="cab-scroll">
+    <div class="cab-inner">
 
-    <!-- Tokens section -->
-    <div class="cab-section" id="section-tokens">
-      <div class="cab-section-hdr" onclick="toggleSection(this)">
-        <h3>💎 Токены и баланс</h3>
-        <span class="sec-chevron">▾</span>
-      </div>
-      <div class="cab-section-body">
-        <div class="bal-display">
-          <div class="bal-num" id="bal-num">0</div>
-          <div class="bal-label">токенов</div>
+      <!-- TOKENS -->
+      <div class="cab-sec" id="sec-tokens">
+        <div class="cab-sec-hdr" onclick="toggleSec(this)">
+          <span class="sec-icon">💎</span>
+          <span class="sec-title">Баланс токенов</span>
+          <span class="sec-badge" id="bal-badge-hdr">0 токенов</span>
+          <span class="sec-ch">▾</span>
         </div>
-        <div class="bal-used">Потрачено всего: <span id="bal-used">0</span></div>
-        <div style="margin-top:16px">
-          <div class="fl" style="margin-bottom:10px">Пополнить баланс</div>
+        <div class="cab-sec-body">
+          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:4px">
+            <div class="bal-big" id="bal-num">0</div>
+            <div class="bal-label">токенов доступно</div>
+          </div>
+          <div class="bal-used">Потрачено за всё время: <span id="bal-used">0</span></div>
+          <div style="height:.5px;background:var(--border);margin:16px 0"></div>
+          <div class="fl" style="margin-bottom:10px">Пополнить баланс (токены для игры через наш сервер)</div>
           <div class="pkg-grid" id="pkg-grid"></div>
           <div class="topup-row">
-            <input class="input" id="custom-amount" type="number" min="100" placeholder="Своя сумма (от 100₽)" style="max-width:220px"/>
+            <input class="input" id="custom-amount" type="number" min="100" placeholder="Своя сумма (от 100₽)" style="max-width:210px"/>
             <button class="btn primary" onclick="doTopup()">Пополнить</button>
           </div>
-          <div id="pay-err" class="err hidden" style="margin-top:6px"></div>
-        </div>
-        <div style="margin-top:18px">
+          <div id="pay-err" class="err hidden"></div>
+          <div style="height:.5px;background:var(--border);margin:16px 0"></div>
           <div class="fl" style="margin-bottom:8px">История платежей</div>
           <div id="pay-history"><div style="font-size:13px;color:var(--text3);font-style:italic">Пока нет платежей</div></div>
         </div>
       </div>
-    </div>
 
-    <!-- Saves section (collapsed by default) -->
-    <div class="cab-section collapsed" id="section-saves">
-      <div class="cab-section-hdr" onclick="toggleSection(this)">
-        <h3>📖 Сохранения</h3>
-        <span class="sec-chevron">▾</span>
-      </div>
-      <div class="cab-section-body">
-        <div class="saves-grid" id="cab-saves"></div>
-      </div>
-    </div>
-
-    <!-- API Key section (collapsed by default) -->
-    <div class="cab-section collapsed" id="section-apikey">
-      <div class="cab-section-hdr" onclick="toggleSection(this)">
-        <h3>🔑 Свой API ключ Anthropic</h3>
-        <span class="sec-chevron">▾</span>
-      </div>
-      <div class="cab-section-body">
-        <div id="apikey-status-block" class="apikey-status"></div>
-        <div style="font-size:13px;color:var(--text2);margin-bottom:12px">
-          Если у вас есть ключ от <b>console.anthropic.com</b> — вставьте его сюда.
-          Запросы пойдут через ваш аккаунт, баланс не тратится.
+      <!-- AI KEYS -->
+      <div class="cab-sec" id="sec-keys">
+        <div class="cab-sec-hdr" onclick="toggleSec(this)">
+          <span class="sec-icon">🔑</span>
+          <span class="sec-title">Мои нейросети</span>
+          <span class="sec-badge" id="keys-badge">не настроено</span>
+          <span class="sec-ch">▾</span>
         </div>
-        <div class="apikey-row">
-          <input class="input" id="own-api-key-input" type="password" placeholder="sk-ant-api03-..." style="max-width:360px;flex:1"/>
-          <button class="btn primary" onclick="saveApiKey()">Сохранить</button>
-          <button class="btn danger" id="remove-api-key-btn" onclick="removeApiKey()" style="display:none">Удалить</button>
+        <div class="cab-sec-body">
+          <div style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.6;font-style:italic">
+            Добавьте свой API ключ любой нейросети — тогда запросы пойдут через ваш аккаунт
+            и баланс токенов тратиться не будет. Поддерживаются Claude, OpenAI, Gemini и Mistral.
+          </div>
+          <div class="provider-grid" id="provider-cards"></div>
+          <div id="key-form" style="display:flex;flex-direction:column;gap:10px">
+            <div>
+              <div class="fl">Провайдер нейросети</div>
+              <select class="input" id="key-provider" onchange="updateModelList()">
+                <option value="claude">Claude (Anthropic) — sk-ant-...</option>
+                <option value="openai">OpenAI (GPT) — sk-...</option>
+                <option value="gemini">Google Gemini — AIza...</option>
+                <option value="mistral">Mistral AI — ключ от console.mistral.ai</option>
+              </select>
+            </div>
+            <div>
+              <div class="fl">API Ключ</div>
+              <input class="input" id="key-input" type="password" placeholder="Вставьте ключ здесь..."/>
+            </div>
+            <div>
+              <div class="fl">Модель по умолчанию</div>
+              <select class="input" id="key-model"></select>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn primary" onclick="saveKey()">Сохранить и проверить ключ</button>
+              <button class="btn danger" id="remove-key-btn" onclick="removeKey()" style="display:none">Удалить ключ</button>
+            </div>
+            <div id="key-result"></div>
+          </div>
+          <div style="margin-top:14px;padding:10px 12px;background:var(--bg3);border-radius:var(--rad);font-size:12px;color:var(--text3);line-height:1.6;border:.5px solid var(--border)">
+            <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:.06em;color:var(--text3);margin-bottom:5px">ГДЕ ВЗЯТЬ КЛЮЧ</div>
+            <div>Claude: <span style="color:var(--text2)">console.anthropic.com → API Keys</span></div>
+            <div>OpenAI: <span style="color:var(--text2)">platform.openai.com → API Keys</span></div>
+            <div>Gemini: <span style="color:var(--text2)">aistudio.google.com → Get API key</span></div>
+            <div>Mistral: <span style="color:var(--text2)">console.mistral.ai → API Keys</span></div>
+          </div>
         </div>
-        <div id="apikey-err" class="err hidden" style="margin-top:6px"></div>
-        <div style="margin-top:10px;font-size:12px;color:var(--text3)">⚠ Ключ хранится в БД и используется только для ваших запросов. Никому не передаётся.</div>
       </div>
-    </div>
 
+      <!-- SAVES -->
+      <div class="cab-sec collapsed" id="sec-saves">
+        <div class="cab-sec-hdr" onclick="toggleSec(this)">
+          <span class="sec-icon">📖</span>
+          <span class="sec-title">Сохранения</span>
+          <span class="sec-badge" id="saves-count-badge">—</span>
+          <span class="sec-ch">▾</span>
+        </div>
+        <div class="cab-sec-body">
+          <div class="saves-grid" id="cab-saves"></div>
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>
 
 <!-- ══════════ GAME PAGE ══════════ -->
 <div id="game-page" class="page">
-  <!-- Header -->
   <div class="site-header">
-    <div class="logo">Artist <span>Quest</span></div>
-    <div id="game-bal-badge" class="hdr-balance">💎 —</div>
-    <div class="user-menu-wrap">
-      <div class="user-btn" onclick="toggleGameMenu()" id="game-user-btn">
-        <span id="game-username">—</span>
-        <span class="chevron">▾</span>
+    <div class="logo">Artist Quest</div>
+    <div id="game-bal" class="hdr-bal">—</div>
+    <div class="user-wrap">
+      <div class="user-btn" id="game-user-btn" onclick="toggleDD('game-dd','game-user-btn')">
+        <span id="game-uname">—</span><span class="ch">▾</span>
       </div>
-      <div class="user-dropdown" id="game-user-dropdown">
-        <button onclick="closeGameMenu();manSave()">💾 Сохранить</button>
-        <button onclick="closeGameMenu();om('qa-modal');renderQAEditor()">✏ Быстрые действия</button>
-        <button onclick="closeGameMenu();showGameSettings()">⚙ Настройки мира</button>
+      <div class="user-dd" id="game-dd">
+        <button onclick="closeDD();manSave()">💾 Сохранить</button>
+        <button onclick="closeDD();om('qa-modal');renderQAEditor()">⚔ Настройка действий</button>
+        <button onclick="closeDD();showGameSettings()">⚙ Настройки мира</button>
         <div class="sep"></div>
-        <button onclick="closeGameMenu();showCabinet()">👤 Личный кабинет</button>
+        <button onclick="closeDD();showCabinet()">🏠 Таверна</button>
         <div class="sep"></div>
-        <button class="danger-item" onclick="doLogout()">Выйти</button>
+        <button class="red" onclick="doLogout()">⟵ Выйти</button>
       </div>
     </div>
   </div>
-  <!-- Layout -->
   <div class="g-layout">
-    <!-- Left panel -->
+    <!-- LEFT -->
     <div class="g-panel left">
       <div class="g-panel-hdr">Мир</div>
       <div class="world-info">
         <div class="world-name" id="g-wn">—</div>
         <div class="world-genre" id="g-wt">—</div>
+        <div class="world-provider" id="g-provider">—</div>
       </div>
-      <div class="g-panel-hdr" style="display:flex;justify-content:space-between;align-items:center">
+      <div class="g-panel-hdr">
         <span>Персонажи</span>
-        <button style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:12px;padding:1px 4px" onclick="promptSwitch()">⇄</button>
+        <button style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:10px;padding:1px 4px" onclick="promptSwitch()">⇄ сменить</button>
       </div>
       <div class="char-list" id="g-cp"></div>
-      <div class="g-panel-hdr">Заметки</div>
-      <div style="padding:6px;font-size:10px;color:var(--text3);font-style:italic;overflow-y:auto;flex:1" id="g-notes">Пока пусто...</div>
+      <div class="g-panel-hdr">Заметки нарратора</div>
+      <div class="g-notes-wrap" id="g-notes">Пока пусто...</div>
       <div class="g-actions">
-        <button class="g-act-btn" onclick="manSave()">💾 Сохранить</button>
-        <button class="g-act-btn" onclick="showCabinet()">👤 Кабинет</button>
+        <button class="g-act" onclick="manSave()">💾 Сохранить</button>
+        <button class="g-act" onclick="showCabinet()">🏠 В таверну</button>
       </div>
     </div>
-    <!-- Main -->
+    <!-- MAIN -->
     <div class="g-main">
-      <div class="hc-bar hidden" id="hcb">💀 Хардкор — загрузка запрещена</div>
+      <div class="hc-bar hidden" id="hcb">☠ ХАРДКОР — ЗАГРУЗКА ЗАПРЕЩЕНА</div>
       <div class="story" id="story"></div>
       <div class="input-area">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px">
+        <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+          <span class="qa-cat">Действия:</span>
           <div class="qa-row" id="qa-btns"></div>
-          <div style="display:flex;gap:4px;flex-shrink:0">
-            <div class="send-mode">
-              <button class="smb on" id="sm-fill" onclick="setSM('fill')">В поле</button>
-              <button class="smb" id="sm-send" onclick="setSM('send')">Сразу</button>
-            </div>
-            <button class="qa-btn" style="border-color:var(--ac);color:var(--ac)" onclick="om('qa-modal');renderQAEditor()">✏</button>
+          <div class="qa-controls">
+            <button class="smb on" id="sm-fill" onclick="setSM('fill')" title="Вставить в поле">В поле</button>
+            <button class="smb" id="sm-send" onclick="setSM('send')" title="Сразу отправить">Сразу</button>
+            <button class="smb" onclick="om('qa-modal');renderQAEditor()" title="Настроить действия">✏</button>
           </div>
         </div>
         <div class="input-row">
-          <textarea id="pi" placeholder="Что делает персонаж? [правка: ...] [смена: Имя]..." rows="1" onkeydown="hk(event)"></textarea>
-          <button class="send-btn" id="send-btn" onclick="doSend()">Далее ↗</button>
+          <textarea id="pi" placeholder="Что делает персонаж?  [правка: изменить мир]  [смена: имя персонажа]" rows="1" onkeydown="hk(event)"></textarea>
+          <button class="send-btn" id="send-btn" onclick="doSend()">Вперёд ↗</button>
         </div>
       </div>
     </div>
-    <!-- Right panel -->
+    <!-- RIGHT -->
     <div class="g-panel right">
       <div class="g-panel-hdr">Журнал событий</div>
-      <div class="journal-list" id="journal"></div>
+      <div class="jlist" id="journal"></div>
     </div>
   </div>
 </div>
 
 <!-- ══════════ SETUP MODAL ══════════ -->
 <div class="modal-wrap" id="setup-modal">
-  <div class="modal" style="width:min(680px,96vw);max-height:92vh">
-    <div class="mh">
-      <h2 id="setup-modal-title">Новый мир</h2>
-      <button class="mcx" onclick="cm('setup-modal')">✕</button>
-    </div>
+  <div class="modal" style="width:min(700px,96vw);max-height:94vh">
+    <div class="mh"><h2 id="setup-title">✦ Новое приключение</h2><button class="mcx" onclick="cm('setup-modal')">✕</button></div>
     <div class="mb">
       <div class="stabs">
         <button class="stb on" onclick="showST('world')">🌍 Мир</button>
-        <button class="stb" onclick="showST('chars')">👥 Персонажи</button>
+        <button class="stb" onclick="showST('chars')">👤 Герои</button>
         <button class="stb" onclick="showST('mode')">⚙ Режим</button>
         <button class="stb" onclick="showST('narrator')">🪶 Нарратор</button>
         <button class="stb" onclick="showST('rules')">📜 Правила</button>
+        <button class="stb" onclick="showST('ai')">🤖 Нейросеть</button>
       </div>
-      <!-- World -->
+      <!-- WORLD -->
       <div id="st-world" class="tc on">
         <div><div class="fl">Название мира <span style="color:var(--ac)">*</span></div><input class="input" id="wn" placeholder="Эрмиллион, Пустота, Земля-2189..."/></div>
-        <div><div class="fl">Описание вселенной</div><textarea class="input" id="wd" rows="4" placeholder="Законы мира, магия или технологии, история..."></textarea></div>
+        <div><div class="fl">Описание вселенной</div><textarea class="input" id="wd" rows="4" placeholder="Законы мира, магия или технологии, история, угрозы..."></textarea></div>
         <div>
           <div class="fl">Жанр / Атмосфера</div>
           <div class="tag-row" id="genre-tags">
@@ -517,140 +714,178 @@ body{font-family:'Crimson Pro',Georgia,serif;font-size:16px;line-height:1.7;colo
             <button class="tag" onclick="this.classList.toggle('on')">Современность</button>
             <button class="tag" onclick="this.classList.toggle('on')">Киберпанк</button>
           </div>
-          <div style="display:flex;gap:5px;margin-top:6px"><input class="input" id="cg" placeholder="Свой жанр..." style="flex:1"/><button class="btn" onclick="addCG()">+</button></div>
+          <div style="display:flex;gap:6px;margin-top:6px"><input class="input" id="cg" placeholder="Свой жанр..." style="flex:1"/><button class="btn" onclick="addCG()">+ Добавить</button></div>
         </div>
-        <div><div class="fl">Начальная сцена</div><textarea class="input" id="ws" rows="3" placeholder="С чего начинается история..."></textarea></div>
+        <div><div class="fl">Начальная сцена (с чего начинается история)</div><textarea class="input" id="ws" rows="3" placeholder="Вы стоите у ворот древнего города..."></textarea></div>
         <div style="display:flex;justify-content:flex-end"><button class="btn" onclick="genScenario()">🎲 Случайный сценарий</button></div>
       </div>
-      <!-- Characters -->
+      <!-- CHARS -->
       <div id="st-chars" class="tc">
-        <div>
-          <div class="fl">Режим персонажей</div>
+        <div><div class="fl">Режим персонажей</div>
           <div class="grid2">
-            <div class="mc sel" onclick="selMC(this,'charMode')" data-v="single"><div class="mn">Один герой</div><div class="md">Классическое прохождение</div></div>
-            <div class="mc" onclick="selMC(this,'charMode')" data-v="party"><div class="mn">Группа</div><div class="md">Несколько персонажей</div></div>
+            <div class="mc sel" onclick="selMC(this,'charMode')" data-v="single"><div class="mn">Один герой</div><div class="md">Классическое прохождение от лица одного персонажа</div></div>
+            <div class="mc" onclick="selMC(this,'charMode')" data-v="party"><div class="mn">Группа искателей</div><div class="md">Несколько персонажей, можно переключаться</div></div>
           </div>
         </div>
-        <div>
-          <div class="fl">Персонажи</div>
+        <div><div class="fl">Персонажи</div>
           <div id="ch-list"></div>
-          <div style="display:flex;gap:5px;margin-top:6px"><input class="input" id="nc" placeholder="Имя персонажа..." onkeydown="if(event.key==='Enter')addCh()"/><button class="btn" onclick="addCh()">+</button></div>
+          <div style="display:flex;gap:6px;margin-top:7px"><input class="input" id="nc" placeholder="Имя персонажа..." onkeydown="if(event.key==='Enter')addCh()"/><button class="btn" onclick="addCh()">+ Добавить героя</button></div>
         </div>
       </div>
-      <!-- Mode -->
+      <!-- MODE -->
       <div id="st-mode" class="tc">
-        <div>
-          <div class="fl">Режим игры</div>
+        <div><div class="fl">Режим игры</div>
           <div class="grid2">
-            <div class="mc sel" onclick="selMC(this,'mode')" data-v="game"><div class="mn">Приключение</div><div class="md">Действия имеют последствия</div></div>
-            <div class="mc" onclick="selMC(this,'mode')" data-v="story"><div class="mn">История</div><div class="md">Совместное творчество</div></div>
-            <div class="mc" onclick="selMC(this,'mode')" data-v="chat"><div class="mn">Диалог</div><div class="md">Воплощение NPC</div></div>
-            <div class="mc" onclick="selMC(this,'mode')" data-v="sim"><div class="mn">Симуляция</div><div class="md">Мир живёт сам</div></div>
+            <div class="mc sel" onclick="selMC(this,'mode')" data-v="game"><div class="mn">Приключение</div><div class="md">Действия имеют последствия, мир реагирует на выборы</div></div>
+            <div class="mc" onclick="selMC(this,'mode')" data-v="story"><div class="mn">Совместная история</div><div class="md">Творческое повествование без жёстких правил</div></div>
+            <div class="mc" onclick="selMC(this,'mode')" data-v="chat"><div class="mn">Диалоги и NPC</div><div class="md">Нарратор воплощает персонажей мира</div></div>
+            <div class="mc" onclick="selMC(this,'mode')" data-v="sim"><div class="mn">Симуляция мира</div><div class="md">Мир развивается сам, вы наблюдаете и влияете</div></div>
           </div>
         </div>
-        <div>
-          <div class="fl">Детализация ответов</div>
-          <div class="slider-row"><span style="font-size:11px;color:var(--text3)">Кратко</span><input type="range" min="1" max="5" value="3" id="det" oninput="el('dv').textContent=this.value"/><span style="font-size:11px;color:var(--text3)">Подробно</span><span class="sv" id="dv">3</span></div>
+        <div><div class="fl">Объём ответов нарратора</div>
+          <div class="slider-row">
+            <span style="font-size:11px;color:var(--text3)">Кратко</span>
+            <input type="range" min="1" max="5" value="3" id="det" oninput="el('dv').textContent=detLabels[this.value-1]"/>
+            <span style="font-size:11px;color:var(--text3)">Эпично</span>
+            <span class="sv" id="dv">Среднее</span>
+          </div>
         </div>
-        <div>
-          <div class="fl">Язык нарратора</div>
+        <div><div class="fl">Язык нарратора</div>
           <div class="tag-row">
-            <button class="tag on" data-lang="ru" onclick="selLang(this)">Русский</button>
-            <button class="tag" data-lang="en" onclick="selLang(this)">English</button>
+            <button class="tag on" data-lang="ru" onclick="selLang(this)">🇷🇺 Русский</button>
+            <button class="tag" data-lang="en" onclick="selLang(this)">🇬🇧 English</button>
           </div>
         </div>
-        <div>
-          <div class="fl">Хардкор режим</div>
+        <div><div class="fl">Хардкор режим</div>
           <div class="grid2">
-            <div class="mc sel" onclick="selMC(this,'hardcore')" data-v="0"><div class="mn">Обычный</div><div class="md">Можно загружать сохранения</div></div>
-            <div class="mc" onclick="selMC(this,'hardcore')" data-v="1"><div class="mn">Хардкор</div><div class="md">Смерть финальна</div></div>
+            <div class="mc sel" onclick="selMC(this,'hardcore')" data-v="0"><div class="mn">Обычный</div><div class="md">Можно загружать сохранения, смерть не финальна</div></div>
+            <div class="mc" onclick="selMC(this,'hardcore')" data-v="1"><div class="mn">☠ Хардкор</div><div class="md">Смерть персонажа финальна, загрузка запрещена</div></div>
           </div>
         </div>
       </div>
-      <!-- Narrator -->
+      <!-- NARRATOR -->
       <div id="st-narrator" class="tc">
-        <div>
-          <div class="fl">Стиль нарратора</div>
+        <div><div class="fl">Стиль нарратора</div>
           <div class="grid2">
-            <div class="mc sel" onclick="selMC(this,'narratorStyle')" data-v="classic"><div class="mn">Литературный</div><div class="md">Классический романный стиль</div></div>
-            <div class="mc" onclick="selMC(this,'narratorStyle')" data-v="gm"><div class="mn">Мастер игры</div><div class="md">С юмором и комментариями</div></div>
-            <div class="mc" onclick="selMC(this,'narratorStyle')" data-v="cold"><div class="mn">Хроникёр</div><div class="md">Сухо, без эмоций</div></div>
-            <div class="mc" onclick="selMC(this,'narratorStyle')" data-v="poet"><div class="mn">Поэт</div><div class="md">Образно и метафорично</div></div>
+            <div class="mc sel" onclick="selMC(this,'narratorStyle')" data-v="classic"><div class="mn">Литературный</div><div class="md">Богатый язык, детали, атмосфера</div></div>
+            <div class="mc" onclick="selMC(this,'narratorStyle')" data-v="gm"><div class="mn">Мастер игры</div><div class="md">С юмором, комментариями, подсказками</div></div>
+            <div class="mc" onclick="selMC(this,'narratorStyle')" data-v="cold"><div class="mn">Хроникёр</div><div class="md">Сухо, по делу, без эмоций</div></div>
+            <div class="mc" onclick="selMC(this,'narratorStyle')" data-v="poet"><div class="mn">Поэт</div><div class="md">Образно, метафорично, красиво</div></div>
           </div>
         </div>
-        <div><div class="fl">Дополнительные инструкции нарратору</div><textarea class="input" id="ne" rows="3" placeholder="Особые пожелания к стилю..."></textarea></div>
+        <div><div class="fl">Дополнительные инструкции нарратору</div><textarea class="input" id="ne" rows="3" placeholder="Например: описывай запахи и звуки, добавляй диалоги NPC..."></textarea></div>
       </div>
-      <!-- Rules -->
+      <!-- RULES -->
       <div id="st-rules" class="tc">
-        <div>
-          <div class="fl">Система правил</div>
+        <div><div class="fl">Игровая система</div>
           <div class="grid2">
-            <div class="mc sel" onclick="selMC(this,'rules')" data-v="free"><div class="mn">Свободная</div><div class="md">Нет ограничений</div></div>
-            <div class="mc" onclick="selMC(this,'rules')" data-v="dnd"><div class="mn">D&D-подобная</div><div class="md">Броски кубиков, навыки</div></div>
-            <div class="mc" onclick="selMC(this,'rules')" data-v="survival"><div class="mn">Выживание</div><div class="md">Ресурсы и усталость</div></div>
-            <div class="mc" onclick="selMC(this,'rules')" data-v="custom"><div class="mn">Своя система</div><div class="md">Опишите ниже</div></div>
+            <div class="mc sel" onclick="selMC(this,'rules')" data-v="free"><div class="mn">Свободная</div><div class="md">Нарратор сам решает исходы</div></div>
+            <div class="mc" onclick="selMC(this,'rules')" data-v="dnd"><div class="mn">D&D-подобная</div><div class="md">Навыки, броски, проверки характеристик</div></div>
+            <div class="mc" onclick="selMC(this,'rules')" data-v="survival"><div class="mn">Выживание</div><div class="md">Ресурсы, голод, усталость, погода</div></div>
+            <div class="mc" onclick="selMC(this,'rules')" data-v="custom"><div class="mn">Своя система</div><div class="md">Опишите механики ниже</div></div>
           </div>
         </div>
-        <div><div class="fl">Свои правила</div><textarea class="input" id="cr" rows="3" placeholder="Опишите механики..."></textarea></div>
-        <div><div class="fl">NPC и фракции</div><textarea class="input" id="np" rows="3" placeholder="Важные персонажи и группировки..."></textarea></div>
+        <div><div class="fl">Описание правил (если выбрана «своя система»)</div><textarea class="input" id="cr" rows="3" placeholder="Опишите механики, кубики, характеристики..."></textarea></div>
+        <div><div class="fl">NPC и фракции мира</div><textarea class="input" id="np" rows="3" placeholder="Важные персонажи, организации, их отношение к герою..."></textarea></div>
+      </div>
+      <!-- AI TAB -->
+      <div id="st-ai" class="tc">
+        <div style="font-size:13px;color:var(--text2);line-height:1.6;font-style:italic;margin-bottom:4px">
+          Выберите какую нейросеть использовать в этой игре. Если у вас добавлен свой ключ — можно выбрать любой провайдер и модель.
+        </div>
+        <div><div class="fl">Нейросеть для этой игры</div>
+          <div class="grid2" id="game-provider-select">
+            <div class="mc sel" onclick="selMC(this,'gameProvider')" data-v="server"><div class="mn">🏠 Серверная (баланс)</div><div class="md">Claude от сервера, тратит токены с баланса</div></div>
+            <div class="mc" onclick="selMC(this,'gameProvider')" data-v="own"><div class="mn">🔑 Свой ключ</div><div class="md">Использует ваш API ключ, баланс не тратится</div></div>
+          </div>
+        </div>
+        <div id="ai-model-pick" style="display:none">
+          <div class="fl">Модель</div>
+          <select class="input" id="game-model-sel">
+            <option value="">— выбрать из настроек ключа —</option>
+          </select>
+          <div style="font-size:12px;color:var(--text3);margin-top:5px;font-style:italic">Текущий провайдер: <span id="game-cur-provider">не настроен</span></div>
+        </div>
+        <div style="padding:12px;background:var(--bg3);border-radius:var(--rad);font-size:12px;color:var(--text3);border:.5px solid var(--border);margin-top:4px">
+          Чтобы добавить свой ключ — перейдите в <button class="btn ghost" onclick="cm('setup-modal');expandSec('sec-keys')" style="font-size:11px;padding:1px 6px">Таверну → Мои нейросети</button>
+        </div>
       </div>
     </div>
     <div class="mf">
       <button class="btn" onclick="cm('setup-modal')">Отмена</button>
-      <button class="btn primary" onclick="startGame()">Начать игру →</button>
+      <button class="btn primary" id="start-btn" onclick="startGame()">✦ Начать игру</button>
     </div>
   </div>
 </div>
 
 <!-- ══════════ SAVES MODAL ══════════ -->
 <div class="modal-wrap" id="saves-modal">
-  <div class="modal" style="width:min(640px,96vw)">
-    <div class="mh">
-      <h2>Сохранения</h2>
-      <button class="mcx" onclick="cm('saves-modal')">✕</button>
-    </div>
-    <div class="mb">
-      <div class="saves-grid" id="saves-modal-grid"></div>
-    </div>
+  <div class="modal" style="width:min(660px,96vw)">
+    <div class="mh"><h2>📖 Сохранения</h2><button class="mcx" onclick="cm('saves-modal')">✕</button></div>
+    <div class="mb"><div class="saves-grid" id="saves-modal-grid"></div></div>
   </div>
 </div>
 
 <!-- ══════════ TOPUP MODAL ══════════ -->
 <div class="modal-wrap" id="topup-modal">
-  <div class="modal" style="width:min(380px,96vw)">
-    <div class="mh"><h2>Подтверждение оплаты</h2><button class="mcx" onclick="cm('topup-modal')">✕</button></div>
-    <div class="mb" style="gap:8px">
-      <div style="text-align:center;padding:8px 0">
-        <div style="font-family:'Cinzel',serif;font-size:28px;color:var(--ac)" id="topup-amount-display">—</div>
-        <div style="font-size:13px;color:var(--text3);margin-top:4px">Получите токенов: <span id="topup-tokens-display" style="color:var(--text)">—</span></div>
-      </div>
-      <div id="topup-err" class="err hidden"></div>
+  <div class="modal" style="width:min(360px,96vw)">
+    <div class="mh"><h2>💎 Подтверждение</h2><button class="mcx" onclick="cm('topup-modal')">✕</button></div>
+    <div class="mb" style="align-items:center;gap:8px;text-align:center">
+      <div style="font-family:'Cinzel',serif;font-size:32px;color:var(--ac)" id="tu-sum">—</div>
+      <div style="font-size:13px;color:var(--text3)">Токенов: <span id="tu-tok" style="color:var(--text)">—</span></div>
+      <div id="tu-err" class="err hidden" style="text-align:left"></div>
     </div>
     <div class="mf">
       <button class="btn" onclick="cm('topup-modal')">Отмена</button>
-      <button class="btn primary" id="topup-confirm-btn" onclick="confirmTopup()">Перейти к оплате →</button>
+      <button class="btn primary" id="tu-btn" onclick="confirmTopup()">Перейти к оплате →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ THEME BUILDER MODAL ══════════ -->
+<div class="modal-wrap" id="theme-modal">
+  <div class="modal" style="width:min(420px,96vw)">
+    <div class="mh"><h2>🎨 Создать свою тему</h2><button class="mcx" onclick="cm('theme-modal')">✕</button></div>
+    <div class="mb">
+      <div><div class="fl">Название темы</div><input class="input" id="ct-name" placeholder="Моя тема..."/></div>
+      <div class="color-picker-row"><label>Фон (основной)</label><input type="color" id="ct-bg" value="#1a1208"/></div>
+      <div class="color-picker-row"><label>Фон (карточки)</label><input type="color" id="ct-bg2" value="#221a0e"/></div>
+      <div class="color-picker-row"><label>Фон (акцент)</label><input type="color" id="ct-bg3" value="#2d2210"/></div>
+      <div class="color-picker-row"><label>Текст (основной)</label><input type="color" id="ct-text" value="#e8d8a0"/></div>
+      <div class="color-picker-row"><label>Текст (вторичный)</label><input type="color" id="ct-text2" value="#b89a60"/></div>
+      <div class="color-picker-row"><label>Акцент (золото)</label><input type="color" id="ct-ac" value="#c8a840"/></div>
+      <div class="color-picker-row"><label>Граница</label><input type="color" id="ct-border" value="#b48c3c"/></div>
+      <div style="margin-top:4px;padding:10px 12px;border-radius:var(--rad);font-size:13px" id="ct-preview" style="transition:all .2s">
+        <span id="ct-preview-text" style="font-family:'Cinzel',serif">Предпросмотр темы</span>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn" onclick="cm('theme-modal')">Отмена</button>
+      <button class="btn primary" onclick="saveCustomTheme()">✦ Создать тему</button>
     </div>
   </div>
 </div>
 
 <!-- ══════════ QA MODAL ══════════ -->
 <div class="modal-wrap" id="qa-modal">
-  <div class="modal">
-    <div class="mh"><h2>Быстрые действия</h2><button class="mcx" onclick="cm('qa-modal')">✕</button></div>
+  <div class="modal" style="width:min(560px,96vw)">
+    <div class="mh"><h2>⚔ Быстрые действия</h2><button class="mcx" onclick="cm('qa-modal')">✕</button></div>
     <div class="mb">
-      <div style="font-size:13px;color:var(--text2)">Кнопки-подсказки внизу экрана игры.</div>
-      <div id="qael" style="display:flex;flex-direction:column;gap:5px"></div>
-      <button class="btn" onclick="addQARow()" style="align-self:flex-start">+ Добавить</button>
-      <div>
-        <div class="fl">Режим нажатия</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.6;font-style:italic">
+        Настройте кнопки быстрых действий внизу экрана. Укажите категорию чтобы кнопки были цветными.
+        Действие заканчивающееся на «: » будет вставляться как шаблон для редактирования.
+      </div>
+      <div id="qael" style="display:flex;flex-direction:column;gap:6px"></div>
+      <button class="btn" onclick="addQARow()">+ Добавить действие</button>
+      <div><div class="fl">Режим нажатия</div>
         <div class="grid2">
-          <div class="mc sel" onclick="selMC(this,'sendMode')" data-v="fill"><div class="mn">Вставить в поле</div><div class="md">Можно редактировать перед отправкой</div></div>
-          <div class="mc" onclick="selMC(this,'sendMode')" data-v="send"><div class="mn">Сразу отправить</div><div class="md">Немедленная отправка</div></div>
+          <div class="mc sel" onclick="selMC(this,'sendMode')" data-v="fill"><div class="mn">Вставить в поле</div><div class="md">Можно отредактировать перед отправкой</div></div>
+          <div class="mc" onclick="selMC(this,'sendMode')" data-v="send"><div class="mn">Сразу отправить</div><div class="md">Действие немедленно отправляется нарратору</div></div>
         </div>
       </div>
     </div>
     <div class="mf">
-      <button class="btn" onclick="resetQA()">Сбросить</button>
+      <button class="btn" onclick="resetQA()">Сбросить по умолчанию</button>
       <button class="btn primary" onclick="saveQA()">Сохранить</button>
     </div>
   </div>
@@ -659,57 +894,142 @@ body{font-family:'Crimson Pro',Georgia,serif;font-size:16px;line-height:1.7;colo
 <div id="notif"></div>
 
 <script>
-// ══ GLOBALS ══════════════════════════════════════
-let token=localStorage.getItem('dai_token')||'';
-let user=null,prices=null;
-let G={worldName:'',worldDesc:'',genres:[],worldStart:'',chars:[],activeChar:0,charMode:'single',mode:'game',detail:3,hardcore:false,lang:'ru',narratorStyle:'classic',narratorExtra:'',rules:'free',customRules:'',npcs:'',slotId:null};
-let history=[],journal=[],thinking=false,setupChars=[],summaryCache='';
-let qaList=['Осматриваюсь вокруг','Говорю с NPC','Иду вперёд','[правка: '];
-let sendMode='fill',pendingTopup=null;
+// ══ CONSTANTS ════════════════════════════════════
+const PROVIDERS_INFO={
+  claude:{name:'Claude (Anthropic)',models:['claude-sonnet-4-20250514','claude-haiku-4-5-20251001'],hint:'sk-ant-api03-...'},
+  openai:{name:'OpenAI (GPT)',models:['gpt-4o','gpt-4o-mini','gpt-4-turbo','gpt-3.5-turbo'],hint:'sk-...'},
+  gemini:{name:'Google Gemini',models:['gemini-1.5-pro','gemini-1.5-flash','gemini-2.0-flash'],hint:'AIza...'},
+  mistral:{name:'Mistral AI',models:['mistral-large-latest','mistral-small-latest','open-mistral-7b'],hint:'ключ из console.mistral.ai'}
+};
+const THEMES=[
+  {id:'',name:'Пергамент',bg:'#1a1208',bg2:'#221a0e',text:'#e8d8a0',ac:'#c8a840',desc:'Старинные свитки'},
+  {id:'blood',name:'Кровь',bg:'#160808',bg2:'#1f0c0c',text:'#f0d0d0',ac:'#cc3333',desc:'Багровые руины'},
+  {id:'ocean',name:'Океан',bg:'#060e18',bg2:'#0a1628',text:'#c8ddf0',ac:'#2888cc',desc:'Морские глубины'},
+  {id:'forest',name:'Лес',bg:'#080f06',bg2:'#0f1a0a',text:'#d0e8c0',ac:'#40a030',desc:'Древний бор'},
+  {id:'void',name:'Пустота',bg:'#0a080f',bg2:'#120f1a',text:'#d8c8f8',ac:'#8855cc',desc:'Между мирами'},
+  {id:'ash',name:'Пепел',bg:'#0e0e0e',bg2:'#161616',text:'#d8d4c8',ac:'#b8a870',desc:'Выжженная земля'},
+];
+const detLabels=['Кратко','Немного','Среднее','Подробно','Эпично'];
 const MC_GROUPS={};
+
+// QA defaults with categories
+const QA_DEFAULTS=[
+  {text:'Осматриваюсь вокруг',cat:'examine'},
+  {text:'Говорю с ближайшим NPC',cat:'talk'},
+  {text:'Иду вперёд',cat:'move'},
+  {text:'Проверяю инвентарь',cat:'examine'},
+  {text:'Атакую!',cat:'move'},
+  {text:'[правка: ',cat:'custom'},
+];
+
+// ══ GLOBALS ══════════════════════════════════════
+let token=localStorage.getItem('aq_token')||'';
+let user=null,prices=null;
+let G={worldName:'',worldDesc:'',genres:[],worldStart:'',chars:[],activeChar:0,charMode:'single',mode:'game',detail:3,hardcore:false,lang:'ru',narratorStyle:'classic',narratorExtra:'',rules:'free',customRules:'',npcs:'',slotId:null,useOwnKey:false,gameModel:''};
+let history=[],journal=[],thinking=false,setupChars=[],summaryCache='';
+let qaList=JSON.parse(JSON.stringify(QA_DEFAULTS));
+let sendMode='fill',pendingTopup=null;
+let customThemes=JSON.parse(localStorage.getItem('aq_custom_themes')||'[]');
 
 // ══ UTILS ════════════════════════════════════════
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-function fmt(t){return esc(t).replace(/\n\n/g,'</p><p style="margin-top:.5em">').replace(/\n/g,'<br>')}
+function fmt(t){
+  return esc(t)
+    .replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>')
+    .replace(/\*([^*]+)\*/g,'<em>$1</em>')
+    .replace(/\n\n/g,'</p><p style="margin-top:.6em">')
+    .replace(/\n/g,'<br>');
+}
 function el(id){return document.getElementById(id)}
 function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));el(id).classList.add('active')}
 function om(id){el(id).classList.add('open')}
 function cm(id){el(id).classList.remove('open')}
-function notif(msg,err=false){
+function notif(msg,type='ok'){
   const n=el('notif');n.textContent=msg;
-  n.style.borderColor=err?'var(--danger)':'var(--ac)';
+  const colors={ok:'var(--ac)',err:'var(--danger)',info:'var(--text2)'};
+  n.style.borderColor=colors[type]||colors.ok;
   n.style.opacity='1';clearTimeout(n._t);
-  n._t=setTimeout(()=>n.style.opacity='0',2400);
-}
-function setTheme(name,dot){
-  document.body.dataset.theme=name;
-  document.querySelectorAll('.theme-dot').forEach(d=>d.classList.remove('on'));
-  if(dot)dot.classList.add('on');
-  localStorage.setItem('dai_theme',name);
-}
-const savedTheme=localStorage.getItem('dai_theme');
-if(savedTheme)document.body.dataset.theme=savedTheme;
-
-function scrollToSection(id){
-  const s=el(id);if(!s)return;
-  // expand if collapsed
-  if(s.classList.contains('collapsed'))s.classList.remove('collapsed');
-  s.scrollIntoView({behavior:'smooth',block:'start'});
-}
-function toggleSection(hdr){
-  hdr.closest('.cab-section').classList.toggle('collapsed');
+  n._t=setTimeout(()=>n.style.opacity='0',type==='err'?4000:2500);
 }
 
-// User menu
-function toggleUserMenu(){el('user-dropdown').classList.toggle('open')}
-function closeUserMenu(){el('user-dropdown').classList.remove('open')}
-function toggleGameMenu(){el('game-user-dropdown').classList.toggle('open')}
-function closeGameMenu(){el('game-user-dropdown').classList.remove('open')}
-document.addEventListener('click',e=>{
-  if(!e.target.closest('.user-menu-wrap')){
-    document.querySelectorAll('.user-dropdown').forEach(d=>d.classList.remove('open'));
-  }
+// Dropdown toggle
+function toggleDD(ddId,btnId){
+  const dd=el(ddId),btn=el(btnId);
+  const open=dd.classList.toggle('open');
+  btn.classList.toggle('open',open);
+}
+function closeDD(){document.querySelectorAll('.user-dd').forEach(d=>{d.classList.remove('open')});document.querySelectorAll('.user-btn').forEach(b=>b.classList.remove('open'));}
+document.addEventListener('click',e=>{if(!e.target.closest('.user-wrap'))closeDD();});
+
+// Section accordion
+function toggleSec(hdr){hdr.closest('.cab-sec').classList.toggle('collapsed')}
+function expandSec(id){const s=el(id);s.classList.remove('collapsed');s.scrollIntoView({behavior:'smooth',block:'start'});}
+
+// MC groups
+function selMC(c,group){
+  if(!MC_GROUPS[group]){MC_GROUPS[group]=document.querySelectorAll(`[onclick*="selMC(this,'${group}')"]`);}
+  MC_GROUPS[group].forEach(x=>x.classList.remove('sel'));c.classList.add('sel');
+  if(group==='gameProvider'){el('ai-model-pick').style.display=c.dataset.v==='own'?'flex':'none';el('ai-model-pick').style.flexDirection='column';el('ai-model-pick').style.gap='8px';}
+}
+function selLang(b){b.closest('.tag-row').querySelectorAll('.tag').forEach(x=>x.classList.remove('on'));b.classList.add('on')}
+
+// Setup tabs
+function showST(name){
+  document.querySelectorAll('.stb').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.tc').forEach(t=>t.classList.remove('on'));
+  document.querySelector(`.stb[onclick*="${name}"]`).classList.add('on');
+  el('st-'+name).classList.add('on');
+}
+
+// ══ THEMES ═══════════════════════════════════════
+function buildThemeGrid(){
+  const grid=el('theme-grid');grid.innerHTML='';
+  const saved=localStorage.getItem('aq_theme')||'';
+  const allThemes=[...THEMES,...customThemes.map(t=>({...t,custom:true}))];
+  allThemes.forEach(t=>{
+    const card=document.createElement('div');card.className='theme-card'+(saved===t.id?' on':'');
+    card.innerHTML=`<div class="theme-preview" style="background:${t.bg};color:${t.ac};border-bottom:.5px solid ${t.ac}40">${t.name}</div><div class="theme-name" style="background:${t.bg2};color:${t.text2||t.text}">${t.desc||''}</div>`;
+    card.onclick=()=>{setTheme(t.id);document.querySelectorAll('.theme-card').forEach(c=>c.classList.remove('on'));card.classList.add('on');};
+    grid.appendChild(card);
+  });
+  const addBtn=document.createElement('button');addBtn.className='custom-theme-btn';addBtn.textContent='+ Создать свою тему';
+  addBtn.onclick=()=>om('theme-modal');grid.appendChild(addBtn);
+}
+function setTheme(id){
+  const t=customThemes.find(t=>t.id===id);
+  if(t&&t.custom){applyCustomTheme(t);} else {document.body.dataset.theme=id;}
+  localStorage.setItem('aq_theme',id);
+}
+function applyCustomTheme(t){
+  document.body.dataset.theme='_custom';
+  const s=document.getElementById('custom-theme-style')||document.createElement('style');
+  s.id='custom-theme-style';
+  s.textContent=`[data-theme="_custom"]{--bg:${t.bg};--bg2:${t.bg2};--bg3:${t.bg3||t.bg2};--text:${t.text};--text2:${t.text2};--text3:${t.text3||t.text2};--ac:${t.ac};--ac2:${t.ac};--ac3:${t.ac};--border:${t.border}33;--border2:${t.border}66;--border3:${t.border}}`;
+  document.head.appendChild(s);
+}
+function saveCustomTheme(){
+  const name=el('ct-name').value.trim()||'Своя тема';
+  const id='_c_'+Date.now();
+  const t={id,name,custom:true,desc:'Пользовательская',
+    bg:el('ct-bg').value,bg2:el('ct-bg2').value,bg3:el('ct-bg3').value,
+    text:el('ct-text').value,text2:el('ct-text2').value,ac:el('ct-ac').value,
+    border:el('ct-border').value};
+  customThemes.push(t);
+  localStorage.setItem('aq_custom_themes',JSON.stringify(customThemes));
+  cm('theme-modal');buildThemeGrid();setTheme(id);notif('Тема создана!');
+}
+// Live preview in theme builder
+['ct-bg','ct-bg2','ct-text','ct-ac'].forEach(id=>{
+  const inp=document.getElementById(id);
+  if(inp)inp.addEventListener('input',()=>{
+    const p=el('ct-preview');if(!p)return;
+    p.style.background=el('ct-bg2').value;p.style.border=`.5px solid ${el('ct-ac').value}44`;
+    el('ct-preview-text').style.color=el('ct-ac').value;
+  });
 });
+// Init theme
+(()=>{const saved=localStorage.getItem('aq_theme');if(!saved&&saved!==null)return;const ct=customThemes.find(t=>t.id===saved);if(ct)applyCustomTheme(ct);else if(saved)document.body.dataset.theme=saved;})();
+buildThemeGrid();
 
 // ══ API ══════════════════════════════════════════
 async function apiFetch(path,opts={}){
@@ -719,7 +1039,7 @@ async function apiFetch(path,opts={}){
 }
 
 // ══ AUTH ═════════════════════════════════════════
-function switchAuthTab(tab){
+function switchTab(tab){
   document.querySelectorAll('.auth-tab').forEach((t,i)=>t.classList.toggle('on',i===(tab==='login'?0:1)));
   el('login-form').classList.toggle('hidden',tab!=='login');
   el('reg-form').classList.toggle('hidden',tab!=='register');
@@ -727,20 +1047,25 @@ function switchAuthTab(tab){
 async function doLogin(){
   const email=el('l-email').value.trim(),pass=el('l-pass').value;
   el('l-err').classList.add('hidden');
+  if(!email||!pass){showErr('l-err','Заполните все поля.');return;}
   const data=await apiFetch('/api/auth/login',{method:'POST',body:JSON.stringify({email,password:pass})});
-  if(data.error){el('l-err').textContent=data.error;el('l-err').classList.remove('hidden');return;}
-  token=data.token;user=data.user;localStorage.setItem('dai_token',token);
+  if(data.error){showErr('l-err',data.error);return;}
+  token=data.token;user=data.user;localStorage.setItem('aq_token',token);
   await showCabinet();
 }
 async function doRegister(){
   const name=el('r-name').value.trim(),email=el('r-email').value.trim(),pass=el('r-pass').value;
   el('r-err').classList.add('hidden');
+  if(!name){showErr('r-err','Введите имя путника.');return;}
+  if(!email){showErr('r-err','Введите email.');return;}
+  if(!pass||pass.length<6){showErr('r-err','Пароль должен быть минимум 6 символов.');return;}
   const data=await apiFetch('/api/auth/register',{method:'POST',body:JSON.stringify({username:name,email,password:pass})});
-  if(data.error){el('r-err').textContent=data.error;el('r-err').classList.remove('hidden');return;}
-  token=data.token;user=data.user;localStorage.setItem('dai_token',token);
+  if(data.error){showErr('r-err',data.error);return;}
+  token=data.token;user=data.user;localStorage.setItem('aq_token',token);
   await showCabinet();
 }
-function doLogout(){token='';user=null;localStorage.removeItem('dai_token');showPage('auth-page');}
+function doLogout(){token='';user=null;localStorage.removeItem('aq_token');showPage('auth-page');}
+function showErr(id,msg){const e=el(id);e.textContent=msg;e.classList.remove('hidden');}
 
 // ══ CABINET ══════════════════════════════════════
 async function showCabinet(){
@@ -748,13 +1073,11 @@ async function showCabinet(){
   const me=await apiFetch('/api/auth/me');
   if(me.error){doLogout();return;}
   user=me.user;
-  el('cab-username').textContent=user.username;
-  updateHdrBalance();
-  renderApikeyStatus();
+  el('cab-name').textContent=user.username;
+  updateHdrBal();renderProviderCards();renderKeyForm();
   // Prices
   if(!prices){
-    const pd=await apiFetch('/api/payment/prices');
-    prices=pd;
+    const pd=await apiFetch('/api/payment/prices');prices=pd;
     const grid=el('pkg-grid');grid.innerHTML='';
     pd.packages.forEach(p=>{
       const d=document.createElement('div');d.className='pkg';
@@ -765,163 +1088,168 @@ async function showCabinet(){
   }
   el('bal-num').textContent=Number(user.tokens_balance).toLocaleString('ru');
   el('bal-used').textContent=Number(user.tokens_used).toLocaleString('ru');
-  // Saves for cabinet
+  el('bal-badge-hdr').textContent=Number(user.tokens_balance).toLocaleString('ru')+' токенов';
   await loadCabSaves();
   // Payments
   const ph=await apiFetch('/api/payment/history');
   const phl=el('pay-history');phl.innerHTML='';
-  if(!ph.payments||!ph.payments.length){phl.innerHTML='<div style="font-size:13px;color:var(--text3);font-style:italic">Пока нет платежей</div>';return;}
+  if(!ph.payments?.length){phl.innerHTML='<div style="font-size:13px;color:var(--text3);font-style:italic">Пока нет платежей</div>';return;}
   ph.payments.forEach(p=>{
     const dt=new Date(p.created_at).toLocaleDateString('ru',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
     const ok=p.status==='succeeded';
-    phl.innerHTML+=`<div class="pay-row"><span>${dt} · ${p.amount_rub}₽ · +${Number(p.tokens_granted).toLocaleString('ru')} токенов</span><span class="pay-badge ${ok?'ok':'pending'}">${ok?'Оплачено':'Ожидание'}</span></div>`;
+    phl.innerHTML+=`<div class="pay-item"><span>${dt} · <b>${p.amount_rub}₽</b> → +${Number(p.tokens_granted).toLocaleString('ru')} токенов</span><span class="pay-badge ${ok?'ok':'pending'}">${ok?'✓ Оплачено':'⏳ Ожидание'}</span></div>`;
   });
+}
+
+function updateHdrBal(){
+  const b=el('hdr-bal');if(!b||!user)return;
+  b.style.display='flex';
+  if(user.own_api_key){
+    const p=PROVIDERS_INFO[user.own_provider]||{};
+    b.textContent='🔑 '+p.name||'Свой ключ';b.classList.remove('low');
+  } else {
+    const bal=parseInt(user.tokens_balance)||0;
+    b.textContent='💎 '+bal.toLocaleString('ru');b.classList.toggle('low',bal<1000);
+  }
+  el('keys-badge').textContent=user.own_api_key?(PROVIDERS_INFO[user.own_provider]?.name||'активен'):'не настроено';
 }
 
 async function loadCabSaves(){
   const sv=await apiFetch('/api/saves');
-  const grid=el('cab-saves');grid.innerHTML='';
-  const slotMap={};
-  (sv.saves||[]).forEach(s=>slotMap[s.slot]=s);
+  const usedSlots=(sv.saves||[]).length;
+  el('saves-count-badge').textContent=usedSlots>0?`${usedSlots} из 10`:'пусто';
+  renderSavesGrid('cab-saves',sv.saves||[],false);
+}
+
+function renderSavesGrid(gridId,saves,isModal){
+  const grid=el(gridId);grid.innerHTML='';
+  const slotMap={};saves.forEach(s=>slotMap[s.slot]=s);
   for(let i=0;i<10;i++){
     const s=slotMap[i];
-    const d=document.createElement('div');
-    d.className='save-card '+(s?'has':'empty');
+    const d=document.createElement('div');d.className='save-card '+(s?'has':'empty');
     if(s){
       const dt=new Date(s.updated_at).toLocaleDateString('ru',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
-      d.innerHTML=`<div class="save-card-slot">${s.hardcore?'💀 Хардкор':'Слот '+(i+1)}</div><div class="save-card-name">${esc(s.world_name||s.name)}</div><div class="save-card-meta">${dt}</div><div class="save-card-acts"><button class="btn" onclick="event.stopPropagation();loadSaveAndPlay(${i})" style="flex:1;font-size:10px;padding:4px 8px">▶ Играть</button><button class="btn danger" onclick="event.stopPropagation();delSave(${i})" style="font-size:10px;padding:4px 8px">🗑</button></div>`;
+      const isHC=s.data?.hardcore||s.hardcore;
+      d.innerHTML=`<div class="save-slot">${isHC?'☠ Хардкор':'Слот '+(i+1)}</div><div class="save-name">${esc(s.world_name||s.name)}</div><div class="save-meta">${dt}</div><div class="save-acts"><button class="btn primary" style="flex:1;font-size:10px;padding:4px 8px" onclick="event.stopPropagation();${isModal?'cm(\'saves-modal\');':''}loadSaveAndPlay(${i})">▶ Играть</button><button class="btn danger" style="font-size:10px;padding:4px 8px" onclick="event.stopPropagation();delSave(${i})">🗑</button></div>`;
     } else {
-      d.innerHTML=`<div class="save-card-slot">Слот ${i+1}</div><div class="save-card-name" style="color:var(--text3)">Пусто</div><div class="save-card-meta">—</div>`;
+      d.innerHTML=`<div class="save-slot">Слот ${i+1}</div><div class="save-name" style="color:var(--text3)">Пусто</div><div class="save-meta">—</div><button class="btn" style="margin-top:8px;width:100%;font-size:10px;padding:4px" onclick="${isModal?'cm(\'saves-modal\');':''}newWorldInSlot(${i})">+ Новый мир</button>`;
     }
     grid.appendChild(d);
   }
 }
 
-function updateHdrBalance(){
-  const b=el('hdr-bal');if(!b||!user)return;
-  b.style.display='flex';
-  if(user.own_api_key){b.textContent='🔑 Свой ключ';b.classList.remove('low');}
-  else{const bal=parseInt(user.tokens_balance)||0;b.textContent='💎 '+bal.toLocaleString('ru');b.classList.toggle('low',bal<1000);}
-}
-
-// ══ SAVES MODAL ══════════════════════════════════
-async function loadSavesModal(){
-  closeUserMenu();
+async function openSaves(){
   const sv=await apiFetch('/api/saves');
-  const grid=el('saves-modal-grid');grid.innerHTML='';
-  const slotMap={};
-  (sv.saves||[]).forEach(s=>slotMap[s.slot]=s);
-  for(let i=0;i<10;i++){
-    const s=slotMap[i];
-    const d=document.createElement('div');
-    d.className='save-card '+(s?'has':'empty');
-    if(s){
-      const dt=new Date(s.updated_at).toLocaleDateString('ru',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
-      d.innerHTML=`<div class="save-card-slot">${s.hardcore?'💀 Хардкор':'Слот '+(i+1)}</div><div class="save-card-name">${esc(s.world_name||s.name)}</div><div class="save-card-meta">${dt}</div><div class="save-card-acts"><button class="btn primary" onclick="event.stopPropagation();cm('saves-modal');loadSaveAndPlay(${i})" style="flex:1;font-size:10px;padding:4px 8px">▶ Играть</button><button class="btn danger" onclick="event.stopPropagation();delSave(${i}).then(()=>loadSavesModal())" style="font-size:10px;padding:4px 8px">🗑</button></div>`;
+  renderSavesGrid('saves-modal-grid',sv.saves||[],true);om('saves-modal');
+}
+
+// ══ AI KEYS ══════════════════════════════════════
+function renderProviderCards(){
+  const grid=el('provider-cards');if(!grid)return;grid.innerHTML='';
+  Object.entries(PROVIDERS_INFO).forEach(([id,p])=>{
+    const active=user?.own_provider===id&&user?.own_api_key;
+    const card=document.createElement('div');card.className='provider-card'+(active?' active':'');
+    card.innerHTML=`<div class="provider-name">${p.name}</div><div class="provider-status ${active?'ok':''}">${active?'✓ Ключ активен':'Не настроен'}</div>`;
+    card.onclick=()=>{el('key-provider').value=id;updateModelList();};
+    grid.appendChild(card);
+  });
+}
+function renderKeyForm(){
+  if(!user?.own_api_key){el('remove-key-btn').style.display='none';return;}
+  el('remove-key-btn').style.display='';
+  el('key-provider').value=user.own_provider||'claude';
+  updateModelList();
+  const model=el('key-model');if(model&&user.own_model){model.value=user.own_model;}
+}
+function updateModelList(){
+  const prov=el('key-provider').value;
+  const models=PROVIDERS_INFO[prov]?.models||[];
+  const sel=el('key-model');sel.innerHTML='';
+  models.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;sel.appendChild(o);});
+  if(user?.own_model&&user.own_provider===prov)sel.value=user.own_model;
+  el('key-input').placeholder=PROVIDERS_INFO[prov]?.hint||'Ваш API ключ...';
+}
+async function saveKey(){
+  const key=el('key-input').value.trim();
+  const provider=el('key-provider').value;
+  const model=el('key-model').value;
+  const resultEl=el('key-result');resultEl.innerHTML='';
+  if(!key){resultEl.innerHTML='<div class="err">Введите API ключ.</div>';return;}
+  const btn=document.querySelector('#sec-keys .btn.primary');
+  btn.disabled=true;btn.textContent='Проверяем ключ...';
+  try{
+    const r=await apiFetch('/api/ai/apikey',{method:'PUT',body:JSON.stringify({api_key:key,provider,model})});
+    if(r.error||r.message&&!r.ok){
+      resultEl.innerHTML=`<div class="err-card"><div class="err-title">Ошибка ключа</div><div class="err-msg">${esc(r.error||r.message)}</div><div class="err-action">Проверьте ключ и попробуйте снова.</div></div>`;
     } else {
-      d.innerHTML=`<div class="save-card-slot">Слот ${i+1}</div><div class="save-card-name" style="color:var(--text3)">Пусто</div><div class="save-card-meta">—</div><button class="btn" onclick="cm('saves-modal');newWorldInSlot(${i})" style="margin-top:8px;width:100%;font-size:10px">+ Создать</button>`;
+      user.own_api_key=key;user.own_provider=provider;user.own_model=model;
+      updateHdrBal();renderProviderCards();renderKeyForm();
+      resultEl.innerHTML=`<div style="color:var(--success);font-size:13px;margin-top:6px">✓ ${esc(r.message||'Ключ сохранён!')}</div>`;
+      notif('Ключ сохранён!');
     }
-    grid.appendChild(d);
-  }
-  om('saves-modal');
+  }catch(e){resultEl.innerHTML='<div class="err">Ошибка соединения при проверке ключа.</div>';}
+  btn.disabled=false;btn.textContent='Сохранить и проверить ключ';
+}
+async function removeKey(){
+  if(!confirm('Удалить ключ? Запросы снова пойдут через баланс токенов.'))return;
+  const r=await apiFetch('/api/ai/apikey',{method:'PUT',body:JSON.stringify({api_key:''})});
+  if(!r.error){user.own_api_key=null;user.own_provider=null;user.own_model=null;updateHdrBal();renderProviderCards();renderKeyForm();notif('Ключ удалён');}
 }
 
 // ══ PAYMENT ══════════════════════════════════════
 function prepareTopup(rub,tokens){
-  el('topup-amount-display').textContent=rub+'₽';
-  el('topup-tokens-display').textContent=Number(tokens).toLocaleString('ru');
-  el('topup-err').classList.add('hidden');
-  pendingTopup={rub,tokens};
+  el('tu-sum').textContent=rub+'₽';el('tu-tok').textContent=Number(tokens).toLocaleString('ru');
+  el('tu-err').classList.add('hidden');pendingTopup={rub,tokens};
 }
 async function doTopup(){
   const rub=parseFloat(el('custom-amount').value);
-  if(!rub||rub<100){el('pay-err').textContent='Минимальная сумма 100₽';el('pay-err').classList.remove('hidden');return;}
+  if(!rub||rub<100){el('pay-err').textContent='Минимальная сумма — 100₽';el('pay-err').classList.remove('hidden');return;}
   el('pay-err').classList.add('hidden');
   const tokEst=prices?Math.floor((rub/prices.price_per_1k)*1000):0;
   prepareTopup(rub,tokEst);om('topup-modal');
 }
 async function confirmTopup(){
   if(!pendingTopup)return;
-  el('topup-confirm-btn').disabled=true;el('topup-err').classList.add('hidden');
+  el('tu-btn').disabled=true;
   const data=await apiFetch('/api/payment/create',{method:'POST',body:JSON.stringify({amount:pendingTopup.rub})});
-  el('topup-confirm-btn').disabled=false;
-  if(data.error){el('topup-err').textContent=data.error;el('topup-err').classList.remove('hidden');return;}
+  el('tu-btn').disabled=false;
+  if(data.error){el('tu-err').textContent=data.error;el('tu-err').classList.remove('hidden');return;}
   window.location.href=data.confirmation_url;
 }
 
-// ══ API KEY ═══════════════════════════════════════
-function renderApikeyStatus(){
-  const hasKey=user&&user.own_api_key;
-  const inp=el('own-api-key-input');
-  const rmBtn=el('remove-api-key-btn');
-  const statusEl=el('apikey-status-block');
-  if(!inp)return;
-  if(hasKey){
-    inp.placeholder='sk-ant-... (активен)';inp.value='';
-    if(rmBtn)rmBtn.style.display='';
-    if(statusEl)statusEl.innerHTML='<span style="color:#4caf50;font-weight:500">✅ Свой ключ активен</span> — баланс не тратится';
-  } else {
-    inp.placeholder='sk-ant-api03-...';
-    if(rmBtn)rmBtn.style.display='none';
-    if(statusEl)statusEl.innerHTML='<span style="color:var(--text3)">Ключ не добавлен</span> — используется баланс токенов';
-  }
-}
-async function saveApiKey(){
-  const key=el('own-api-key-input').value.trim();
-  const errEl=el('apikey-err');errEl.classList.add('hidden');
-  if(!key){errEl.textContent='Введите ключ';errEl.classList.remove('hidden');return;}
-  const btn=document.querySelector('#section-apikey .btn.primary');
-  btn.disabled=true;btn.textContent='Проверяем...';
-  try{
-    const r=await apiFetch('/api/ai/apikey',{method:'PUT',body:JSON.stringify({api_key:key})});
-    if(r.error){errEl.textContent=r.error;errEl.classList.remove('hidden');}
-    else{user.own_api_key=key;renderApikeyStatus();updateHdrBalance();notif('✅ Ключ сохранён!');}
-  }catch(e){errEl.textContent='Ошибка сохранения';errEl.classList.remove('hidden');}
-  btn.disabled=false;btn.textContent='Сохранить';
-}
-async function removeApiKey(){
-  if(!confirm('Удалить свой API ключ?'))return;
-  try{
-    const r=await apiFetch('/api/ai/apikey',{method:'PUT',body:JSON.stringify({api_key:''})});
-    if(!r.error){user.own_api_key=null;renderApikeyStatus();updateHdrBalance();notif('Ключ удалён');}
-  }catch(e){notif('Ошибка удаления ключа',true);}
-}
-
-// ══ SETUP / NAVIGATION ═══════════════════════════
-function showST(name){
-  document.querySelectorAll('.stb').forEach(b=>b.classList.remove('on'));
-  document.querySelectorAll('.tc').forEach(t=>t.classList.remove('on'));
-  document.querySelector(`.stb[onclick*="${name}"]`).classList.add('on');
-  el('st-'+name).classList.add('on');
-}
-function selMC(c,group){
-  if(!MC_GROUPS[group]){MC_GROUPS[group]=document.querySelectorAll(`[onclick*="selMC(this,'${group}')"]`);}
-  MC_GROUPS[group].forEach(x=>x.classList.remove('sel'));c.classList.add('sel');
-}
-function selLang(b){b.closest('.tag-row').querySelectorAll('.tag').forEach(x=>x.classList.remove('on'));b.classList.add('on')}
+// ══ SETUP ════════════════════════════════════════
 function addCG(){const inp=el('cg'),v=inp.value.trim();if(!v)return;const b=document.createElement('button');b.className='tag on';b.onclick=()=>b.classList.toggle('on');b.textContent=v;el('genre-tags').appendChild(b);inp.value='';}
-function addCh(){const inp=el('nc'),name=inp.value.trim()||'Безымянный';setupChars.push({name,desc:''});inp.value='';renderSetupChars();}
-function rmCh(i){setupChars.splice(i,1);renderSetupChars()}
+function addCh(){const inp=el('nc'),name=inp.value.trim()||'Безымянный';setupChars.push({name,desc:'',hp:100,skills:''});inp.value='';renderSetupChars();}
+function rmCh(i){setupChars.splice(i,1);renderSetupChars();}
 function renderSetupChars(){
   const e=el('ch-list');e.innerHTML='';
-  if(!setupChars.length){e.innerHTML='<div style="font-size:12px;color:var(--text3);font-style:italic;padding:5px">Нет персонажей — мир без героя</div>';return;}
+  if(!setupChars.length){e.innerHTML='<div style="font-size:12px;color:var(--text3);font-style:italic;padding:5px">Нет персонажей — история без конкретного героя</div>';return;}
   setupChars.forEach((c,i)=>{
-    const r=document.createElement('div');r.style.cssText='display:flex;gap:6px;align-items:center;margin-bottom:5px';
-    r.innerHTML=`<input class="input" value="${esc(c.name)}" placeholder="Имя" style="width:110px;flex:none" oninput="setupChars[${i}].name=this.value"/><input class="input" value="${esc(c.desc)}" placeholder="Описание, роль..." oninput="setupChars[${i}].desc=this.value"/><button class="btn danger" onclick="rmCh(${i})">🗑</button>`;
+    const r=document.createElement('div');r.style.cssText='background:var(--bg3);border:.5px solid var(--border);border-radius:var(--rad);padding:10px;margin-bottom:6px;display:flex;flex-direction:column;gap:6px';
+    r.innerHTML=`<div style="display:flex;gap:6px;align-items:center"><input class="input" value="${esc(c.name)}" placeholder="Имя" style="flex:1" oninput="setupChars[${i}].name=this.value"/><button class="btn danger" style="padding:5px 9px" onclick="rmCh(${i})">✕</button></div><input class="input" value="${esc(c.desc)}" placeholder="Описание, класс, внешность..." style="font-size:13px" oninput="setupChars[${i}].desc=this.value"/><input class="input" value="${esc(c.skills||'')}" placeholder="Навыки, способности, оружие..." style="font-size:13px" oninput="setupChars[${i}].skills=this.value"/>`;
     e.appendChild(r);
   });
 }
 function resetSetupForm(){
   ['wn','wd','ws','ne','cr','np'].forEach(id=>{const e=el(id);if(e)e.value='';});
-  el('det').value=3;el('dv').textContent='3';
+  el('det').value=3;el('dv').textContent='Среднее';
   document.querySelectorAll('#genre-tags .tag').forEach(t=>t.classList.remove('on'));
   document.querySelectorAll('#genre-tags .tag[data-cust]').forEach(t=>t.remove());
-  ['mode','charMode','hardcore','narratorStyle','rules'].forEach(g=>{
+  ['mode','charMode','hardcore','narratorStyle','rules','gameProvider'].forEach(g=>{
     const first=document.querySelector(`[onclick*="selMC(this,'${g}')"]`);
     if(first){MC_GROUPS[g]=null;selMC(first,g);}
   });
   document.querySelector('[data-lang="ru"]')?.classList.add('on');
   setupChars=[];renderSetupChars();
+  el('ai-model-pick').style.display='none';
+  // Populate game model select
+  if(user?.own_api_key&&user?.own_provider){
+    const models=PROVIDERS_INFO[user.own_provider]?.models||[];
+    const sel=el('game-model-sel');sel.innerHTML='<option value="">— из настроек ключа —</option>';
+    models.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;sel.appendChild(o);});
+    if(user.own_model)sel.value=user.own_model;
+    el('game-cur-provider').textContent=PROVIDERS_INFO[user.own_provider]?.name||user.own_provider;
+  }
 }
 function collectSetup(){
   G.worldName=el('wn').value.trim()||'Безымянный мир';
@@ -929,34 +1257,31 @@ function collectSetup(){
   G.narratorExtra=el('ne').value.trim();G.customRules=el('cr').value.trim();G.npcs=el('np').value.trim();
   G.detail=parseInt(el('det').value);
   G.genres=[];document.querySelectorAll('#genre-tags .tag.on').forEach(t=>G.genres.push(t.textContent.trim()));
-  const gv=g=>document.querySelector(`[onclick*="selMC(this,'${g}')\"].sel`)?.dataset.v;
+  const gv=g=>document.querySelector(`[onclick*="selMC(this,'${g}')"].sel`)?.dataset.v;
   G.mode=gv('mode')||'game';G.charMode=gv('charMode')||'single';
   G.hardcore=gv('hardcore')==='1';G.narratorStyle=gv('narratorStyle')||'classic';G.rules=gv('rules')||'free';
   G.lang=document.querySelector('[data-lang].on')?.dataset.lang||'ru';
-  G.chars=setupChars.filter(c=>c.name.trim());
-  if(G.activeChar>=G.chars.length)G.activeChar=0;
+  G.chars=setupChars.filter(c=>c.name.trim());if(G.activeChar>=G.chars.length)G.activeChar=0;
+  G.useOwnKey=gv('gameProvider')==='own';
+  G.gameModel=el('game-model-sel').value||'';
 }
-function startNewGame(){G.slotId=null;resetSetupForm();el('setup-modal-title').textContent='Новый мир';om('setup-modal')}
-function newWorldInSlot(slot){G.slotId=slot;resetSetupForm();el('setup-modal-title').textContent='Новый мир — Слот '+(slot+1);om('setup-modal')}
-function showGameSettings(){resetSetupForm();fillGameIntoForm();om('setup-modal')}
-
-async function loadSaveAndPlay(slot){
-  const data=await apiFetch('/api/saves/'+slot);
-  if(data.error){notif(data.error,true);return;}
-  const sv=data.save;Object.assign(G,sv);
-  G.slotId=slot;history=sv._history||[];journal=sv._journal||[];summaryCache=sv._summary||'';
-  enterGame(false);
-}
-async function delSave(slot){
-  if(!confirm('Удалить слот '+(slot+1)+'?'))return;
-  await apiFetch('/api/saves/'+slot,{method:'DELETE'});notif('Сохранение удалено');
+function openNewGame(){resetSetupForm();el('setup-title').textContent='✦ Новое приключение';el('start-btn').onclick=startGame;om('setup-modal');}
+function newWorldInSlot(slot){G.slotId=slot;resetSetupForm();el('setup-title').textContent='✦ Новый мир — Слот '+(slot+1);el('start-btn').onclick=startGame;om('setup-modal');}
+function showGameSettings(){resetSetupForm();fillGameIntoForm();el('setup-title').textContent='⚙ Настройки мира';el('start-btn').textContent='Сохранить';el('start-btn').onclick=()=>{collectSetup();cm('setup-modal');notif('Настройки обновлены');};}
+function fillGameIntoForm(){
+  el('wn').value=G.worldName;el('wd').value=G.worldDesc;el('ws').value=G.worldStart;
+  el('ne').value=G.narratorExtra;el('cr').value=G.customRules;el('np').value=G.npcs;
+  el('det').value=G.detail;el('dv').textContent=detLabels[G.detail-1];
+  document.querySelectorAll('#genre-tags .tag').forEach(t=>t.classList.toggle('on',G.genres.includes(t.textContent.trim())));
+  setupChars=JSON.parse(JSON.stringify(G.chars));renderSetupChars();
 }
 
 async function genScenario(){
   const scenes=[
-    {worldName:'Тени Могильника',worldDesc:'Королевство Валдрас. Мёртвые сохраняют осколки памяти.',worldStart:'Вы приходите в себя среди трупов. Алый свет вдалеке.',genres:['Тёмное фэнтези','Хоррор'],chars:[{name:'Арвин',desc:'Бывший стражник'}],mode:'game',narratorStyle:'gm'},
-    {worldName:'Станция Омега',worldDesc:'2387 год. Последняя станция изучала пространственную аномалию.',worldStart:'Шлюз открыт. Идеальный порядок. Ни одного человека.',genres:['Sci-Fi','Хоррор'],chars:[{name:'Командир Вела',desc:'Не верит в паранормальное'}],mode:'game',narratorStyle:'cold'},
-    {worldName:'Отель Вечность',worldDesc:'Аномалия вне законов физики. 40 гостей из 40 эпох.',worldStart:'Вы в номере 13. Под дверью: "Следующая — ты".',genres:['Нуар','Хоррор'],chars:[{name:'Детектив',desc:'Скептик. Фото незнакомки в кармане'}],mode:'game',narratorStyle:'cold'},
+    {worldName:'Тени Могильника',worldDesc:'Королевство Валдрас. Мёртвые сохраняют осколки памяти и бродят по ночам.',worldStart:'Вы приходите в себя среди трупов на поле битвы. Алый свет мерцает вдалеке.',genres:['Тёмное фэнтези','Хоррор'],chars:[{name:'Арвин',desc:'Бывший стражник королевской гвардии',skills:'Фехтование, выживание, тактика',hp:100}],mode:'game',narratorStyle:'gm'},
+    {worldName:'Станция Омега-7',worldDesc:'2387 год. Последняя орбитальная станция исследовала пространственную аномалию. Связь потеряна три недели назад.',worldStart:'Стыковочный шлюз открыт. Идеальный порядок. Свет горит. Ни одного человека.',genres:['Sci-Fi','Хоррор'],chars:[{name:'Командир Вела',desc:'Скептик. Не верит в паранормальное.',skills:'Пилотирование, оружие, медицина',hp:100}],mode:'game',narratorStyle:'cold'},
+    {worldName:'Проклятый Отель',worldDesc:'Отель "Вечность" существует вне законов физики. 40 гостей из 40 разных эпох застряли внутри.',worldStart:'Вы в номере 13. Под дверью — записка: "Следующая — ты".',genres:['Нуар','Хоррор'],chars:[{name:'Детектив',desc:'Циник. В кармане фото незнакомки.',skills:'Дедукция, допрос, пистолет',hp:100}],mode:'game',narratorStyle:'cold'},
+    {worldName:'Последний Лес',worldDesc:'Люди вырубили почти всё. Оставшийся лес — живой, и он помнит.',worldStart:'Вы заблудились. Деревья сдвинулись за спиной. Путь назад исчез.',genres:['Тёмное фэнтези','Хоррор'],chars:[{name:'Охотник',desc:'Знает лес. Или думал, что знает.',skills:'Следопытство, лук, травы',hp:100}],mode:'game',narratorStyle:'classic'},
   ];
   const s=scenes[Math.floor(Math.random()*scenes.length)];
   el('wn').value=s.worldName;el('wd').value=s.worldDesc;el('ws').value=s.worldStart;
@@ -966,7 +1291,24 @@ async function genScenario(){
   const ng=document.querySelector(`[onclick*="selMC(this,'narratorStyle')"][data-v="${s.narratorStyle}"]`);if(ng)selMC(ng,'narratorStyle');
   showST('world');notif('Сценарий загружен!');
 }
+
 function startGame(){collectSetup();cm('setup-modal');history=[];journal=[];summaryCache='';enterGame(true);}
+
+async function loadSaveAndPlay(slot){
+  const data=await apiFetch('/api/saves/'+slot);
+  if(data.error){notif('Ошибка загрузки: '+data.error,'err');return;}
+  const sv=data.save;Object.assign(G,sv.data||sv);
+  G.slotId=slot;history=sv.data?._history||sv._history||[];
+  journal=sv.data?._journal||sv._journal||[];
+  summaryCache=sv.data?._summary||sv._summary||'';
+  enterGame(false);
+}
+async function delSave(slot){
+  if(!confirm('Удалить сохранение в слоте '+(slot+1)+'?'))return;
+  await apiFetch('/api/saves/'+slot,{method:'DELETE'});
+  notif('Сохранение удалено');await loadCabSaves();
+  if(el('saves-modal').classList.contains('open'))await openSaves();
+}
 
 // ══ GAME ENGINE ══════════════════════════════════
 function enterGame(isNew){
@@ -974,12 +1316,21 @@ function enterGame(isNew){
   el('g-wn').textContent=G.worldName;
   el('g-wt').textContent=G.genres.join(' · ')||G.mode;
   el('hcb').classList.toggle('hidden',!G.hardcore);
-  el('game-username').textContent=user?.username||'';
-  renderGChars();renderJournal();renderQA();updateGameBal();
+  el('game-uname').textContent=user?.username||'';
+  // Show which AI is being used
+  const providerLabel=G.useOwnKey&&user?.own_api_key
+    ?(PROVIDERS_INFO[user.own_provider]?.name||'Свой ключ')+(G.gameModel?' / '+G.gameModel:'')
+    :'Серверный Claude';
+  el('g-provider').textContent='🤖 '+providerLabel;
+  // Update game balance badge
+  const gb=el('game-bal');
+  if(G.useOwnKey&&user?.own_api_key){gb.textContent='🔑 '+providerLabel;gb.classList.remove('low');}
+  else{const bal=parseInt(user?.tokens_balance)||0;gb.textContent='💎 '+bal.toLocaleString('ru');gb.classList.toggle('low',bal<1000);}
+  renderGChars();renderJournal();renderQA();
   const area=el('story');
   if(isNew){
-    area.innerHTML='<div class="story-system">История начинается...</div>';
-    const msg=G.worldStart||`Начни историю в мире "${G.worldName}". ${G.chars.length?'Активный персонаж: '+G.chars[G.activeChar]?.name:'Нет конкретного персонажа.'}`;
+    area.innerHTML='<div class="ssystem">История начинается...</div>';
+    const msg=G.worldStart||`Начни историю в мире "${G.worldName}". ${G.chars.length?'Главный герой: '+G.chars[G.activeChar]?.name+'. '+G.chars[G.activeChar]?.desc:''}`;
     sendAI(msg,true);
   } else {
     area.innerHTML='';
@@ -987,107 +1338,137 @@ function enterGame(isNew){
   }
 }
 
-function updateGameBal(){
-  const b=el('game-bal-badge');if(!b||!user)return;
-  if(user.own_api_key){b.textContent='🔑 Свой ключ';b.classList.remove('low');}
-  else{const bal=parseInt(user.tokens_balance)||0;b.textContent='💎 '+bal.toLocaleString('ru');b.classList.toggle('low',bal<1000);}
-}
-
 function renderGChars(){
   const e=el('g-cp');e.innerHTML='';
-  if(!G.chars.length){e.innerHTML='<div style="padding:6px;font-size:10px;color:var(--text3);font-style:italic">Нет персонажей</div>';return;}
+  if(!G.chars.length){e.innerHTML='<div style="padding:8px;font-size:10px;color:var(--text3);font-style:italic">Нет персонажей</div>';return;}
   G.chars.forEach((c,i)=>{
     const d=document.createElement('div');d.className='char-item'+(i===G.activeChar?' on':'');
-    d.innerHTML=`<div class="char-name">${esc(c.name)}</div>${c.desc?`<div class="char-desc">${esc(c.desc.slice(0,50))}</div>`:''}`;
-    d.onclick=()=>{G.activeChar=i;renderGChars();notif('Активен: '+c.name)};
+    d.innerHTML=`<div class="char-name">${esc(c.name)}</div>${c.desc?`<div class="char-desc">${esc(c.desc.slice(0,55))}</div>`:''}${c.skills?`<div class="char-desc" style="margin-top:1px;color:var(--text3)">⚔ ${esc(c.skills.slice(0,40))}</div>`:''}`;
+    d.onclick=()=>{G.activeChar=i;renderGChars();notif('Активен: '+c.name);};
     e.appendChild(d);
   });
 }
 function renderJournal(){
   el('journal').innerHTML=journal.length
-    ?journal.map(e=>`<div class="journal-item"><span class="journal-item-label">Событие</span>${esc(e)}</div>`).join('')
-    :'<div style="padding:5px;font-size:10px;color:var(--text3);font-style:italic">Пока пусто...</div>';
+    ?journal.map(e=>`<div class="jitem"><span class="jitem-lbl">Событие</span>${esc(e)}</div>`).join('')
+    :'<div style="padding:6px;font-size:10px;color:var(--text3);font-style:italic">Пока пусто...</div>';
 }
 function renderQA(){
   const e=el('qa-btns');e.innerHTML='';
-  qaList.forEach(a=>{
-    if(!a.trim())return;
-    const b=document.createElement('button');b.className='qa-btn';b.textContent=a.endsWith(': ')?a.slice(0,-2):a;
-    b.onclick=()=>{const pi=el('pi');if(sendMode==='send'&&!a.endsWith(': ')){pi.value=a;doSend();}else{pi.value=a;pi.focus();}};
+  qaList.forEach((a,i)=>{
+    const txt=typeof a==='string'?a:a.text;
+    const cat=typeof a==='string'?'custom':a.cat;
+    if(!txt?.trim())return;
+    const b=document.createElement('button');
+    b.className='qa-btn '+(cat||'custom');
+    b.textContent=txt.endsWith(': ')?txt.slice(0,-2):txt;
+    b.title=cat==='move'?'Движение':cat==='talk'?'Диалог':cat==='examine'?'Осмотр':'Действие';
+    b.onclick=()=>{const pi=el('pi');if(sendMode==='send'&&!txt.endsWith(': ')){pi.value=txt;doSend();}else{pi.value=txt;pi.focus();}};
     e.appendChild(b);
   });
 }
 function fillGameIntoForm(){
   el('wn').value=G.worldName;el('wd').value=G.worldDesc;el('ws').value=G.worldStart;
   el('ne').value=G.narratorExtra;el('cr').value=G.customRules;el('np').value=G.npcs;
-  el('det').value=G.detail;el('dv').textContent=G.detail;
+  el('det').value=G.detail;el('dv').textContent=detLabels[G.detail-1];
   document.querySelectorAll('#genre-tags .tag').forEach(t=>t.classList.toggle('on',G.genres.includes(t.textContent.trim())));
   setupChars=JSON.parse(JSON.stringify(G.chars));renderSetupChars();
-  el('setup-modal-title').textContent='Настройки мира';
-  document.querySelector('#setup-modal .btn.primary[onclick="startGame()"]').onclick=()=>{collectSetup();cm('setup-modal');notif('Настройки обновлены');};
 }
 function promptSwitch(){
-  if(!G.chars.length){notif('Нет персонажей',true);return;}
-  const r=prompt('Выберите:\n'+G.chars.map((c,i)=>`${i+1}. ${c.name}`).join('\n'));
+  if(!G.chars.length){notif('Нет персонажей','err');return;}
+  const r=prompt('Введите номер:\n'+G.chars.map((c,i)=>`${i+1}. ${c.name}`).join('\n'));
   const n=parseInt(r)-1;if(n>=0&&n<G.chars.length){G.activeChar=n;renderGChars();notif('Активен: '+G.chars[n].name);}
 }
 
 // ── AI ─────────────────────────────────────────
 function buildSys(){
-  const mD={game:'ИГРА: действия имеют последствия.',story:'ИСТОРИЯ: совместное творчество.',chat:'БЕСЕДА: воплощай NPC.',sim:'СИМУЛЯЦИЯ: мир живёт сам.'};
-  const nD={classic:'Нарратор: литературный.',gm:'Нарратор: мастер игры.',cold:'Нарратор: хроникёр.',poet:'Нарратор: поэт.'};
-  const dD={1:'Ответ 1-2 предл.',2:'Ответ 2-3 предл.',3:'Ответ 3-5 предл.',4:'Ответ 1-2 абз.',5:'Ответ 2-4 абз.'};
-  const chars=G.chars.length?G.chars.map((c,i)=>`${i===G.activeChar?'[АКТ]':''}${c.name}${c.desc?': '+c.desc.slice(0,60):''}`).join(' | '):'Нет персонажа.';
-  return `Нарратор интерактивной истории Artist Quest. ${G.lang==='en'?'Answer only in English.':'Отвечай только на русском.'}\nМИР: ${G.worldName}. ${G.worldDesc.slice(0,300)}\nЖАНР: ${G.genres.join(', ')||'—'} | ПЕРСОНАЖИ: ${chars}\n${mD[G.mode]} ${nD[G.narratorStyle]} ${dD[G.detail]}\n${G.npcs?'NPC: '+G.npcs.slice(0,120):''}${G.customRules?' ПРАВИЛА: '+G.customRules.slice(0,120):''}${G.hardcore?' ХАРДКОР: смерть финальна.':''}${G.narratorExtra?' '+G.narratorExtra.slice(0,120):''}\n[правка:...]=изменение мира. После ответа добавь {"note":"факт"} для журнала.`;
+  const mD={game:'РЕЖИМ: Приключение. Действия имеют реальные последствия. Мир реагирует на выборы.',story:'РЕЖИМ: Совместная история. Творческое повествование.',chat:'РЕЖИМ: Диалоги. Воплощай NPC с характером.',sim:'РЕЖИМ: Симуляция. Мир развивается сам.'};
+  const nD={classic:'СТИЛЬ: Литературный нарратор. Богатый язык, атмосфера.',gm:'СТИЛЬ: Мастер игры с юмором и подсказками.',cold:'СТИЛЬ: Хроникёр. Сухо, по делу, без лишних эмоций.',poet:'СТИЛЬ: Поэт. Образно, метафорично.'};
+  const dD={1:'Краткий ответ: 1-2 предложения.',2:'Короткий ответ: 2-3 предложения.',3:'Средний ответ: 3-5 предложений.',4:'Подробный ответ: 1-2 абзаца.',5:'Эпичный ответ: 2-4 абзаца.'};
+  const chars=G.chars.length?G.chars.map((c,i)=>`${i===G.activeChar?'[АКТИВНЫЙ]':''}${c.name}${c.desc?': '+c.desc.slice(0,80):''}${c.skills?' Навыки: '+c.skills.slice(0,60):''}`).join(' | '):'Нет конкретного персонажа.';
+  const rules={free:'',dnd:'Используй систему D&D: броски кубиков, проверки характеристик.',survival:'Режим выживания: отслеживай ресурсы, голод, усталость.',custom:G.customRules}[G.rules]||'';
+  return `Ты нарратор интерактивной истории Artist Quest. ${G.lang==='en'?'IMPORTANT: Answer ONLY in English.':'Отвечай ТОЛЬКО на русском языке.'}\n\nМИР: ${G.worldName}\n${G.worldDesc.slice(0,400)}\nЖАНР: ${G.genres.join(', ')||'—'}\nПЕРСОНАЖИ: ${chars}\n${mD[G.mode]||mD.game}\n${nD[G.narratorStyle]||nD.classic}\n${dD[G.detail]||dD[3]}\n${G.npcs?'NPC И ФРАКЦИИ: '+G.npcs.slice(0,200):''}${rules?' '+rules:''}${G.hardcore?' ХАРДКОР: смерть персонажа финальна и необратима.':''}${G.narratorExtra?' ДОПОЛНИТЕЛЬНО: '+G.narratorExtra.slice(0,200):''}\n\nКОМАНДЫ: [правка: текст] = изменение мира без хода персонажа. После каждого ответа добавь в конце {"note":"краткий факт об событии"} для журнала.`;
 }
 function buildMsgs(msg,isSys){
   if(isSys)return [{role:'user',content:msg}];
   const msgs=[...history];
-  if(summaryCache&&msgs.length>6)return [{role:'user',content:'[Контекст: '+summaryCache+']'},{role:'assistant',content:'Понял, продолжаю.'},...msgs.slice(-16)];
-  return msgs.slice(-20);
+  if(summaryCache&&msgs.length>6)return [{role:'user',content:'[Краткое резюме предыдущих событий: '+summaryCache+']'},{role:'assistant',content:'Понял контекст, продолжаю историю.'},...msgs.slice(-16)];
+  return msgs.slice(-22);
 }
+
 async function sendAI(msg,isSystem=false){
   if(thinking)return;
-  if(user&&!user.own_api_key&&parseInt(user.tokens_balance)<500){
-    addBlock('⚠ Недостаточно токенов. Пополните баланс или добавьте свой API ключ в личном кабинете.',false);return;
+  // Balance check
+  if(!G.useOwnKey&&user&&!user.own_api_key&&parseInt(user.tokens_balance)<500){
+    addError('Недостаточно токенов','У вас '+parseInt(user.tokens_balance||0)+' токенов, нужно минимум 500.','Пополните баланс в Таверне или добавьте свой API ключ в разделе «Мои нейросети».');
+    return;
+  }
+  if(G.useOwnKey&&!user?.own_api_key){
+    addError('Ключ не настроен','Вы выбрали "Свой ключ", но ключ не добавлен.','Перейдите в Таверну → Мои нейросети и добавьте API ключ.');
+    return;
   }
   thinking=true;el('send-btn').disabled=true;
   if(!isSystem){addBlock(msg,true);history.push({role:'user',content:msg});}
   showThink();
   try{
-    const resp=await apiFetch('/api/ai/chat',{method:'POST',body:JSON.stringify({system:buildSys(),messages:buildMsgs(msg,isSystem),max_tokens:800})});
-    if(resp.error==='insufficient_tokens'){hideThink();addBlock('⚠ Недостаточно токенов.',false);thinking=false;el('send-btn').disabled=false;return;}
-    if(resp.error){hideThink();addBlock('Ошибка: '+resp.message,false);thinking=false;el('send-btn').disabled=false;return;}
+    const body={system:buildSys(),messages:buildMsgs(msg,isSystem),max_tokens:800};
+    if(G.useOwnKey&&G.gameModel)body.model=G.gameModel;
+    const resp=await apiFetch('/api/ai/chat',{method:'POST',body:JSON.stringify(body)});
+    hideThink();
+    if(resp.error){
+      addError('Ошибка нейросети',resp.message||resp.error,resp.action||'Попробуйте ещё раз или смените модель.');
+      thinking=false;el('send-btn').disabled=false;return;
+    }
     const reply=resp.content?.map(c=>c.text||'').join('')||'...';
-    hideThink();addBlock(reply,false);
+    addBlock(reply,false);
     if(isSystem)history.push({role:'user',content:msg,_sys:true});
     history.push({role:'assistant',content:reply});
-    if(history.length>50)history=history.slice(-50);
-    if(resp._meta&&resp._meta.tokens_balance!==null&&user)user.tokens_balance=resp._meta.tokens_balance;
-    updateGameBal();
+    if(history.length>60)history=history.slice(-60);
+    if(resp._meta){if(resp._meta.tokens_balance!==null&&user)user.tokens_balance=resp._meta.tokens_balance;}
+    // Update bal badge
+    const gb=el('game-bal');
+    if(!G.useOwnKey&&gb&&user){const bal=parseInt(user.tokens_balance)||0;gb.textContent='💎 '+bal.toLocaleString('ru');gb.classList.toggle('low',bal<1000);}
     await maybeSummarize();autoSave();
-  }catch(e){hideThink();addBlock('Ошибка соединения.',false);}
+  }catch(e){
+    hideThink();
+    addError('Ошибка соединения','Не удалось связаться с сервером.','Проверьте интернет и попробуйте снова.');
+  }
   thinking=false;el('send-btn').disabled=false;
 }
+
 function addBlock(text,isPlayer){
-  const area=el('story');const b=document.createElement('div');b.className='story-block';
-  const name=G.chars[G.activeChar]?.name||'Голос';
+  const area=el('story');const b=document.createElement('div');b.className='sblock';
+  const name=G.chars[G.activeChar]?.name||'Путник';
   if(isPlayer){
-    b.innerHTML=`<div class="story-player"><div class="story-player-name">${esc(name)}</div><div class="story-player-text">${esc(text)}</div></div>`;
+    b.innerHTML=`<div class="splayer"><div class="splayer-name">${esc(name)}</div><div class="splayer-text">${esc(text)}</div></div>`;
   } else {
-    let clean=text.replace(/\{"note":[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.note){journal.unshift(o.note);if(journal.length>30)journal.pop();renderJournal();}}catch(e){}return '';}).trim();
-    b.innerHTML=`<div class="story-narrator">${fmt(clean)}</div>`;
+    let clean=text.replace(/\{"note":[^}]+\}/g,m=>{
+      try{const o=JSON.parse(m);if(o.note){journal.unshift(o.note.slice(0,120));if(journal.length>30)journal.pop();renderJournal();}}catch(e){}return '';
+    }).trim();
+    b.innerHTML=`<div class="snarrator"><p>${fmt(clean)}</p></div>`;
   }
   area.appendChild(b);area.scrollTop=area.scrollHeight;
 }
-function showThink(){const a=el('story');const e=document.createElement('div');e.className='think-block';e.id='th';e.innerHTML='🪶 Нарратор думает<span class="dots"><span>.</span><span>.</span><span>.</span></span>';a.appendChild(e);a.scrollTop=a.scrollHeight;}
+
+function addError(title,msg,action){
+  const area=el('story');const b=document.createElement('div');b.className='sblock';
+  b.innerHTML=`<div class="serror"><div class="serror-title">⚠ ${esc(title)}</div><div class="serror-msg">${esc(msg)}</div>${action?`<div class="serror-action">${esc(action)}</div>`:''}`;
+  area.appendChild(b);area.scrollTop=area.scrollHeight;
+}
+
+function showThink(){
+  const a=el('story');const e=document.createElement('div');e.className='sblock';e.id='th';
+  e.innerHTML='<div class="sthink">🪶 Нарратор создаёт историю<span class="sdots"><span>.</span><span>.</span><span>.</span></span></div>';
+  a.appendChild(e);a.scrollTop=a.scrollHeight;
+}
 function hideThink(){const e=el('th');if(e)e.remove();}
+
 async function maybeSummarize(){
   const turns=history.filter(m=>m.role==='user'&&!m._sys).length;
-  if(turns>0&&turns%8===0){
+  if(turns>0&&turns%10===0){
     try{
-      const r=await apiFetch('/api/ai/chat',{method:'POST',body:JSON.stringify({system:'Сожми в 3-4 предложения ключевые события.',messages:[{role:'user',content:history.slice(-16).map(m=>m.role+': '+m.content).join('\n')}],max_tokens:200})});
-      const s=r.content?.map(c=>c.text||'').join('');if(s)summaryCache=(summaryCache?summaryCache+' ':'')+s;
+      const r=await apiFetch('/api/ai/chat',{method:'POST',body:JSON.stringify({system:'Сожми в 3-4 предложения ключевые события, имена, состояния мира. Только факты.',messages:[{role:'user',content:history.slice(-20).map(m=>(m.role==='user'?'Игрок':'Нарратор')+': '+m.content).join('\n')}],max_tokens:250})});
+      const s=r.content?.map(c=>c.text||'').join('');if(s)summaryCache=(summaryCache?summaryCache+' | ':'')+s;
     }catch(e){}
   }
 }
@@ -1095,19 +1476,19 @@ async function maybeSummarize(){
 // ── Saves ─────────────────────────────────────
 async function autoSave(){
   if(G.hardcore||G.slotId===null)return;
-  const data={...G,_history:history.slice(-20),_journal:journal.slice(0,20),_summary:summaryCache};
+  const data={...G,_history:history.slice(-24),_journal:journal.slice(0,25),_summary:summaryCache};
   await apiFetch('/api/saves/'+G.slotId,{method:'POST',body:JSON.stringify({data,name:G.worldName})}).catch(()=>{});
 }
 async function manSave(){
-  if(G.hardcore){notif('Хардкор — загрузка запрещена',true);return;}
+  if(G.hardcore){notif('Хардкор режим — сохранение запрещено','err');return;}
   if(G.slotId===null){
     const sv=await apiFetch('/api/saves');const used=new Set((sv.saves||[]).map(s=>s.slot));
     for(let i=0;i<10;i++){if(!used.has(i)){G.slotId=i;break;}}
     if(G.slotId===null)G.slotId=0;
   }
-  const data={...G,_history:history.slice(-20),_journal:journal.slice(0,20),_summary:summaryCache};
+  const data={...G,_history:history.slice(-24),_journal:journal.slice(0,25),_summary:summaryCache};
   await apiFetch('/api/saves/'+G.slotId,{method:'POST',body:JSON.stringify({data,name:G.worldName})});
-  notif('Сохранено в слот '+(G.slotId+1));
+  notif('✓ Сохранено (Слот '+(G.slotId+1)+')');
 }
 
 // ── Input ──────────────────────────────────────
@@ -1117,35 +1498,43 @@ async function doSend(){
     const nm=t.slice(7).replace(']','').trim();
     const idx=G.chars.findIndex(c=>c.name.toLowerCase().includes(nm.toLowerCase()));
     if(idx>=0){G.activeChar=idx;renderGChars();notif('Активен: '+G.chars[idx].name);}
+    else notif('Персонаж "'+nm+'" не найден','err');
     pi.value='';return;
   }
   pi.value='';pi.style.height='auto';await sendAI(t);
 }
-function hk(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();doSend();}const t=e.target;t.style.height='auto';t.style.height=Math.min(t.scrollHeight,100)+'px';}
+function hk(e){
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();doSend();}
+  const t=e.target;t.style.height='auto';t.style.height=Math.min(t.scrollHeight,110)+'px';
+}
 function setSM(m){sendMode=m;el('sm-fill').classList.toggle('on',m==='fill');el('sm-send').classList.toggle('on',m==='send');}
 
 // ── QA Editor ─────────────────────────────────
 function renderQAEditor(){
   const e=el('qael');e.innerHTML='';
+  const cats=['move','talk','examine','custom'];
+  const catLabels={move:'Движение',talk:'Диалог',examine:'Осмотр',custom:'Прочее'};
   qaList.forEach((a,i)=>{
-    const r=document.createElement('div');r.style.cssText='display:flex;gap:5px;align-items:center';
-    r.innerHTML=`<input class="input" value="${esc(a)}" placeholder="Действие..." oninput="qaList[${i}]=this.value"/><button class="btn danger" onclick="qaList.splice(${i},1);renderQAEditor()">🗑</button>`;
+    const txt=typeof a==='string'?a:a.text;
+    const cat=typeof a==='string'?'custom':a.cat;
+    const r=document.createElement('div');r.style.cssText='display:flex;gap:6px;align-items:center';
+    r.innerHTML=`<select style="width:90px;font-size:11px;padding:6px 4px;background:var(--bg2);border:.5px solid var(--border2);border-radius:var(--rad);color:var(--text2);font-family:Cinzel,serif">${cats.map(c=>`<option value="${c}"${c===cat?' selected':''}>${catLabels[c]}</option>`).join('')}</select><input class="input" value="${esc(txt)}" placeholder="Текст действия..." style="flex:1;font-size:13px" oninput="qaList[${i}]={text:this.value,cat:this.closest('div').querySelector('select').value}"/><button class="btn danger" style="padding:5px 9px;flex-shrink:0" onclick="qaList.splice(${i},1);renderQAEditor()">✕</button>`;
+    r.querySelector('select').onchange=function(){qaList[i]={text:r.querySelector('input').value,cat:this.value};};
     e.appendChild(r);
   });
 }
-function addQARow(){qaList.push('');renderQAEditor();}
-function resetQA(){qaList=['Осматриваюсь вокруг','Говорю с NPC','Иду вперёд','[правка: '];renderQAEditor();}
-function saveQA(){qaList=qaList.filter(a=>a.trim());renderQA();cm('qa-modal');notif('Действия сохранены');}
+function addQARow(){qaList.push({text:'',cat:'custom'});renderQAEditor();}
+function resetQA(){qaList=JSON.parse(JSON.stringify(QA_DEFAULTS));renderQAEditor();}
+function saveQA(){qaList=qaList.filter(a=>(typeof a==='string'?a:a.text).trim());renderQA();cm('qa-modal');notif('Действия сохранены');}
 
 // ══ INIT ═════════════════════════════════════════
+updateModelList();
 (async()=>{
-  if(location.search.includes('payment=success')){
-    history.replaceState(null,'','/');notif('Оплата прошла! Баланс обновляется...');
-  }
+  if(location.search.includes('payment=success')){history.replaceState(null,'','/');notif('✓ Оплата прошла! Баланс обновляется...');}
   if(token){
     const me=await apiFetch('/api/auth/me');
-    if(me.user){user=me.user;showCabinet();}
-    else{token='';localStorage.removeItem('dai_token');}
+    if(me.user){user=me.user;await showCabinet();}
+    else{token='';localStorage.removeItem('aq_token');}
   }
 })();
 </script>
