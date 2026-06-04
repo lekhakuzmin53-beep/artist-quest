@@ -1397,21 +1397,32 @@ wrap.innerHTML=`<div class="narrator-wrap" id="nwrap_${id}">
 </div>`;}
 area.appendChild(wrap);area.scrollTop=area.scrollHeight;return id;}
 
-function makeDiceBlock(dc,skill,hideDC=false){
-  const did='dice_'+Date.now();
-  const dcDisplay=hideDC?'<span id="dc-toggle-'+did+'" style="cursor:pointer;opacity:.5;font-size:11px" title="GM: показать сложность" onclick="toggleDCVisible(''+did+'','+dc+')">? (скрыто)</span>':`${dc||10}`;
-  return `<div class="dice-block" id="${did}">
-    <div class="dice-label">🎲 Проверка: ${esc(skill||'навык')}</div>
-    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-      <div class="dice-result"><span class="dice-icon">🎲</span><span class="dice-num" id="dnum_${did}">?</span></div>
-      <div class="dice-dc">Сложность: <span id="dcval_${did}">${dcDisplay}</span></div>
-      <div id="dout_${did}"></div>
-      <button class="dice-btn" onclick="rollDice('${did}',${dc||10})">Бросить!</button>
-    </div>
-  </div>`;
+function makeDiceBlock(dc, skill, hideDC) {
+  var did = 'dice_' + Date.now();
+  var skillLabel = skill || 'навык';
+  var dcVal = dc || 10;
+  var dcLabel = hideDC ? '? (GM скрыл)' : String(dcVal);
+  var btn = document.createElement('button');
+  btn.className = 'dice-btn';
+  btn.textContent = 'Бросить!';
+  btn.dataset.did = did;
+  btn.dataset.dc = dcVal;
+  btn.onclick = function() { rollDice(this.dataset.did, parseInt(this.dataset.dc)); };
+  var wrapper = document.createElement('div');
+  wrapper.className = 'dice-block';
+  wrapper.id = did;
+  wrapper.innerHTML = '<div class="dice-label">🎲 Проверка: ' + esc(skillLabel) + '</div>'
+    + '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">'
+    + '<div class="dice-result"><span class="dice-icon">🎲</span>'
+    + '<span class="dice-num" id="dnum_' + did + '">?</span></div>'
+    + '<div class="dice-dc">Сложность: <span id="dcval_' + did + '">' + dcLabel + '</span></div>'
+    + '<div id="dout_' + did + '"></div>'
+    + '</div>';
+  wrapper.querySelector('[style]').appendChild(btn);
+  var tmp = document.createElement('div');
+  tmp.appendChild(wrapper);
+  return tmp.innerHTML;
 }
-function toggleDCVisible(did,dc){const el2=el('dc-toggle-'+did);if(el2){el2.outerHTML='<span style="font-weight:600;color:var(--ac)">'+dc+'</span> <span style="font-size:10px;color:var(--text3)">(раскрыто GM)</span>';}}
-
 function rollDice(did,dc){const numEl=el('dnum_'+did);const outEl=el('dout_'+did);const btn=document.querySelector(`#${did} .dice-btn`);if(!numEl||btn?.disabled)return;btn.disabled=true;let rolls=0;const roll=Math.floor(Math.random()*20)+1;const interval=setInterval(()=>{numEl.textContent=Math.floor(Math.random()*20)+1;rolls++;if(rolls>12){clearInterval(interval);numEl.textContent=roll;numEl.classList.add('rolling');setTimeout(()=>numEl.classList.remove('rolling'),500);const success=roll>=dc;outEl.innerHTML=`<div class="dice-outcome ${success?'success':'fail'}">${roll>=dc?'✓ Успех':'✗ Провал'} (выпало ${roll} из ${dc})</div>`;// Add to history context
 history.push({role:'user',content:`[Бросок кубика: выпало ${roll}, сложность ${dc}, ${success?'успех':'провал'}]`,_sys:true});}},60);}
 
