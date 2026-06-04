@@ -361,7 +361,39 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
 .right-tab{flex:1;padding:7px 4px;font-size:11px;font-weight:600;color:var(--text3);background:none;border:none;cursor:pointer;transition:all .15s;text-align:center;border-bottom:2px solid transparent}
 .right-tab.on{color:var(--ac);border-bottom-color:var(--ac)}
 .right-tab:hover{color:var(--text2)}
-.right-panel-content{flex:1;overflow-y:auto}
+.right-panel-content{flex:1;overflow-y:auto;position:relative}
+/* Tab panel animations */
+.right-tab-panel{animation:tabfadein .2s ease}
+@keyframes tabfadein{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
+/* Story block fade in */
+.story-block{animation:fadein .3s ease}
+/* Page transitions */
+.page.active{animation:pagein .25s ease}
+@keyframes pagein{from{opacity:0}to{opacity:1}}
+/* Menu item hover slide */
+.menu-item{transition:all .2s ease}
+/* Char card pulse when active */
+.char-card.active{animation:none}
+.char-card.active::after{content:'';position:absolute;inset:0;border-radius:var(--rad);box-shadow:0 0 0 1px var(--ac);pointer-events:none}
+.char-card{position:relative}
+/* Dice roll animation already in place */
+/* Send button pulse when thinking */
+.send-btn:disabled{animation:pulse-dim .8s infinite}
+@keyframes pulse-dim{0%,100%{opacity:.35}50%{opacity:.2}}
+/* Notif slide up */
+#notif{transform:translateY(8px);transition:opacity .3s, transform .3s}
+#notif[style*="opacity: 1"],#notif[style*="opacity:1"]{transform:translateY(0)}
+/* Topbar logo hover */
+.topbar-logo{transition:color .15s, letter-spacing .2s}
+.topbar-logo:hover{letter-spacing:.06em}
+/* Story appear smooth */
+@keyframes fadein{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+/* Player block slide in from left */
+.story-block .player-wrap .player-block{animation:slidein-left .25s ease}
+@keyframes slidein-left{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+/* Narrator block slide in from right */
+.story-block .narrator-wrap .narrator-text{animation:slidein-right .3s ease}
+@keyframes slidein-right{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
 /* Journal */
 .journal-list{padding:6px;display:flex;flex-direction:column;gap:3px}
 .journal-item{padding:7px 9px;background:var(--bg3);border-radius:var(--rad);font-size:12px;color:var(--text2);line-height:1.45;border:.5px solid var(--border)}
@@ -395,6 +427,51 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
 .dice-btn{padding:3px 9px;border:.5px solid var(--border2);border-radius:var(--rad);background:none;cursor:pointer;font-size:11px;color:var(--text2);transition:all .15s;min-height:26px}
 .dice-btn:hover{border-color:var(--ac);color:var(--ac)}
 
+
+
+/* ─── PAGE TRANSITIONS ─── */
+.page{transition:opacity .18s ease}
+.page.active{animation:pageIn .22s ease}
+@keyframes pageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* Right panel tab transitions */
+.right-tab-panel{transition:opacity .15s ease}
+.right-tab-panel.tab-entering{animation:tabIn .18s ease}
+@keyframes tabIn{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
+
+/* Story block */
+.story-block{animation:fadein .28s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* Dice animation */
+@keyframes diceroll{0%{opacity:0;transform:scale(1.8) rotate(-15deg)}50%{opacity:.6;transform:scale(1.15)}100%{opacity:1;transform:scale(1) rotate(0)}}
+
+/* Button press feedback */
+.btn:active:not(:disabled){transform:scale(.97)}
+.send-btn:active{transform:scale(.96)}
+.menu-item:active{transform:scale(.99)}
+
+/* Narrator controls smooth reveal */
+.narrator-controls,.player-controls{transition:opacity .2s ease}
+
+/* Char card selection */
+.char-card{transition:border-color .15s,background .15s,transform .1s}
+.char-card:active{transform:scale(.98)}
+
+/* HP bar */
+#hp-bar-*{transition:width .4s ease,background .4s ease}
+
+/* Preset card hover */
+.preset-card{transition:border-color .15s,background .15s,transform .15s}
+.preset-card:hover{transform:translateY(-2px)}
+.preset-card:active{transform:translateY(0)}
+
+/* Notif */
+#notif{transition:opacity .3s ease}
+
+/* Dropdown slide */
+.dd-menu,.bal-dd{animation:dropIn .15s ease}
+@keyframes dropIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 
 /* ─── MOBILE ─── */
 @media(max-width:700px){
@@ -801,11 +878,10 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
       <div class="dd-wrap">
         <div class="tb-user" id="game-user-btn" onclick="toggleDD('game-dd','game-user-btn')"><span id="game-uname">—</span> ▾</div>
         <div class="dd-menu" id="game-dd">
-          <button class="dd-item" onclick="closeDD();showPage('create-page');initCreatePage()">⚔ Новое приключение</button>
-          <button class="dd-item" onclick="closeDD();openSaves()">📖 Загрузить</button>
+          <button class="dd-item" onclick="closeDD();showPage('settings-page');loadSettingsData()">⚙ Настройки</button>
           <div class="dd-sep"></div>
-          <button class="dd-item" onclick="closeDD();showGameSettings()">⚙ Мир</button>
-          <button class="dd-item" onclick="closeDD();om('qa-modal');renderQAEditor()">✏ Действия</button>
+          <button class="dd-item" onclick="closeDD();showPage('create-page');initCreatePage()">⚔ Новое приключение</button>
+          <button class="dd-item" onclick="closeDD();openSaves()">📖 Загрузить игру</button>
           <div class="dd-sep"></div>
           <button class="dd-item" onclick="closeDD();showMenu()">🏠 Главное меню</button>
           <button class="dd-item dd-danger" onclick="doLogout()">Выйти</button>
@@ -1019,7 +1095,7 @@ let aiChoice='server'; // 'server'|'own'
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function fmt(t){return esc(t).replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/\*([^*]+)\*/g,'<em>$1</em>').replace(/\n\n/g,'</p><p style="margin-top:.5em">').replace(/\n/g,'<br>')}
 function el(id){return document.getElementById(id)}
-function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));el(id).classList.add('active')}
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));const pg=el(id);if(pg){pg.classList.add('active');}}
 function om(id){el(id).classList.add('open')}
 function cm(id){el(id).classList.remove('open')}
 function notif(msg,type='ok'){const n=el('notif');n.textContent=msg;n.style.borderColor=type==='err'?'var(--danger)':type==='info'?'var(--info)':'var(--ac)';n.style.opacity='1';clearTimeout(n._t);n._t=setTimeout(()=>n.style.opacity='0',type==='err'?4000:2500);}
@@ -1125,22 +1201,44 @@ function prevStep(){goStep(Math.max(currentStep-1,0));}
 function addCG(){const i=el('cg'),v=i.value.trim();if(!v)return;const b=document.createElement('button');b.className='tag on';b.onclick=()=>b.classList.toggle('on');b.textContent=v;el('genre-tags').appendChild(b);i.value='';}
 function addCh(){const i=el('nc'),name=i.value.trim()||'Безымянный';setupChars.push({name,cls:'',desc:'',appearance:'',abilities:'',equipment:'',traits:'',inventory:[]});i.value='';renderSetupChars();}
 function rmCh(i){setupChars.splice(i,1);renderSetupChars();}
+function makeDndStatsHtml(c, i) {
+  var stats = ['STR','DEX','CON','INT','WIS','CHA'];
+  var statsGrid = stats.map(function(stat) {
+    var val = (c.stats||{})[stat]||'10';
+    return '<div style="text-align:center"><div class="field-label" style="text-align:center">'+stat+'</div>'
+      + '<input class="input" value="'+esc(val)+'" type="number" min="1" max="30" '
+      + 'style="text-align:center;padding:6px 4px;font-size:14px;font-weight:600" '
+      + 'oninput="if(!setupChars['+i+'].stats)setupChars['+i+'].stats={};setupChars['+i+'].stats[''+stat+'']=this.value"/></div>';
+  }).join('');
+  return '<div class="char-sheet-full" style="margin-top:4px">'
+    + '<div class="field-label" style="margin-bottom:8px">D&D Характеристики</div>'
+    + '<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:8px">'+statsGrid+'</div>'
+    + '<div style="display:flex;gap:8px">'
+    + '<div class="form-group" style="flex:1"><label class="field-label">HP Макс</label>'
+    + '<input class="input" value="'+esc(c.hp||'')+'" type="number" min="1" placeholder="10" style="font-size:14px;font-weight:600" oninput="setupChars['+i+'].hp=this.value"/></div>'
+    + '<div class="form-group" style="flex:1"><label class="field-label">HP Сейчас</label>'
+    + '<input class="input" value="'+esc(c.hpCur||c.hp||'')+'" type="number" min="0" placeholder="10" style="font-size:14px;font-weight:600;color:var(--success)" oninput="setupChars['+i+'].hpCur=this.value"/></div>'
+    + '<div class="form-group" style="flex:1"><label class="field-label">Броня (AC)</label>'
+    + '<input class="input" value="'+esc(c.ac||'10')+'" type="number" min="1" max="30" placeholder="10" oninput="setupChars['+i+'].ac=this.value"/></div>'
+    + '</div></div>';
+}
 function renderSetupChars(){
   const e=el('ch-list');if(!e)return;e.innerHTML='';
-  const isDnd=document.querySelector(`[onclick*="selMC(this,'rules')"][data-v="dnd"]`)?.classList.contains('sel');
+  const isDnd=document.querySelectorAll('.mc.sel[data-v="dnd"]').length>0;
   if(!setupChars.length){e.innerHTML='<p style="font-size:13px;color:var(--text3);padding:4px 0;line-height:1.6">Нет персонажей — история без конкретного героя</p>';return;}
   setupChars.forEach((c,i)=>{
     const r=document.createElement('div');r.className='char-sheet';
-    const dndStats=isDnd?`<div class="char-sheet-full" style="margin-top:4px"><div class="field-label" style="margin-bottom:8px">D&D Характеристики</div><div style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:8px">${['STR','DEX','CON','INT','WIS','CHA'].map(stat=>`<div style="text-align:center"><div class="field-label" style="text-align:center">${stat}</div><input class="input" value="${esc((c.stats||{})[stat]||'10')}" type="number" min="1" max="30" style="text-align:center;padding:6px 4px;font-size:14px;font-weight:600" oninput="if(!setupChars[${i}].stats)setupChars[${i}].stats={};setupChars[${i}].stats['${stat}']=this.value"/></div>`).join('')}</div><div style="display:flex;gap:8px"><div class="form-group" style="flex:1"><label class="field-label">HP Максимум</label><input class="input" value="${esc(c.hp||'')}" type="number" min="1" placeholder="10" style="font-size:14px;font-weight:600" oninput="setupChars[${i}].hp=this.value"/></div><div class="form-group" style="flex:1"><label class="field-label">HP Текущий</label><input class="input" value="${esc(c.hpCur||c.hp||'')}" type="number" min="0" placeholder="10" style="font-size:14px;font-weight:600;color:var(--success)" oninput="setupChars[${i}].hpCur=this.value"/></div><div class="form-group" style="flex:1"><label class="field-label">Броня (AC)</label><input class="input" value="${esc(c.ac||'10')}" type="number" min="1" max="30" placeholder="10" oninput="setupChars[${i}].ac=this.value"/></div></div></div>`:'';
-    r.innerHTML=`<div class="char-sheet-name"><span>👤 ${esc(c.name)}</span><button class="btn danger btn-xs" onclick="rmCh(${i})" style="margin-left:auto">Удалить</button></div><div class="char-sheet-fields">
-<div class="form-group"><label class="field-label">Имя</label><input class="input" value="${esc(c.name)}" placeholder="Имя персонажа" oninput="setupChars[${i}].name=this.value;this.closest('.char-sheet').querySelector('.char-sheet-name span').textContent='👤 '+this.value"/></div>
-<div class="form-group"><label class="field-label">Класс / роль</label><input class="input" value="${esc(c.cls||'')}" placeholder="Воин, маг, следопыт..." oninput="setupChars[${i}].cls=this.value"/></div>
-<div class="form-group char-sheet-full"><label class="field-label">Описание и история</label><textarea class="input" rows="2" placeholder="Откуда, почему здесь, характер..." oninput="setupChars[${i}].desc=this.value">${esc(c.desc||'')}</textarea></div>
-<div class="form-group"><label class="field-label">Внешность</label><input class="input" value="${esc(c.appearance||'')}" placeholder="Рост, цвет волос, особые черты..." oninput="setupChars[${i}].appearance=this.value"/></div>
-<div class="form-group"><label class="field-label">Способности и навыки</label><input class="input" value="${esc(c.abilities||'')}" placeholder="Что умеет, заклинания, таланты..." oninput="setupChars[${i}].abilities=this.value"/></div>
-<div class="form-group char-sheet-full"><label class="field-label">Снаряжение и экипировка</label><textarea class="input" rows="2" placeholder="Оружие, доспех, важные вещи..." oninput="setupChars[${i}].equipment=this.value">${esc(c.equipment||'')}</textarea></div>
-<div class="form-group char-sheet-full"><label class="field-label">Черты характера</label><input class="input" value="${esc(c.traits||'')}" placeholder="Убеждения, страхи, цели, привычки..." oninput="setupChars[${i}].traits=this.value"/></div>
-${dndStats}</div>`;
+    const dndStats=isDnd?makeDndStatsHtml(c,i):'';
+    r.innerHTML='<div class="char-sheet-name"><span>👤 '+esc(c.name)+'</span><button class="btn danger btn-xs" onclick="rmCh('+i+')" style="margin-left:auto">Удалить</button></div>'
+      +'<div class="char-sheet-fields">'
+      +'<div class="form-group"><label class="field-label">Имя</label><input class="input" value="'+esc(c.name)+'" placeholder="Имя персонажа" oninput="setupChars['+i+'].name=this.value"/></div>'
+      +'<div class="form-group"><label class="field-label">Класс / роль</label><input class="input" value="'+esc(c.cls||'')+'" placeholder="Воин, маг, следопыт..." oninput="setupChars['+i+'].cls=this.value"/></div>'
+      +'<div class="form-group char-sheet-full"><label class="field-label">Описание и история</label><textarea class="input" rows="2" placeholder="Откуда, почему здесь..." oninput="setupChars['+i+'].desc=this.value">'+esc(c.desc||'')+'</textarea></div>'
+      +'<div class="form-group"><label class="field-label">Внешность</label><input class="input" value="'+esc(c.appearance||'')+'" placeholder="Рост, волосы, особые черты..." oninput="setupChars['+i+'].appearance=this.value"/></div>'
+      +'<div class="form-group"><label class="field-label">Способности</label><input class="input" value="'+esc(c.abilities||'')+'" placeholder="Навыки, заклинания, таланты..." oninput="setupChars['+i+'].abilities=this.value"/></div>'
+      +'<div class="form-group char-sheet-full"><label class="field-label">Снаряжение</label><textarea class="input" rows="2" placeholder="Оружие, доспех, вещи..." oninput="setupChars['+i+'].equipment=this.value">'+esc(c.equipment||'')+'</textarea></div>'
+      +'<div class="form-group char-sheet-full"><label class="field-label">Черты характера</label><input class="input" value="'+esc(c.traits||'')+'" placeholder="Убеждения, страхи, цели..." oninput="setupChars['+i+'].traits=this.value"/></div>'
+      +dndStats+'</div>';
     e.appendChild(r);
   });
 }
@@ -1166,50 +1264,50 @@ function renderCharPanel(){
   if(!char){c.innerHTML='<p style="font-size:12px;color:var(--text3);padding:8px">Нет персонажей</p>';return;}
   const cs=charStats[char.name]||{};
   const isDnd=G.rules==='dnd';
-  // HP bar for D&D
-  let hpHtml='';
+  var html='<div style="padding:8px"><div class="char-panel-name">'+esc(char.name)+'</div>';
   if(isDnd&&cs.hp){
-    const hpMax=parseInt(cs.hp)||10;const hpCur=parseInt(cs.hpCur??cs.hp)||hpMax;
-    const pct=Math.max(0,Math.min(100,Math.round(hpCur/hpMax*100)));
-    const hpColor=pct>50?'var(--success)':pct>25?'var(--ac)':'var(--danger)';
-    hpHtml=`<div style="margin-bottom:10px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-        <span class="char-stat-label">HP</span>
-        <div style="display:flex;align-items:center;gap:4px">
-          <input type="number" value="${hpCur}" min="0" max="${hpMax}" style="width:44px;background:var(--bg);border:.5px solid var(--border2);border-radius:3px;padding:2px 4px;font-size:13px;font-weight:600;color:${hpColor};text-align:center" oninput="updateHP('${char.name}',this.value,${hpMax})"/>
-          <span style="font-size:12px;color:var(--text3)">/ ${hpMax}</span>
-          <span style="font-size:11px;padding:1px 6px;border-radius:3px;background:var(--bg3);color:var(--text3)">AC ${cs.ac||10}</span>
-        </div>
-      </div>
-      <div style="height:6px;background:var(--bg3);border-radius:3px;overflow:hidden">
-        <div id="hp-bar-${char.name.replace(/[^a-z0-9]/gi,'_')}" style="height:100%;width:${pct}%;background:${hpColor};transition:width .3s;border-radius:3px"></div>
-      </div>
-    </div>`;
+    var hpMax=parseInt(cs.hp)||10;
+    var hpCur=parseInt(cs.hpCur!=null?cs.hpCur:cs.hp)||hpMax;
+    var pct=Math.max(0,Math.min(100,Math.round(hpCur/hpMax*100)));
+    var hpColor=pct>50?'var(--success)':pct>25?'var(--ac)':'var(--danger)';
+    var barId='hp-bar-'+char.name.replace(/[^a-z0-9]/gi,'_');
+    var charEscName=char.name.replace(/'/g,"\\'");
+    html+='<div style="margin-bottom:10px">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">'
+      +'<span class="char-stat-label">HP</span>'
+      +'<div style="display:flex;align-items:center;gap:4px">'
+      +'<input type="number" value="'+hpCur+'" min="0" max="'+hpMax+'" '
+      +'style="width:44px;background:var(--bg);border:.5px solid var(--border2);border-radius:3px;padding:2px 4px;font-size:13px;font-weight:600;color:'+hpColor+';text-align:center" '
+      +'oninput="updateHP(\''+charEscName+"',this.value,"+hpMax+')"/>'
+      +'<span style="font-size:12px;color:var(--text3)">/ '+hpMax+'</span>'
+      +'<span style="font-size:11px;padding:1px 6px;border-radius:3px;background:var(--bg3);color:var(--text3)">AC '+(cs.ac||10)+'</span>'
+      +'</div></div>'
+      +'<div style="height:6px;background:var(--bg3);border-radius:3px;overflow:hidden">'
+      +'<div id="'+barId+'" style="height:100%;width:'+pct+'%;background:'+hpColor+';transition:width .3s;border-radius:3px"></div>'
+      +'</div></div>';
   }
-  // D&D stats grid
-  let statsHtml='';
   if(isDnd&&cs.stats){
-    const mods={STR:0,DEX:0,CON:0,INT:0,WIS:0,CHA:0};
-    statsHtml=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:10px">${
-      Object.entries(cs.stats||{}).slice(0,6).map(([stat,val])=>{
-        const v=parseInt(val)||10;const mod=Math.floor((v-10)/2);
-        return `<div style="text-align:center;padding:6px 4px;background:var(--bg3);border-radius:4px;border:.5px solid var(--border)">
-          <div style="font-size:9px;font-weight:600;color:var(--text3);letter-spacing:.04em">${stat}</div>
-          <div style="font-size:16px;font-weight:700;color:var(--text);line-height:1.2">${v}</div>
-          <div style="font-size:11px;color:${mod>=0?'var(--success)':'var(--danger)'}">${mod>=0?'+':''}${mod}</div>
-        </div>`;}).join('')
-    }</div>`;
+    html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:10px">';
+    Object.entries(cs.stats||{}).slice(0,6).forEach(function(entry){
+      var stat=entry[0],val=entry[1];
+      var v=parseInt(val)||10;
+      var mod=Math.floor((v-10)/2);
+      var mc=mod>=0?'var(--success)':'var(--danger)';
+      html+='<div style="text-align:center;padding:6px 4px;background:var(--bg3);border-radius:4px;border:.5px solid var(--border)">'
+        +'<div style="font-size:9px;font-weight:600;color:var(--text3);letter-spacing:.04em">'+stat+'</div>'
+        +'<div style="font-size:16px;font-weight:700;color:var(--text);line-height:1.2">'+v+'</div>'
+        +'<div style="font-size:11px;color:'+mc+'">'+(mod>=0?'+':'')+mod+'</div>'
+        +'</div>';
+    });
+    html+='</div>';
   }
-  c.innerHTML=`<div style="padding:8px">
-    <div class="char-panel-name">👤 ${esc(char.name)}</div>
-    ${hpHtml}
-    ${statsHtml}
-    ${cs.cls?`<div class="char-stat-group"><div class="char-stat-label">Класс</div><div class="char-stat-val">${esc(cs.cls)}</div></div>`:''}
-    ${cs.appearance?`<div class="char-stat-group"><div class="char-stat-label">Внешность</div><div class="char-stat-val">${esc(cs.appearance)}</div></div>`:''}
-    ${cs.abilities?`<div class="char-stat-group"><div class="char-stat-label">Способности</div><div class="char-stat-val">${esc(cs.abilities)}</div></div>`:''}
-    ${cs.traits?`<div class="char-stat-group"><div class="char-stat-label">Черты</div><div class="char-stat-val">${esc(cs.traits)}</div></div>`:''}
-    ${char.desc?`<div class="char-stat-group"><div class="char-stat-label">История</div><div class="char-stat-val">${esc(char.desc)}</div></div>`:''}
-  </div>`;
+  if(cs.cls)html+='<div class="char-stat-group"><div class="char-stat-label">Класс</div><div class="char-stat-val">'+esc(cs.cls)+'</div></div>';
+  if(cs.appearance)html+='<div class="char-stat-group"><div class="char-stat-label">Внешность</div><div class="char-stat-val">'+esc(cs.appearance)+'</div></div>';
+  if(cs.abilities)html+='<div class="char-stat-group"><div class="char-stat-label">Способности</div><div class="char-stat-val">'+esc(cs.abilities)+'</div></div>';
+  if(cs.traits)html+='<div class="char-stat-group"><div class="char-stat-label">Черты</div><div class="char-stat-val">'+esc(cs.traits)+'</div></div>';
+  if(char.desc)html+='<div class="char-stat-group"><div class="char-stat-label">История</div><div class="char-stat-val">'+esc(char.desc)+'</div></div>';
+  html+='</div>';
+  c.innerHTML=html;
 }
 function updateHP(charName,cur,max){
   if(!charStats[charName])charStats[charName]={};
@@ -1221,7 +1319,7 @@ function updateHP(charName,cur,max){
   autoSave();
 }
 
-function switchRightTab(tab){rightTab=tab;document.querySelectorAll('.right-tab').forEach(t=>t.classList.remove('on'));document.querySelectorAll('.right-tab-panel').forEach(p=>p.style.display='none');const tabs={journal:0,chars:1,inv:2};document.querySelectorAll('.right-tab')[tabs[tab]]?.classList.add('on');el('rp-'+{journal:'journal',chars:'chars',inv:'inv'}[tab]).style.display='';if(tab==='chars')renderCharPanel();if(tab==='inv')renderInvPanel();}
+function switchRightTab(tab){rightTab=tab;document.querySelectorAll('.right-tab').forEach(t=>t.classList.remove('on'));document.querySelectorAll('.right-tab-panel').forEach(p=>p.style.display='none');const tabs={journal:0,chars:1,inv:2};document.querySelectorAll('.right-tab')[tabs[tab]]?.classList.add('on');const panelId='rp-'+{journal:'journal',chars:'chars',inv:'inv'}[tab];const panel=el(panelId);if(panel){panel.style.display='';panel.classList.add('tab-entering');setTimeout(()=>panel.classList.remove('tab-entering'),200);}if(tab==='chars')renderCharPanel();if(tab==='inv')renderInvPanel();}
 
 function renderInvPanel(){
   const c=el('inv-list');if(!c)return;
@@ -1275,7 +1373,7 @@ else{// Parse JSON metadata from reply
 let clean=text.replace(/\{"note":[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.note){journal.unshift(o.note.slice(0,120));if(journal.length>30)journal.pop();renderJournal();}}catch(e){}return '';}).replace(/\{"item":[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.item){const charName=o.char||(G.chars[G.activeChar]?.name||'Герой');if(!inventory[charName])inventory[charName]=[];if(!inventory[charName].find(i=>i.name===o.item))inventory[charName].push({name:o.item,icon:o.icon||'📦',desc:o.desc||''});if(rightTab==='inv')renderInvPanel();}}catch(e){}return '';}).trim();
 // D&D dice check
 let diceBlock='';
-clean=clean.replace(/\{"dice":true[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.dice){diceBlock=makeDiceBlock(o.dc,o.skill);}}catch(e){}return '';}).trim();
+clean=clean.replace(/\{"dice":true[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.dice){diceBlock=makeDiceBlock(o.dc,o.skill,o.hideDC===true);}}catch(e){}return '';}).trim();
 
 wrap.innerHTML=`<div class="narrator-wrap" id="nwrap_${id}">
   <div class="narrator-text" id="ntxt_${id}"><p>${fmt(clean)}</p></div>
