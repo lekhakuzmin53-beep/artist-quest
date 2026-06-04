@@ -1007,6 +1007,14 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
 
 <div id="notif"></div>
 <script>
+// Global error handler - shows errors visibly
+window.onerror = function(msg, src, line, col, err) {
+  var d = document.createElement('div');
+  d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#cc0000;color:#fff;padding:10px;z-index:99999;font-family:monospace;font-size:13px';
+  d.textContent = 'JS ERROR line ' + line + ': ' + msg;
+  document.body.appendChild(d);
+  return false;
+};
 // ══ CONSTANTS ════════════════════════════════════
 const PROVIDERS_INFO={aitunnel:{name:'AITunnel (РФ)',models:['claude-sonnet-4-20250514','claude-haiku-4-5-20251001','gpt-4o','gpt-4o-mini'],hint:'sk-aitunnel-...'},claude:{name:'Claude (Anthropic)',models:['claude-sonnet-4-20250514','claude-haiku-4-5-20251001'],hint:'sk-ant-...'},openai:{name:'OpenAI (GPT)',models:['gpt-4o','gpt-4o-mini','gpt-4-turbo','gpt-3.5-turbo'],hint:'sk-...'},gemini:{name:'Google Gemini',models:['gemini-1.5-pro','gemini-1.5-flash','gemini-2.0-flash'],hint:'AIza...'},mistral:{name:'Mistral AI',models:['mistral-large-latest','mistral-small-latest','open-mistral-7b'],hint:'...'}};
 const THEMES=[{id:'',name:'Пергамент',bg:'#1c1208',bg2:'#251a0a',text:'#e8d9a8',ac:'#d4a830',desc:'Свитки'},{id:'blood',name:'Кровь',bg:'#1a0808',bg2:'#230d0d',text:'#f0d0cc',ac:'#cc3333',desc:'Руины'},{id:'ocean',name:'Океан',bg:'#080e1c',bg2:'#0d1628',text:'#c8dcf0',ac:'#2880cc',desc:'Глубины'},{id:'forest',name:'Лес',bg:'#090f06',bg2:'#101a09',text:'#d0eccb',ac:'#3ea030',desc:'Бор'},{id:'void',name:'Пустота',bg:'#0c0910',bg2:'#12101c',text:'#d8c8f8',ac:'#8855cc',desc:'Межмирье'},{id:'ash',name:'Пепел',bg:'#0e0e0e',bg2:'#181818',text:'#d8d4c4',ac:'#b8a870',desc:'Пепел'}];
@@ -1124,8 +1132,11 @@ function setTheme(id){const ct=customThemes.find(t=>t.id===id);if(ct){applyCusto
 function applyCustomTheme(t){document.body.dataset.theme='_custom';let s=document.getElementById('custom-theme-style');if(!s){s=document.createElement('style');s.id='custom-theme-style';document.head.appendChild(s);}s.textContent=`[data-theme="_custom"]{--bg:${t.bg};--bg2:${t.bg2};--bg3:${t.bg2};--text:${t.text};--text2:${t.ac}aa;--text3:${t.ac}66;--ac:${t.ac};--ac2:${t.ac};--border:${t.border}22;--border2:${t.border}44;--border3:${t.border}}`;}
 function saveCustomTheme(){if(customThemes.length>=3){el('theme-err').textContent='Лимит: 3 своих темы';return;}const name=el('ct-name').value.trim()||'Своя тема';const id='_c_'+Date.now();const t={id,name,bg:el('ct-bg').value,bg2:el('ct-bg2').value,text:el('ct-text').value,ac:el('ct-ac').value,border:el('ct-border').value};customThemes.push(t);localStorage.setItem('aq_custom_themes',JSON.stringify(customThemes));el('theme-err').textContent='';buildThemeCards();buildCustomThemesList();buildThemeDots('theme-dots-guest');buildThemeDots('theme-dots-user');setTheme(id);notif('Тема создана!');}
 function deleteCustomTheme(id){if(!confirm('Удалить тему?'))return;customThemes=customThemes.filter(t=>t.id!==id);localStorage.setItem('aq_custom_themes',JSON.stringify(customThemes));if(localStorage.getItem('aq_theme')===id){setTheme('');}buildThemeCards();buildCustomThemesList();buildThemeDots('theme-dots-guest');buildThemeDots('theme-dots-user');}
-(()=>{const saved=localStorage.getItem('aq_theme');if(!saved&&saved!==null)return;const ct=customThemes.find(t=>t.id===saved);if(ct)applyCustomTheme(ct);else if(saved)document.body.dataset.theme=saved;})();
-buildThemeDots('theme-dots-guest');buildThemeDots('theme-dots-user');
+try{
+  (()=>{const saved=localStorage.getItem('aq_theme');if(!saved&&saved!==null)return;const ct=customThemes.find(t=>t.id===saved);if(ct)applyCustomTheme(ct);else if(saved)document.body.dataset.theme=saved;})();
+  buildThemeDots('theme-dots-guest');
+  buildThemeDots('theme-dots-user');
+}catch(e){console.error('Theme init error:',e);}
 
 // ══ CUSTOM NARRATORS & SYSTEMS ════════════════════
 function renderCustomNarrators(){const c=el('custom-narrators-list');if(!c)return;c.innerHTML='';customNarrators.forEach((n,i)=>{const d=document.createElement('div');d.className='custom-list-item';d.innerHTML=`<div><div class="custom-list-name">${esc(n.name)}</div><div class="custom-list-desc">${esc(n.desc.slice(0,60))}...</div></div><button class="btn danger btn-xs" onclick="deleteNarrator(${i})">🗑</button>`;c.appendChild(d);});el('narrators-badge').textContent=`${customNarrators.length} / 4`;}
