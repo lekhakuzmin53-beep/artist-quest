@@ -1160,7 +1160,7 @@ async function loadSettingsData(){renderProviderCards();renderKeyForm();renderCu
 }
 function renderProviderCards(){const g=el('provider-cards');if(!g)return;g.innerHTML='';Object.entries(PROVIDERS_INFO).forEach(([id,p])=>{const active=user?.own_provider===id&&user?.own_api_key;const c=document.createElement('div');c.className='prov-card'+(active?' active':'');c.innerHTML=`<div class="prov-name">${p.name}</div><div class="prov-status ${active?'ok':''}">${active?'Ключ активен':'Не настроен'}</div>`;c.onclick=()=>{el('key-provider').value=id;updateModelList();};g.appendChild(c);});el('keys-badge').textContent=user?.own_api_key?(PROVIDERS_INFO[user.own_provider]?.name||'Активен'):'Не настроено';}
 function renderKeyForm(){if(!user?.own_api_key){el('remove-key-btn').style.display='none';return;}el('remove-key-btn').style.display='';el('key-provider').value=user.own_provider||'aitunnel';updateModelList();if(user.own_model)el('key-model').value=user.own_model;}
-function updateModelList(){const prov=el('key-provider').value;const models=PROVIDERS_INFO[prov]?.models||[];const sel=el('key-model');sel.innerHTML='';models.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;sel.appendChild(o);});if(user?.own_model&&user.own_provider===prov)sel.value=user.own_model;el('key-input').placeholder=PROVIDERS_INFO[prov]?.hint||'Ваш API ключ...';}
+function updateModelList(){const kp=el('key-provider');if(!kp)return;const prov=kp.value;const models=PROVIDERS_INFO[prov]?.models||[];const sel=el('key-model');sel.innerHTML='';models.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;sel.appendChild(o);});if(user?.own_model&&user.own_provider===prov)sel.value=user.own_model;el('key-input').placeholder=PROVIDERS_INFO[prov]?.hint||'Ваш API ключ...';}
 async function saveKey(){const key=el('key-input').value.trim(),provider=el('key-provider').value,model=el('key-model').value;const resultEl=el('key-result');resultEl.innerHTML='';if(!key){resultEl.innerHTML='<div class="field-error">Введите API ключ.</div>';return;}const btn=document.querySelector('#set-keys .btn.primary');btn.disabled=true;btn.textContent='Сохраняем...';try{const r=await apiFetch('/api/ai/apikey',{method:'PUT',body:JSON.stringify({api_key:key,provider,model})});if(r.error&&!r.ok){resultEl.innerHTML=`<div class="err-card"><div class="err-title">Ошибка</div><div class="err-msg">${esc(r.error||r.message)}</div></div>`;}else{user.own_api_key=key;user.own_provider=r.provider||provider;user.own_model=model;renderProviderCards();renderKeyForm();resultEl.innerHTML=`<div style="color:var(--success);font-size:13px;margin-top:7px">✓ ${esc(r.message||'Ключ сохранён!')}</div>`;notif('Ключ сохранён!');}}catch(e){resultEl.innerHTML='<div class="field-error">Ошибка соединения.</div>';}btn.disabled=false;btn.textContent='Сохранить ключ';}
 async function removeKey(){if(!confirm('Удалить ключ?'))return;await apiFetch('/api/ai/apikey',{method:'PUT',body:JSON.stringify({api_key:''})});user.own_api_key=null;user.own_provider=null;user.own_model=null;renderProviderCards();renderKeyForm();el('key-result').innerHTML='';notif('Ключ удалён');}
 
@@ -1208,7 +1208,7 @@ function makeDndStatsHtml(c, i) {
     return '<div style="text-align:center"><div class="field-label" style="text-align:center">'+stat+'</div>'
       + '<input class="input" value="'+esc(val)+'" type="number" min="1" max="30" '
       + 'style="text-align:center;padding:6px 4px;font-size:14px;font-weight:600" '
-      + 'oninput="if(!setupChars['+i+'].stats)setupChars['+i+'].stats={};setupChars['+i+'].stats[''+stat+'']=this.value"/></div>';
+      + 'data-charidx="'+i+'" data-stat="'+stat+'" oninput="var el=this;var ci=+el.dataset.charidx;var st=el.dataset.stat;if(!setupChars[ci].stats)setupChars[ci].stats={};setupChars[ci].stats[st]=el.value"/></div>';
   }).join('');
   return '<div class="char-sheet-full" style="margin-top:4px">'
     + '<div class="field-label" style="margin-bottom:8px">D&D Характеристики</div>'
@@ -1468,7 +1468,7 @@ function renderProgressPage(){
 }
 
 // ══ INIT ═════════════════════════════════════════
-updateModelList();
+// Safe init - don't call updateModelList here (settings page not visible yet)
 (async()=>{if(location.search.includes('payment=success')){history.replaceState(null,'','/');notif('✓ Оплата прошла! Баланс обновляется...');}if(token){const me=await apiFetch('/api/auth/me');if(me.user){user=me.user;showMenu();await loadUserData();}else{token='';localStorage.removeItem('aq_token');}}})();
 </script>
 </body>
