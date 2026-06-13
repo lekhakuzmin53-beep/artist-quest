@@ -434,8 +434,8 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
 .dice-outcome{font-size:13px;font-weight:600;padding:2px 8px;border-radius:4px}
 .dice-outcome.success{color:var(--success);background:rgba(80,184,112,.12)}
 .dice-outcome.fail{color:var(--danger);background:rgba(220,80,80,.12)}
-.dice-btn{padding:3px 9px;border:.5px solid var(--border2);border-radius:var(--rad);background:none;cursor:pointer;font-size:11px;color:var(--text2);transition:all .15s;min-height:26px}
-.dice-btn:hover{border-color:var(--ac);color:var(--ac)}
+.dice-btn{padding:7px 18px;border:.5px solid var(--ac);border-radius:var(--rad);background:var(--bg3);cursor:pointer;font-size:13px;font-weight:600;color:var(--ac);transition:all .15s;min-height:34px}
+.dice-btn:hover{background:var(--ac);color:var(--bg);box-shadow:0 0 14px rgba(212,168,48,.3)}
 
 
 
@@ -514,6 +514,21 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
   .game-main{padding-bottom:48px}
 }
 @media(min-width:701px){.mobile-bar{display:none}}
+.switch{position:relative;display:inline-block;width:42px;height:23px;flex-shrink:0;cursor:pointer}
+.switch input{opacity:0;width:0;height:0;position:absolute}
+.switch-track{position:absolute;inset:0;border-radius:23px;background:var(--border2);transition:.25s}
+.switch-thumb{position:absolute;width:17px;height:17px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.25s}
+.switch input:checked + .switch-track{background:var(--ac)}
+.switch input:checked + .switch-track .switch-thumb{left:22px}
+/* ─── STAT BUTTONS (единый стиль, реагирует на тему) ─── */
+.stat-pm{width:22px;height:22px;border-radius:5px;border:.5px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;font-size:13px;font-weight:600;line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:0;transition:all .12s;flex-shrink:0}
+.stat-pm:hover{border-color:var(--ac);color:var(--ac);background:var(--bg3)}
+.stat-pm:active{transform:scale(.88)}
+.seg-row{display:flex;flex-wrap:wrap;gap:5px}
+.seg-btn{padding:6px 12px;border:.5px solid var(--border2);border-radius:var(--rad);background:var(--bg2);color:var(--text2);cursor:pointer;font-size:12px;font-weight:500;transition:all .15s}
+.seg-btn:hover{border-color:var(--ac2);color:var(--text)}
+.seg-btn.on{background:var(--bg3);border-color:var(--ac);color:var(--ac)}
+.seg-btn:active{transform:scale(.97)}
 /* ─── TOAST ─── */
 
 /* ─── ACHIEVEMENT POPUP ─── */
@@ -885,11 +900,11 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
           <div class="grid2">
             <div class="mc sel" onclick="selMC(this,'serverTier')" data-v="haiku">
               <div class="mc-title">⚡ Быстрый</div>
-              <div class="mc-desc">Claude Haiku — быстро, дёшево. ~50 токенов/ответ</div>
+              <div class="mc-desc">Быстро и экономно, ~50 токенов за ход</div>
             </div>
             <div class="mc" onclick="selMC(this,'serverTier')" data-v="sonnet">
               <div class="mc-title">✦ Качественный</div>
-              <div class="mc-desc">Claude Sonnet — умнее, богаче. ~150 токенов/ответ</div>
+              <div class="mc-desc">Умнее и литературнее, ~150 токенов за ход</div>
             </div>
           </div>
         </div>
@@ -1066,6 +1081,15 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
       <div class="form-group"><label class="field-label">Начальная сцена</label><textarea class="input" id="gs-ws" rows="2"></textarea></div>
       <div class="form-group"><label class="field-label">NPC и фракции</label><textarea class="input" id="gs-np" rows="2"></textarea></div>
       <div class="form-group"><label class="field-label">Инструкции нарратору</label><textarea class="input" id="gs-ne" rows="2"></textarea></div>
+      <div style="border-top:.5px solid var(--border);padding-top:14px;margin-top:4px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:500;color:var(--text)">Редактирование характеристик</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:2px">Разрешить менять характеристики, HP и КБ героев прямо в чарнике (кнопками +/−)</div>
+          </div>
+          <label class="switch"><input type="checkbox" id="gs-stats-edit" onchange="G.statsEditable=this.checked"/><span class="switch-track"><span class="switch-thumb"></span></span></label>
+        </div>
+      </div>
     </div>
     <div class="modal-footer"><button class="btn" onclick="cm('gsettings-modal')">Отмена</button><button class="btn primary" onclick="saveGameSettings()">Сохранить</button></div>
   </div>
@@ -1305,6 +1329,38 @@ function prevStep(){goStep(Math.max(currentStep-1,0));}
 function addCG(){const i=el('cg'),v=i.value.trim();if(!v)return;const b=document.createElement('button');b.className='tag on';b.onclick=()=>b.classList.toggle('on');b.textContent=v;el('genre-tags').appendChild(b);i.value='';}
 function addCh(){var i=el('nc'),name=i.value.trim()||'Безымянный';setupChars.push({name:name,cls:'',desc:'',appearance:'',abilities:'',equipment:'',traits:'',inventory:[]});i.value='';renderSetupChars();if(setupChars.length>=2){var p=document.querySelector('#step-2 [data-v="party"]');if(p&&!p.classList.contains('sel')){window._autoCharMode=true;MC_GROUPS.charMode=null;selMC(p,'charMode');window._autoCharMode=false;}}}
 function rmCh(i){setupChars.splice(i,1);renderSetupChars();if(setupChars.length<=1){var s=document.querySelector('#step-2 [data-v="single"]');if(s&&!s.classList.contains('sel')){window._autoCharMode=true;MC_GROUPS.charMode=null;selMC(s,'charMode');window._autoCharMode=false;}}}
+// ── D&D / BG3 система характеристик ──
+var STAT_RU = {STR:'Сила', DEX:'Ловкость', CON:'Телосложение', INT:'Интеллект', WIS:'Мудрость', CHA:'Харизма'};
+var STAT_ORDER = ['STR','DEX','CON','INT','WIS','CHA'];
+// Тип брони влияет на формулу КБ (как в D&D 5e / BG3)
+var ARMOR_TYPES = {
+  none:   {name:'Без брони',      base:10, dexCap:99},  // 10 + Лов
+  light:  {name:'Лёгкая броня',   base:12, dexCap:99},  // 12 + Лов (полностью)
+  medium: {name:'Средняя броня',  base:14, dexCap:2},   // 14 + Лов (макс +2)
+  heavy:  {name:'Тяжёлая броня',  base:17, dexCap:0}    // 17, без Лов
+};
+function statMod(v){ return Math.floor((parseInt(v)||10 - 10)/2); }
+function abilityMod(v){ return Math.floor(((parseInt(v)||10) - 10)/2); }
+// HP в BG3: базовое (по классу) + мод.Телосложения за уровень + чуть от Силы
+function calcMaxHP(stats, level){
+  level = parseInt(level)||1;
+  var con = abilityMod(stats&&stats.CON);
+  var str = abilityMod(stats&&stats.STR);
+  var base = 8; // хитдайс среднего класса
+  // 1й уровень: base + conMod; каждый следующий: +5 (средний бросок d8) + conMod
+  var hp = (base + con) + (level-1)*(5 + con);
+  // Небольшой бонус от Силы (крепкое телосложение)
+  hp += Math.max(0, str);
+  return Math.max(1, hp);
+}
+// КБ в BG3: зависит от типа брони и Ловкости (тяжёлая броня не даёт бонуса Ловкости)
+function calcAC(stats, armorType){
+  var a = ARMOR_TYPES[armorType] || ARMOR_TYPES.none;
+  var dex = abilityMod(stats&&stats.DEX);
+  var dexBonus = Math.min(dex, a.dexCap);
+  if(a.dexCap===0) dexBonus = 0; // тяжёлая — без Ловкости даже при отрицательном
+  return a.base + dexBonus;
+}
 var BG3_COST = {8:0, 9:1, 10:2, 11:3, 12:4, 13:5, 14:7, 15:9};
 var BG3_BUDGET = 27;
 function dndPointsUsed(stats){
@@ -1332,38 +1388,67 @@ function getMechFromDOM(){
   return m;
 }
 function makeDndStatsHtml(c, i) {
-  var mech=getMechFromDOM();
-  if(!c.stats)c.stats={STR:8,DEX:8,CON:8,INT:8,WIS:8,CHA:8};
-  var used=dndPointsUsed(c.stats);
-  var left=BG3_BUDGET-used;
-  var grid='';
-  ['STR','DEX','CON','INT','WIS','CHA'].forEach(function(stat){
-    var v=Math.max(8,Math.min(15,parseInt(c.stats[stat])||8));
-    var mod=Math.floor((v-10)/2);
-    grid+='<div style="text-align:center;padding:6px 2px;background:var(--bg);border-radius:4px;border:.5px solid var(--border)">'
-      +'<div style="font-size:9px;font-weight:600;color:var(--text3)">'+stat+'</div>'
-      +'<div style="display:flex;align-items:center;justify-content:center;gap:3px;margin:2px 0">'
-      +'<button type="button" style="width:20px;height:20px;border-radius:3px;border:.5px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;font-size:12px;line-height:1" data-ci="'+i+'" data-stat="'+stat+'" data-d="-1" onclick="changeSetupStat(parseInt(this.dataset.ci),this.dataset.stat,parseInt(this.dataset.d))">&minus;</button>'
-      +'<span style="font-size:16px;font-weight:700;color:var(--text);min-width:22px">'+v+'</span>'
-      +'<button type="button" style="width:20px;height:20px;border-radius:3px;border:.5px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;font-size:12px;line-height:1" data-ci="'+i+'" data-stat="'+stat+'" data-d="1" onclick="changeSetupStat(parseInt(this.dataset.ci),this.dataset.stat,parseInt(this.dataset.d))">+</button>'
-      +'</div>'
-      +'<div style="font-size:10px;color:'+(mod>=0?'var(--success)':'var(--danger)')+'">'+(mod>=0?'+':'')+mod+'</div>'
-      +'</div>';
-  });
-  var html='<div class="char-sheet-full" style="margin-top:6px">';
+  var mech = getMechFromDOM();
+  if(!c.stats) c.stats = {STR:8,DEX:8,CON:8,INT:8,WIS:8,CHA:8};
+  if(!c.armor) c.armor = 'none';
+  var used = dndPointsUsed(c.stats);
+  var left = BG3_BUDGET - used;
+  var html = '<div class="char-sheet-full" style="margin-top:6px">';
+
+  // Характеристики (point-buy)
   if(mech.stats!==false){
-    html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'
-      +'<div class="field-label" style="margin:0">Характеристики (point-buy, как в Baldur&#39;s Gate 3)</div>'
-      +'<div style="font-size:11px;font-weight:600;color:'+(left>0?'var(--ac)':'var(--text3)')+'">Очков: '+left+' / '+BG3_BUDGET+'</div>'
-      +'</div>'
-      +'<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:8px">'+grid+'</div>';
+    var grid='';
+    STAT_ORDER.forEach(function(stat){
+      var v = Math.max(8, Math.min(15, parseInt(c.stats[stat])||8));
+      var mod = abilityMod(v);
+      grid += '<div style="text-align:center;padding:6px 2px;background:var(--bg);border-radius:6px;border:.5px solid var(--border)">'
+        + '<div style="font-size:9px;font-weight:600;color:var(--text3);letter-spacing:.02em">' + STAT_RU[stat] + '</div>'
+        + '<div style="display:flex;align-items:center;justify-content:center;gap:3px;margin:3px 0">'
+        + '<button type="button" class="stat-pm" data-ci="'+i+'" data-stat="'+stat+'" data-d="-1" onclick="changeSetupStat(parseInt(this.dataset.ci),this.dataset.stat,parseInt(this.dataset.d))">&minus;</button>'
+        + '<span style="font-size:16px;font-weight:700;color:var(--text);min-width:22px">' + v + '</span>'
+        + '<button type="button" class="stat-pm" data-ci="'+i+'" data-stat="'+stat+'" data-d="1" onclick="changeSetupStat(parseInt(this.dataset.ci),this.dataset.stat,parseInt(this.dataset.d))">+</button>'
+        + '</div>'
+        + '<div style="font-size:10px;color:'+(mod>=0?'var(--success)':'var(--danger)')+'">' + (mod>=0?'+':'') + mod + '</div>'
+        + '</div>';
+    });
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'
+      + '<div class="field-label" style="margin:0">Характеристики (как в Baldur&#39;s Gate 3)</div>'
+      + '<div style="font-size:11px;font-weight:600;color:'+(left>0?'var(--ac)':'var(--text3)')+'">Очков: '+left+' / '+BG3_BUDGET+'</div>'
+      + '</div>'
+      + '<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:10px">'+grid+'</div>';
   }
-  var rowFields='';
-  if(mech.hp!==false)rowFields+='<div class="form-group" style="flex:1"><label class="field-label">HP Максимум</label><input class="input" value="'+esc(c.hp||'10')+'" type="number" min="1" max="999" data-ci="'+i+'" oninput="setupChars[parseInt(this.dataset.ci)].hp=this.value"/></div>';
-  if(mech.ac!==false)rowFields+='<div class="form-group" style="flex:1"><label class="field-label">КБ (класс брони)</label><input class="input" value="'+esc(c.ac||'10')+'" type="number" min="1" max="30" data-ci="'+i+'" oninput="setupChars[parseInt(this.dataset.ci)].ac=this.value"/></div>';
-  if(rowFields)html+='<div style="display:flex;gap:8px">'+rowFields+'</div>';
-  html+='</div>';
+
+  // Тип брони + авто-КБ
+  if(mech.ac!==false){
+    var armorBtns='';
+    Object.keys(ARMOR_TYPES).forEach(function(at){
+      var on = (c.armor===at);
+      armorBtns += '<button type="button" class="seg-btn'+(on?' on':'')+'" data-ci="'+i+'" data-at="'+at+'" onclick="setSetupArmor(parseInt(this.dataset.ci),this.dataset.at)">'+ARMOR_TYPES[at].name+'</button>';
+    });
+    var ac = calcAC(c.stats, c.armor);
+    c.ac = ac;
+    html += '<div class="form-group" style="margin-bottom:8px"><label class="field-label">Тип брони (влияет на КБ)</label>'
+      + '<div class="seg-row">'+armorBtns+'</div>'
+      + '<div style="font-size:11px;color:var(--text3);margin-top:4px">🛡 Класс брони: <b style="color:var(--text)">'+ac+'</b> '
+      + '(' + ARMOR_TYPES[c.armor].base + (ARMOR_TYPES[c.armor].dexCap>0 ? ' + Ловкость' + (ARMOR_TYPES[c.armor].dexCap<99?' макс +'+ARMOR_TYPES[c.armor].dexCap:'') : ', без Ловкости') + ')</div>'
+      + '</div>';
+  }
+
+  // Авто-HP
+  if(mech.hp!==false){
+    var lvl = parseInt(c.level)||1;
+    var maxhp = calcMaxHP(c.stats, lvl);
+    c.hp = maxhp; c.hpCur = maxhp;
+    html += '<div style="font-size:11px;color:var(--text3);margin-bottom:4px">❤ Здоровье: <b style="color:var(--text)">'+maxhp+'</b> '
+      + '(телосложение' + (abilityMod(c.stats.CON)>=0?' +':' ') + abilityMod(c.stats.CON) + ' за уровень, немного от силы)</div>';
+  }
+
+  html += '</div>';
   return html;
+}
+function setSetupArmor(ci, at){
+  setupChars[ci].armor = at;
+  renderSetupChars();
 }
 function renderSetupChars(){
   const e=el('ch-list');if(!e)return;e.innerHTML='';
@@ -1396,13 +1481,28 @@ function collectSetup(){G.worldName=el('wn').value.trim()||'Безымянный
   G.serverTier=tierVal; // 'haiku' | 'sonnet'
   if(!G.useOwnKey){G.gameModel=tierVal==='sonnet'?'claude-sonnet-4-20250514':'claude-haiku-4-5-20251001';}}
 function startGame(){collectSetup();showPage('game-page');history=[];journal=[];summaryCache='';inventory={};charStats={};blockVariants={};trackGameStart();// Init charStats from setup
-G.chars.forEach(c=>{var ds={STR:10,DEX:10,CON:10,INT:10,WIS:10,CHA:10};var cs2=c.stats&&Object.keys(c.stats).length?c.stats:ds;charStats[c.name]={abilities:c.abilities||'',equipment:c.equipment||'',traits:c.traits||'',cls:c.cls||'',appearance:c.appearance||'',hp:c.hp||'',hpCur:c.hpCur||c.hp||'',ac:c.ac||'10',stats:cs2,level:parseInt(c.level)||1,xp:parseInt(c.xp)||0,hunger:100,thirst:100,fatigue:0};inventory[c.name]=c.inventory||[];});enterGame(true);}
+G.chars.forEach(c=>{
+    var ds={STR:10,DEX:10,CON:10,INT:10,WIS:10,CHA:10};
+    var cs2=c.stats&&Object.keys(c.stats).length?c.stats:ds;
+    var armor=c.armor||'none';
+    // Для D&D пересчитываем HP/КБ по формулам BG3, иначе берём введённое
+    var hpVal, acVal;
+    if(G.rules==='dnd'){
+      hpVal=calcMaxHP(cs2, parseInt(c.level)||1);
+      acVal=calcAC(cs2, armor);
+    } else {
+      hpVal=c.hp||'';
+      acVal=c.ac||'10';
+    }
+    charStats[c.name]={abilities:c.abilities||'',equipment:c.equipment||'',traits:c.traits||'',cls:c.cls||'',appearance:c.appearance||'',hp:hpVal,hpCur:c.hpCur||hpVal,ac:acVal,armor:armor,stats:cs2,level:parseInt(c.level)||1,xp:parseInt(c.xp)||0,hunger:100,thirst:100,fatigue:0};
+    inventory[c.name]=c.inventory||[];
+  });enterGame(true);}
 
 // ══ GAME ENGINE ══════════════════════════════════
 function enterGame(isNew){showPage('game-page');
   // Onboarding hint for first-timers
   const p=getProgress();
-  if((p.games||0)<=1&&isNew){setTimeout(()=>{notif('💡 Пишите действия внизу. Наведите на текст нарратора — появятся кнопки «Изменить» и «Другой ответ»','info');},3000);}el('g-wn').textContent=G.worldName;el('g-wt').textContent=G.genres.join(' · ')||G.mode;el('hcb').classList.toggle('hidden',!G.hardcore);el('game-uname').textContent=user?.username||'';const provLabel=G.useOwnKey&&user?.own_api_key?(PROVIDERS_INFO[user.own_provider]?.name||'Свой ключ'):'Серверный Claude';el('g-prov').textContent='🤖 '+provLabel+(G.rules==='dnd'?' · ⚔ D&D':'');updateGameBal();if(prices)buildPkgMini('pkg-grid-game');partyMode='single';blockVariants={};renderGChars();renderJournal();renderQA();switchRightTab('journal');// Notes restore
+  if((p.games||0)<=1&&isNew){setTimeout(()=>{notif('💡 Пишите действия внизу. Наведите на текст нарратора — появятся кнопки «Изменить» и «Другой ответ»','info');},3000);}el('g-wn').textContent=G.worldName;el('g-wt').textContent=G.genres.join(' · ')||G.mode;el('hcb').classList.toggle('hidden',!G.hardcore);el('game-uname').textContent=user?.username||'';const provLabel=G.useOwnKey&&user?.own_api_key?(PROVIDERS_INFO[user.own_provider]?.name||'Свой ключ'):'Встроенная нейросеть';el('g-prov').textContent='🤖 '+provLabel+(G.rules==='dnd'?' · ⚔ D&D':'');updateGameBal();if(prices)buildPkgMini('pkg-grid-game');partyMode='single';blockVariants={};renderGChars();renderJournal();renderQA();switchRightTab('journal');// Notes restore
 const savedNotes=localStorage.getItem('aq_notes_'+G.slotId)||'';el('g-notes').value=savedNotes;el('g-notes').oninput=()=>localStorage.setItem('aq_notes_'+G.slotId,el('g-notes').value);const charName=G.chars[G.activeChar]?.name;el('pi').placeholder=charName?`Что делает ${charName}?`:'Что происходит?';const area=el('story');if(isNew){area.innerHTML='<div class="system-msg">История начинается...</div>';const msg=G.worldStart||`Начни историю в мире "${G.worldName}". ${G.chars.length?'Главный герой: '+G.chars[G.activeChar]?.name+'. '+G.chars[G.activeChar]?.desc:''}`;sendAI(msg,true);}else{area.innerHTML='';history.forEach(m=>{if(m.role==='user'&&!m._sys)addBlock(m.content,true);else if(m.role==='assistant')addBlock(m.content,false);});}}
 
 function renderGChars(){const e=el('g-chars');if(!e)return;e.innerHTML='';if(!G.chars.length){e.innerHTML='<p style="padding:8px;font-size:12px;color:var(--text3);font-style:italic">Нет персонажей</p>';return;}G.chars.forEach((c,i)=>{const isActive=i===G.activeChar&&partyMode==='single';const d=document.createElement('div');d.className='char-card'+(isActive?' active':'');const cs=charStats[c.name]||{};d.innerHTML=`<div class="char-card-name">${isActive?'<span class="char-active-dot"></span>':''} ${esc(c.name)}${cs.cls?` <span style="font-size:10px;color:var(--text3)">${esc(cs.cls)}</span>`:''}</div><div class="char-card-sub">${cs.abilities?esc(cs.abilities.slice(0,45)):'—'}</div>`;d.onclick=()=>{G.activeChar=i;partyMode='single';renderGChars();renderCharPanel();el('pi').placeholder=`Что делает ${c.name}?`;notif('Активен: '+c.name);};e.appendChild(d);});if(G.chars.length>=2){const allBtn=document.createElement('button');allBtn.className='char-all-btn'+(partyMode==='all'?' active':'');allBtn.innerHTML='⚔ Действие всей группы';allBtn.onclick=()=>{partyMode='all';renderGChars();el('pi').placeholder='Что делает группа?';notif('Вся группа');};e.appendChild(allBtn);}}
@@ -1507,16 +1607,23 @@ function renderCharPanel(){
     // Характеристики (если включены)
     if(mech.stats!==false){
       var stats=cs.stats||{STR:10,DEX:10,CON:10,INT:10,WIS:10,CHA:10};
+      var canEdit=!!G.statsEditable;
       html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:10px">';
-      ['STR','DEX','CON','INT','WIS','CHA'].forEach(function(st){
+      STAT_ORDER.forEach(function(st){
         var v=Math.max(1,Math.min(30,parseInt(stats[st])||10));
-        var mod=Math.floor((v-10)/2);
+        var mod=abilityMod(v);
         var mc=mod>=0?'var(--success)':'var(--danger)';
-        html+='<div style="text-align:center;padding:4px 2px;background:var(--bg3);border-radius:4px;border:.5px solid var(--border)">';
-        html+='<div style="font-size:8px;font-weight:600;color:var(--text3);letter-spacing:.04em">'+st+'</div>';
-        html+='<input type="number" value="'+v+'" min="1" max="30" data-cn="'+esc(char.name)+'" data-st="'+st+'" ';
-        html+='style="width:32px;background:transparent;border:none;font-size:14px;font-weight:700;color:var(--text);text-align:center;outline:none;padding:0" ';
-        html+='onchange="updateStat(this.dataset.cn,this.dataset.st,this.value)" />';
+        html+='<div style="text-align:center;padding:4px 2px;background:var(--bg3);border-radius:6px;border:.5px solid var(--border)">';
+        html+='<div style="font-size:8px;font-weight:600;color:var(--text3);letter-spacing:.02em">'+STAT_RU[st]+'</div>';
+        if(canEdit){
+          html+='<div style="display:flex;align-items:center;justify-content:center;gap:2px;margin:2px 0">';
+          html+='<button class="stat-pm" style="width:18px;height:18px;font-size:11px" data-cn="'+esc(char.name)+'" data-st="'+st+'" data-d="-1" onclick="bumpStat(this.dataset.cn,this.dataset.st,parseInt(this.dataset.d))">&minus;</button>';
+          html+='<span style="font-size:14px;font-weight:700;color:var(--text);min-width:18px">'+v+'</span>';
+          html+='<button class="stat-pm" style="width:18px;height:18px;font-size:11px" data-cn="'+esc(char.name)+'" data-st="'+st+'" data-d="1" onclick="bumpStat(this.dataset.cn,this.dataset.st,parseInt(this.dataset.d))">+</button>';
+          html+='</div>';
+        } else {
+          html+='<div style="font-size:14px;font-weight:700;color:var(--text);margin:2px 0">'+v+'</div>';
+        }
         html+='<div style="font-size:10px;color:'+mc+'">'+(mod>=0?'+':'')+mod+'</div>';
         html+='</div>';
       });
@@ -1541,6 +1648,18 @@ function bumpAC(cn,d){
   if(!charStats[cn])charStats[cn]={};
   var cur=parseInt(charStats[cn].ac)||10;
   charStats[cn].ac=Math.max(1,Math.min(30,cur+d));
+  renderCharPanel(); autoSave();
+}
+function bumpStat(cn,st,d){
+  if(!charStats[cn])charStats[cn]={};
+  if(!charStats[cn].stats)charStats[cn].stats={};
+  var cur=parseInt(charStats[cn].stats[st])||10;
+  charStats[cn].stats[st]=Math.max(1,Math.min(30,cur+d));
+  // Пересчитать HP и КБ при изменении статов (BG3-формулы)
+  var cs=charStats[cn];
+  if(cs.armor!==undefined||G.rules==='dnd'){
+    cs.ac=calcAC(cs.stats, cs.armor||'none');
+  }
   renderCharPanel(); autoSave();
 }
 function updateStat(charName,stat,val){
@@ -1598,10 +1717,10 @@ let narratorInstr=nD[G.narratorStyle]||nD.classic;if(G.narratorStyle==='custom'&
 let rulesInstr='';if(G.rules==='dnd'){
   var mech=G.dndMech||{};
   var mechParts=[];
-  if(mech.dice!==false)mechParts.push('Когда нужна проверка навыка — добавь {"dice":true,"dc":число 5-25,"skill":"Название","hideDC":false} (hideDC:true для скрытых проверок).');
+  if(mech.dice!==false)mechParts.push('Когда нужна проверка навыка — добавь {"dice":true,"dc":число 5-25,"skill":"Название","hideDC":false} (hideDC:true для скрытых). ВАЖНО про текст перед кубиком: коротко объясни ТОЛЬКО какой модификатор применяется и почему (например: "Скрытность: ловкость +2, темнота даёт ещё +1, итого +3"). НЕ описывай заранее что будет при успехе или провале, НЕ спрашивай какой результат хочет игрок — просто дай бросить кубик, исход опишешь после броска.');
   if(mech.hp!==false)mechParts.push('Отслеживай HP персонажей, сообщай об уроне.');
   if(mech.stats!==false){
-    var dndChars=G.chars.map(function(c){var cs=charStats[c.name]||{};var stats=cs.stats||{};var modStr=Object.keys(stats).map(function(s){var v=parseInt(stats[s])||10;var mod=Math.floor((v-10)/2);return s+':'+v+'('+(mod>=0?'+':'')+mod+')';}).join(', ');return c.name+(modStr?' ['+modStr+']':'')+(mech.hp!==false&&cs.hp?' HP:'+(cs.hpCur||cs.hp)+'/'+cs.hp:'')+(mech.ac!==false&&cs.ac?' КБ:'+cs.ac:'');}).join(' | ');
+    var dndChars=G.chars.map(function(c){var cs=charStats[c.name]||{};var stats=cs.stats||{};var modStr=STAT_ORDER.map(function(s){var v=parseInt(stats[s])||10;var mod=abilityMod(v);return STAT_RU[s]+' '+v+'('+(mod>=0?'+':'')+mod+')';}).join(', ');return c.name+(modStr?' ['+modStr+']':'')+(mech.hp!==false&&cs.hp?' HP:'+(cs.hpCur||cs.hp)+'/'+cs.hp:'')+(mech.ac!==false&&cs.ac?' КБ:'+cs.ac:'');}).join(' | ');
     mechParts.push('Персонажи: '+dndChars+'. Учитывай модификаторы при проверках.');
   }
   if(mech.levels!==false)mechParts.push('За достижения давай XP: {"xp":{"char":"имя","amount":N}}.');
@@ -1646,35 +1765,48 @@ wrap.innerHTML=`<div class="narrator-wrap" id="nwrap_${id}">
 area.appendChild(wrap);area.scrollTop=area.scrollHeight;return id;}
 
 function makeDiceBlock(dc, skill, hideDC) {
-  var did = 'dice_' + Date.now();
-  var skillLabel = skill || 'навык';
+  var did = 'dice_' + Date.now() + '_' + Math.floor(Math.random()*1000);
   var dcVal = dc || 10;
-  var dcLabel = hideDC ? '? (GM скрыл)' : String(dcVal);
-  var btn = document.createElement('button');
-  btn.className = 'dice-btn';
-  btn.textContent = 'Бросить!';
-  btn.dataset.did = did;
-  btn.dataset.dc = dcVal;
-  btn.onclick = function() { rollDice(this.dataset.did, parseInt(this.dataset.dc)); };
-  var wrapper = document.createElement('div');
-  wrapper.className = 'dice-block';
-  wrapper.id = did;
-  wrapper.innerHTML = '<div class="dice-label">🎲 Проверка: ' + esc(skillLabel) + '</div>'
+  var skillLabel = skill || 'навык';
+  var dcLabel = hideDC ? '? (скрыто)' : String(dcVal);
+  // Кнопка с onclick-атрибутом и data-* — обработчик переживает innerHTML
+  var html = '<div class="dice-block" id="' + did + '">'
+    + '<div class="dice-label">🎲 Проверка: ' + esc(skillLabel) + '</div>'
     + '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">'
     + '<div class="dice-result"><span class="dice-icon">🎲</span>'
     + '<span class="dice-num" id="dnum_' + did + '">?</span></div>'
     + '<div class="dice-dc">Сложность: <span id="dcval_' + did + '">' + dcLabel + '</span></div>'
     + '<div id="dout_' + did + '"></div>'
-    + '</div>';
-  wrapper.querySelector('[style]').appendChild(btn);
-  var tmp = document.createElement('div');
-  tmp.appendChild(wrapper);
-  return tmp.innerHTML;
+    + '<button class="dice-btn" data-did="' + did + '" data-dc="' + dcVal + '" onclick="rollDice(this.dataset.did, parseInt(this.dataset.dc))">Бросить!</button>'
+    + '</div></div>';
+  return html;
 }
-function rollDice(did,dc){const numEl=el('dnum_'+did);const outEl=el('dout_'+did);const btn=document.querySelector(`#${did} .dice-btn`);if(!numEl||btn?.disabled)return;btn.disabled=true;let rolls=0;const roll=Math.floor(Math.random()*20)+1;const interval=setInterval(()=>{numEl.textContent=Math.floor(Math.random()*20)+1;rolls++;if(rolls>12){clearInterval(interval);numEl.textContent=roll;numEl.classList.add('rolling');setTimeout(()=>numEl.classList.remove('rolling'),500);const success=roll>=dc;outEl.innerHTML=`<div class="dice-outcome ${success?'success':'fail'}">${roll>=dc?'✓ Успех':'✗ Провал'} (выпало ${roll} из ${dc})</div>`;// Add to history context
-history.push({role:'user',content:`[Бросок кубика: выпало ${roll}, сложность ${dc}, ${success?'успех':'провал'}]`,_sys:true});}},60);}
-
-// Inline editing
+function rollDice(did, dc) {
+  var numEl = el('dnum_' + did);
+  var outEl = el('dout_' + did);
+  var btn = document.querySelector('#' + did + ' .dice-btn');
+  if (!numEl || (btn && btn.disabled)) return;
+  if (btn) btn.disabled = true;
+  // Случайное число генерируется ЛОКАЛЬНО в браузере — никакой нейросети
+  var roll = Math.floor(Math.random() * 20) + 1;
+  var count = 0;
+  var interval = setInterval(function() {
+    numEl.textContent = Math.floor(Math.random() * 20) + 1;
+    count++;
+    if (count > 12) {
+      clearInterval(interval);
+      numEl.textContent = roll;
+      numEl.classList.add('rolling');
+      setTimeout(function(){ numEl.classList.remove('rolling'); }, 500);
+      var success = roll >= dc;
+      numEl.style.color = success ? 'var(--success)' : 'var(--danger)';
+      outEl.innerHTML = '<div class="dice-outcome ' + (success ? 'success' : 'fail') + '">'
+        + (success ? '✓ Успех' : '✗ Провал') + ' (выпало ' + roll + ' из ' + dc + ')</div>';
+      // Записываем результат в историю, чтобы нарратор учёл бросок в следующем ходе
+      history.push({ role: 'user', content: '[Бросок d20: выпало ' + roll + ', сложность ' + dc + ' — ' + (success ? 'успех' : 'провал') + ']', _sys: true });
+    }
+  }, 55);
+}
 function startInlineEdit(blockId,isPlayer){if(G.hardcore)return;const ie=el('iedit_'+blockId);const ta=el('ieta_'+blockId);if(!ie||!ta)return;const srcEl=el(isPlayer?'ptxt_'+blockId:'ntxt_'+blockId);if(srcEl)ta.value=srcEl.innerText||srcEl.textContent;ie.classList.add('open');ta.focus();ta.style.height='auto';ta.style.height=ta.scrollHeight+'px';}
 function cancelInlineEdit(blockId){const ie=el('iedit_'+blockId);if(ie)ie.classList.remove('open');}
 function saveInlineEdit(blockId,isPlayer){if(G.hardcore)return;const ta=el('ieta_'+blockId);if(!ta)return;const newText=ta.value.trim();if(!newText)return;if(isPlayer){const el2=el('ptxt_'+blockId);if(el2)el2.textContent=newText;const blk=document.querySelector(`.story-block[data-id="${blockId}"]`);if(blk){const actorEl=blk.querySelector('.player-name');const actor=actorEl?actorEl.textContent:'Путник';const idx=history.findLastIndex(m=>m.role==='user'&&!m._sys);if(idx>=0)history[idx]={...history[idx],content:`[${actor}]: ${newText}`};}}else{const ntxt=el('ntxt_'+blockId);if(ntxt)ntxt.innerHTML=`<p>${fmt(newText)}</p>`;const idx=history.findLastIndex(m=>m.role==='assistant');if(idx>=0)history[idx]={role:'assistant',content:newText};if(blockVariants[blockId]){blockVariants[blockId].versions[blockVariants[blockId].current]=newText;}}cancelInlineEdit(blockId);autoSave();notif('Изменено');}
@@ -1688,8 +1820,8 @@ function showThink(){const a=el('story');const e=document.createElement('div');e
 function hideThink(){const e=el('th');if(e)e.remove();}
 
 // ── GAME SETTINGS ─────────────────────────────────
-function showGameSettings(){el('gs-wn').value=G.worldName;el('gs-wd').value=G.worldDesc;el('gs-ws').value=G.worldStart;el('gs-np').value=G.npcs;el('gs-ne').value=G.narratorExtra;om('gsettings-modal');}
-function saveGameSettings(){G.worldName=el('gs-wn').value.trim()||G.worldName;G.worldDesc=el('gs-wd').value.trim();G.worldStart=el('gs-ws').value.trim();G.npcs=el('gs-np').value.trim();G.narratorExtra=el('gs-ne').value.trim();el('g-wn').textContent=G.worldName;cm('gsettings-modal');autoSave();notif('Настройки обновлены');}
+function showGameSettings(){el('gs-wn').value=G.worldName;el('gs-wd').value=G.worldDesc;el('gs-ws').value=G.worldStart;el('gs-np').value=G.npcs;el('gs-ne').value=G.narratorExtra;var se=el('gs-stats-edit');if(se)se.checked=!!G.statsEditable;om('gsettings-modal');}
+function saveGameSettings(){G.worldName=el('gs-wn').value.trim()||G.worldName;G.worldDesc=el('gs-wd').value.trim();G.worldStart=el('gs-ws').value.trim();G.npcs=el('gs-np').value.trim();G.narratorExtra=el('gs-ne').value.trim();var se=el('gs-stats-edit');if(se)G.statsEditable=se.checked;el('g-wn').textContent=G.worldName;cm('gsettings-modal');if(rightTab==='chars')renderCharPanel();autoSave();notif('Настройки обновлены');}
 
 // ── SAVE ──────────────────────────────────────────
 async function maybeSummarize(){
