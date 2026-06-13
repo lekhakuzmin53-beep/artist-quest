@@ -506,8 +506,7 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
     <div class="menu-logo-area"><div class="menu-logo">Artist Quest</div><div class="menu-tagline">Интерактивный нарратив на нейросетях</div></div>
     <div id="menu-guest">
       <div class="menu-actions">
-        <div class="menu-item featured" onclick="openAuth('login')"><div class="menu-item-icon">⚔</div><div class="menu-item-body"><div class="menu-item-title">Войти в игру</div><div class="menu-item-desc">Продолжить своё приключение</div></div><div class="menu-item-arrow">→</div></div>
-        <div class="menu-item" onclick="openAuth('register')"><div class="menu-item-icon">✦</div><div class="menu-item-body"><div class="menu-item-title">Создать аккаунт</div><div class="menu-item-desc">Начать новое путешествие</div></div><div class="menu-item-arrow">→</div></div>
+        <div class="menu-item featured" onclick="openAuth('login')"><div class="menu-item-icon">⚔</div><div class="menu-item-body"><div class="menu-item-title">Начать приключение</div><div class="menu-item-desc">Вход или регистрация</div></div><div class="menu-item-arrow">→</div></div>
       </div>
       <div class="menu-bottom"><div class="theme-section-title">Оформление</div><div class="theme-dots" id="theme-dots-guest"></div></div>
     </div>
@@ -772,8 +771,24 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
           </div>
           <!-- Custom user systems appended here by JS -->
           <div id="custom-rules-systems" style="margin-top:8px;display:flex;flex-direction:column;gap:6px"></div>
+          <!-- D&D механики (показывается при выборе D&D) -->
+          <div id="dnd-mechanics" style="display:none;margin-top:10px;padding:12px;background:var(--bg3);border-radius:var(--rad);border:.5px solid var(--border)">
+            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">Механики D&D — выключи ненужные:</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px">
+              <button class="tag on" data-mech="dice" onclick="this.classList.toggle('on')">🎲 Броски кубиков</button>
+              <button class="tag on" data-mech="hp" onclick="this.classList.toggle('on')">❤ HP и урон</button>
+              <button class="tag on" data-mech="stats" onclick="this.classList.toggle('on')">💪 Характеристики</button>
+              <button class="tag on" data-mech="levels" onclick="this.classList.toggle('on')">⬆ Уровни и XP</button>
+              <button class="tag on" data-mech="ac" onclick="this.classList.toggle('on')">🛡 Класс брони</button>
+            </div>
+          </div>
+          <!-- Выживание (показывается при выборе Выживания) -->
+          <div id="survival-info" style="display:none;margin-top:10px;padding:12px;background:var(--bg3);border-radius:var(--rad);border:.5px solid var(--border)">
+            <div style="font-size:12px;color:var(--text2);line-height:1.6">В режиме выживания у персонажей появятся полоски: 🍖 Голод, 💧 Жажда, 😴 Усталость. Нарратор будет отслеживать их в процессе игры.</div>
+          </div>
         </div>
-        <div class="form-group"><label class="field-label">Описание правил (если «Своя система»)</label><textarea class="input" id="cr" rows="2" placeholder="Механики, кубики, характеристики..."></textarea></div>
+        <input type="hidden" id="cr" value=""/>
+        <div style="padding:9px 12px;background:var(--bg3);border-radius:var(--rad);font-size:12px;color:var(--text3);border:.5px solid var(--border);line-height:1.5">💡 Свою систему правил можно создать в <b style="color:var(--text2)">Настройках → Мои игровые системы</b> — она появится здесь как карточка.</div>
         <div class="form-group">
           <label class="field-label">Стиль нарратора</label>
           <div class="grid2" id="narrator-grid">
@@ -785,12 +800,13 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
           <!-- Custom user narrators appended here -->
           <div id="custom-narrator-pick" style="margin-top:8px;display:flex;flex-direction:column;gap:6px"></div>
         </div>
+        <div style="padding:9px 12px;background:var(--bg3);border-radius:var(--rad);font-size:12px;color:var(--text3);border:.5px solid var(--border);line-height:1.5;margin-bottom:4px">💡 Своего нарратора можно создать в <b style="color:var(--text2)">Настройках → Мои нарраторы</b>.</div>
         <div class="form-group"><label class="field-label">Доп. инструкции нарратору</label><textarea class="input" id="ne" rows="2" placeholder="Описывай запахи и звуки, добавляй диалоги NPC..."></textarea></div>
         <div class="form-group">
           <label class="field-label">Хардкор режим</label>
           <div class="grid2">
             <div class="mc sel" onclick="selMC(this,'hardcore')" data-v="0"><div class="mc-title">Обычный</div><div class="mc-desc">Можно редактировать и перегенерировать</div></div>
-            <div class="mc" onclick="selMC(this,'hardcore')" data-v="1"><div class="mc-title">☠ Хардкор</div><div class="mc-desc">Нельзя редактировать ни один ответ. 1 автослот.</div></div>
+            <div class="mc" onclick="selMC(this,'hardcore')" data-v="1"><div class="mc-title">☠ Хардкор</div><div class="mc-desc">Нельзя редактировать ответы. Один слот сохранения.</div></div>
           </div>
         </div>
       </div>
@@ -803,16 +819,17 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
         </div>
         <div class="ai-picker" id="ai-picker">
           <div class="ai-card sel" onclick="selAI(this,'server')">
-            <div class="ai-card-name">🏠 Серверный Claude</div>
-            <div class="ai-card-desc">Claude через наш сервер. Тратит токены с вашего баланса.</div>
+            <div class="ai-card-name">🏠 Встроенная нейросеть</div>
+            <div class="ai-card-desc">Работает сразу, без настройки. Тратит токены с баланса.</div>
             <div class="ai-card-status warn" id="ai-server-bal">Баланс: загрузка...</div>
           </div>
           <div class="ai-card" onclick="selAI(this,'own')">
-            <div class="ai-card-name">🔑 Свой ключ</div>
-            <div class="ai-card-desc">Используется ваш API ключ. Баланс не тратится.</div>
+            <div class="ai-card-name">🔑 Свой API ключ</div>
+            <div class="ai-card-desc">AITunnel, Claude, OpenAI, Gemini или Mistral. Баланс не тратится.</div>
             <div class="ai-card-status" id="ai-own-status">Не настроен</div>
           </div>
         </div>
+        <div style="margin-top:8px;padding:9px 12px;background:var(--bg3);border-radius:var(--rad);font-size:12px;color:var(--text3);border:.5px solid var(--border);line-height:1.5">💡 Ключ добавляется в <b style="color:var(--text2)">Настройках → Мои нейросети</b>. Для России проще всего AITunnel — работает без VPN, оплата картой РФ.</div>
         <div id="ai-own-warn" style="display:none;margin-top:8px" class="err-card">
           <div class="err-title">Ключ не настроен</div>
           <div class="err-msg">Перейдите в Настройки → Мои нейросети и добавьте API ключ.</div>
@@ -1017,14 +1034,7 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
 
 <div id="notif"></div>
 <script>
-// Global error handler - shows errors visibly
-window.onerror = function(msg, src, line, col, err) {
-  var d = document.createElement('div');
-  d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#cc0000;color:#fff;padding:10px;z-index:99999;font-family:monospace;font-size:13px';
-  d.textContent = 'JS ERROR line ' + line + ': ' + msg;
-  document.body.appendChild(d);
-  return false;
-};
+
 // ══ CONSTANTS ════════════════════════════════════
 const PROVIDERS_INFO={aitunnel:{name:'AITunnel (РФ)',models:['claude-sonnet-4-20250514','claude-haiku-4-5-20251001','gpt-4o','gpt-4o-mini'],hint:'sk-aitunnel-...'},claude:{name:'Claude (Anthropic)',models:['claude-sonnet-4-20250514','claude-haiku-4-5-20251001'],hint:'sk-ant-...'},openai:{name:'OpenAI (GPT)',models:['gpt-4o','gpt-4o-mini','gpt-4-turbo','gpt-3.5-turbo'],hint:'sk-...'},gemini:{name:'Google Gemini',models:['gemini-1.5-pro','gemini-1.5-flash','gemini-2.0-flash'],hint:'AIza...'},mistral:{name:'Mistral AI',models:['mistral-large-latest','mistral-small-latest','open-mistral-7b'],hint:'...'}};
 const THEMES=[{id:'',name:'Пергамент',bg:'#1c1208',bg2:'#251a0a',text:'#e8d9a8',ac:'#d4a830',desc:'Свитки'},{id:'blood',name:'Кровь',bg:'#1a0808',bg2:'#230d0d',text:'#f0d0cc',ac:'#cc3333',desc:'Руины'},{id:'ocean',name:'Океан',bg:'#080e1c',bg2:'#0d1628',text:'#c8dcf0',ac:'#2880cc',desc:'Глубины'},{id:'forest',name:'Лес',bg:'#090f06',bg2:'#101a09',text:'#d0eccb',ac:'#3ea030',desc:'Бор'},{id:'void',name:'Пустота',bg:'#0c0910',bg2:'#12101c',text:'#d8c8f8',ac:'#8855cc',desc:'Межмирье'},{id:'ash',name:'Пепел',bg:'#0e0e0e',bg2:'#181818',text:'#d8d4c4',ac:'#b8a870',desc:'Пепел'}];
@@ -1129,7 +1139,29 @@ document.addEventListener('click',e=>{
   }
 });
 function toggleSec(hdr){hdr.closest('.settings-sec').classList.toggle('collapsed')}
-function selMC(c,group){if(!MC_GROUPS[group]){MC_GROUPS[group]=document.querySelectorAll(`[onclick*="selMC(this,'${group}')"]`);}MC_GROUPS[group].forEach(x=>x.classList.remove('sel'));c.classList.add('sel');}
+function selMC(c,group){
+  if(!MC_GROUPS[group]){MC_GROUPS[group]=document.querySelectorAll(`[onclick*="selMC(this,'${group}')"]`);}
+  MC_GROUPS[group].forEach(x=>x.classList.remove('sel'));
+  c.classList.add('sel');
+  // Показ блоков механик при выборе системы
+  if(group==='rules'){
+    var dm=el('dnd-mechanics'),si=el('survival-info');
+    if(dm)dm.style.display=c.dataset.v==='dnd'?'block':'none';
+    if(si)si.style.display=c.dataset.v==='survival'?'block':'none';
+    if(typeof renderSetupChars==='function')renderSetupChars();
+  }
+  // Ручной выбор режима персонажей синхронизирует список героев
+  if(group==='charMode'&&!window._autoCharMode){
+    if(c.dataset.v==='party'&&setupChars.length<2){
+      while(setupChars.length<2)setupChars.push({name:'Герой '+(setupChars.length+1),cls:'',desc:'',appearance:'',abilities:'',equipment:'',traits:'',inventory:[]});
+      renderSetupChars();
+    }
+    if(c.dataset.v==='single'&&setupChars.length>1){
+      setupChars=setupChars.slice(0,1);
+      renderSetupChars();
+    }
+  }
+}
 function selLang(b){b.closest('div').querySelectorAll('.tag[data-lang]').forEach(x=>x.classList.remove('on'));b.classList.add('on')}
 function setGlobalLang(lang){globalSettings.lang=lang;saveGlobalSettings();el('lang-'+lang)?.classList.add('on');el('lang-'+(lang==='ru'?'en':'ru'))?.classList.remove('on');}
 function saveGlobalSettings(){localStorage.setItem(GLOBAL_SETTINGS_KEY,JSON.stringify(globalSettings));}
@@ -1202,7 +1234,7 @@ function newWorldInSlot(slot){G.slotId=slot;showPage('create-page');initCreatePa
 
 // ══ CREATE PAGE / WIZARD ══════════════════════════
 function initCreatePage(){currentStep=0;selectedPreset=null;aiChoice='server';setupChars=[];MC_GROUPS.charMode=null;MC_GROUPS.mode=null;MC_GROUPS.narratorStyle=null;MC_GROUPS.rules=null;MC_GROUPS.hardcore=null;// Reset form
-['wn','wd','ws','np','ne','cr'].forEach(id=>{const e=el(id);if(e)e.value='';});document.querySelectorAll('#genre-tags .tag').forEach(t=>t.classList.remove('on'));['mode','charMode','hardcore','narratorStyle','rules'].forEach(g=>{MC_GROUPS[g]=null;const first=document.querySelector(`[onclick*="selMC(this,'${g}')"]`);if(first)selMC(first,g);});document.querySelector('[data-lang="ru"]')?.classList.add('on');el('det').value=globalSettings.detail||3;el('dv').textContent=detLabels[(globalSettings.detail||3)-1];
+['wn','wd','ws','np','ne','cr'].forEach(id=>{const e=el(id);if(e)e.value='';});document.querySelectorAll('#genre-tags .tag').forEach(t=>t.classList.remove('on'));window._autoCharMode=true;['mode','charMode','hardcore','narratorStyle','rules'].forEach(g=>{MC_GROUPS[g]=null;const first=document.querySelector(`[onclick*="selMC(this,'${g}')"]`);if(first)selMC(first,g);});window._autoCharMode=false;document.querySelector('[data-lang="ru"]')?.classList.add('on');el('det').value=globalSettings.detail||3;el('dv').textContent=detLabels[(globalSettings.detail||3)-1];
   renderSetupChars();buildPresetGrid();buildNarratorPick();buildRulesPick();updateAIPicker();goStep(0);}
 function buildPresetGrid(){const g=el('preset-grid');if(!g)return;g.innerHTML='';PRESETS.forEach(p=>{const c=document.createElement('div');c.className='preset-card'+(selectedPreset===p.id?' sel':'');c.innerHTML=`<div class="preset-icon">${p.icon}</div><div class="preset-name">${p.name}</div><div class="preset-system">${p.system==='dnd'?'⚔ D&D':'Свободная система'}</div><div class="preset-desc">${esc(p.desc.slice(0,100))}...</div>`;c.onclick=()=>selectPreset(p.id);g.appendChild(c);});}
 function selectPreset(id){selectedPreset=id;document.querySelectorAll('.preset-card').forEach(c=>c.classList.remove('sel'));if(id){const p=PRESETS.find(x=>x.id===id);if(p){const cards=document.querySelectorAll('.preset-card');PRESETS.forEach((x,i)=>{if(x.id===id)cards[i]?.classList.add('sel');});// Fill form
@@ -1220,28 +1252,58 @@ function goStep(s){currentStep=s;document.querySelectorAll('.wizard-section').fo
 function nextStep(){if(currentStep===1&&!el('wn').value.trim()){notif('Введите название мира','err');return;}goStep(Math.min(currentStep+1,totalSteps-1));}
 function prevStep(){goStep(Math.max(currentStep-1,0));}
 function addCG(){const i=el('cg'),v=i.value.trim();if(!v)return;const b=document.createElement('button');b.className='tag on';b.onclick=()=>b.classList.toggle('on');b.textContent=v;el('genre-tags').appendChild(b);i.value='';}
-function addCh(){var i=el('nc'),name=i.value.trim()||'Безымянный';setupChars.push({name:name,cls:'',desc:'',appearance:'',abilities:'',equipment:'',traits:'',inventory:[]});i.value='';renderSetupChars();if(setupChars.length>=2){var p=document.querySelector('#step-2 [data-v="party"]');if(p){MC_GROUPS.charMode=null;selMC(p,'charMode');}}}
-function rmCh(i){setupChars.splice(i,1);renderSetupChars();if(setupChars.length<=1){var s=document.querySelector('#step-2 [data-v="single"]');if(s){MC_GROUPS.charMode=null;selMC(s,'charMode');}}}
+function addCh(){var i=el('nc'),name=i.value.trim()||'Безымянный';setupChars.push({name:name,cls:'',desc:'',appearance:'',abilities:'',equipment:'',traits:'',inventory:[]});i.value='';renderSetupChars();if(setupChars.length>=2){var p=document.querySelector('#step-2 [data-v="party"]');if(p&&!p.classList.contains('sel')){window._autoCharMode=true;MC_GROUPS.charMode=null;selMC(p,'charMode');window._autoCharMode=false;}}}
+function rmCh(i){setupChars.splice(i,1);renderSetupChars();if(setupChars.length<=1){var s=document.querySelector('#step-2 [data-v="single"]');if(s&&!s.classList.contains('sel')){window._autoCharMode=true;MC_GROUPS.charMode=null;selMC(s,'charMode');window._autoCharMode=false;}}}
+var BG3_COST = {8:0, 9:1, 10:2, 11:3, 12:4, 13:5, 14:7, 15:9};
+var BG3_BUDGET = 27;
+function dndPointsUsed(stats){
+  var total=0;
+  ['STR','DEX','CON','INT','WIS','CHA'].forEach(function(s){
+    var v=Math.max(8,Math.min(15,parseInt(stats[s])||8));
+    total+=BG3_COST[v]||0;
+  });
+  return total;
+}
+function changeSetupStat(ci, stat, delta){
+  if(!setupChars[ci].stats)setupChars[ci].stats={STR:8,DEX:8,CON:8,INT:8,WIS:8,CHA:8};
+  var st=setupChars[ci].stats;
+  var cur=Math.max(8,Math.min(15,parseInt(st[stat])||8));
+  var next=cur+delta;
+  if(next<8||next>15)return;
+  var test=Object.assign({},st); test[stat]=next;
+  if(dndPointsUsed(test)>BG3_BUDGET)return;
+  st[stat]=next;
+  renderSetupChars();
+}
 function makeDndStatsHtml(c, i) {
-  var stats = ['STR','DEX','CON','INT','WIS','CHA'];
-  var statsGrid = stats.map(function(stat) {
-    var val = (c.stats||{})[stat]||'10';
-    return '<div style="text-align:center"><div class="field-label" style="text-align:center">'+stat+'</div>'
-      + '<input class="input" value="'+esc(val)+'" type="number" min="1" max="30" '
-      + 'style="text-align:center;padding:6px 4px;font-size:14px;font-weight:600" '
-      + 'data-charidx="'+i+'" data-stat="'+stat+'" oninput="var el=this;var ci=+el.dataset.charidx;var st=el.dataset.stat;if(!setupChars[ci].stats)setupChars[ci].stats={};setupChars[ci].stats[st]=el.value"/></div>';
-  }).join('');
-  return '<div class="char-sheet-full" style="margin-top:4px">'
-    + '<div class="field-label" style="margin-bottom:8px">D&D Характеристики</div>'
-    + '<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:8px">'+statsGrid+'</div>'
-    + '<div style="display:flex;gap:8px">'
-    + '<div class="form-group" style="flex:1"><label class="field-label">HP Макс</label>'
-    + '<input class="input" value="'+esc(c.hp||'')+'" type="number" min="1" placeholder="10" style="font-size:14px;font-weight:600" oninput="setupChars['+i+'].hp=this.value"/></div>'
-    + '<div class="form-group" style="flex:1"><label class="field-label">HP Сейчас</label>'
-    + '<input class="input" value="'+esc(c.hpCur||c.hp||'')+'" type="number" min="0" placeholder="10" style="font-size:14px;font-weight:600;color:var(--success)" oninput="setupChars['+i+'].hpCur=this.value"/></div>'
-    + '<div class="form-group" style="flex:1"><label class="field-label">Броня (AC)</label>'
-    + '<input class="input" value="'+esc(c.ac||'10')+'" type="number" min="1" max="30" placeholder="10" oninput="setupChars['+i+'].ac=this.value"/></div>'
-    + '</div></div>';
+  if(!c.stats)c.stats={STR:8,DEX:8,CON:8,INT:8,WIS:8,CHA:8};
+  var used=dndPointsUsed(c.stats);
+  var left=BG3_BUDGET-used;
+  var grid='';
+  ['STR','DEX','CON','INT','WIS','CHA'].forEach(function(stat){
+    var v=Math.max(8,Math.min(15,parseInt(c.stats[stat])||8));
+    var mod=Math.floor((v-10)/2);
+    grid+='<div style="text-align:center;padding:6px 2px;background:var(--bg);border-radius:4px;border:.5px solid var(--border)">'
+      +'<div style="font-size:9px;font-weight:600;color:var(--text3)">'+stat+'</div>'
+      +'<div style="display:flex;align-items:center;justify-content:center;gap:3px;margin:2px 0">'
+      +'<button type="button" style="width:20px;height:20px;border-radius:3px;border:.5px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;font-size:12px;line-height:1" data-ci="'+i+'" data-stat="'+stat+'" data-d="-1" onclick="changeSetupStat(parseInt(this.dataset.ci),this.dataset.stat,parseInt(this.dataset.d))">&minus;</button>'
+      +'<span style="font-size:16px;font-weight:700;color:var(--text);min-width:22px">'+v+'</span>'
+      +'<button type="button" style="width:20px;height:20px;border-radius:3px;border:.5px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;font-size:12px;line-height:1" data-ci="'+i+'" data-stat="'+stat+'" data-d="1" onclick="changeSetupStat(parseInt(this.dataset.ci),this.dataset.stat,parseInt(this.dataset.d))">+</button>'
+      +'</div>'
+      +'<div style="font-size:10px;color:'+(mod>=0?'var(--success)':'var(--danger)')+'">'+(mod>=0?'+':'')+mod+'</div>'
+      +'</div>';
+  });
+  var html='<div class="char-sheet-full" style="margin-top:6px">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'
+    +'<div class="field-label" style="margin:0">Характеристики (point-buy, как в Baldur&#39;s Gate 3)</div>'
+    +'<div style="font-size:11px;font-weight:600;color:'+(left>0?'var(--ac)':'var(--text3)')+'">Очков: '+left+' / '+BG3_BUDGET+'</div>'
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:8px">'+grid+'</div>'
+    +'<div style="display:flex;gap:8px">'
+    +'<div class="form-group" style="flex:1"><label class="field-label">HP Максимум</label><input class="input" value="'+esc(c.hp||'10')+'" type="number" min="1" max="999" data-ci="'+i+'" oninput="setupChars[parseInt(this.dataset.ci)].hp=this.value"/></div>'
+    +'<div class="form-group" style="flex:1"><label class="field-label">КБ (класс брони)</label><input class="input" value="'+esc(c.ac||'10')+'" type="number" min="1" max="30" data-ci="'+i+'" oninput="setupChars[parseInt(this.dataset.ci)].ac=this.value"/></div>'
+    +'</div></div>';
+  return html;
 }
 function renderSetupChars(){
   const e=el('ch-list');if(!e)return;e.innerHTML='';
@@ -1264,11 +1326,14 @@ function renderSetupChars(){
   });
 }
 function collectSetup(){G.worldName=el('wn').value.trim()||'Безымянный мир';G.worldDesc=el('wd').value.trim();G.worldStart=el('ws').value.trim();G.narratorExtra=el('ne').value.trim();G.customRules=el('cr').value.trim();G.npcs=el('np').value.trim();G.detail=parseInt(el('det').value);G.genres=[];document.querySelectorAll('#genre-tags .tag.on').forEach(t=>G.genres.push(t.textContent.trim()));const gv=g=>document.querySelector(`[onclick*="selMC(this,'${g}')"].sel`)?.dataset.v;G.mode=gv('mode')||'game';G.charMode=gv('charMode')||'single';G.hardcore=gv('hardcore')==='1';const nsVal=gv('narratorStyle')||'classic';G.narratorStyle=nsVal.startsWith('custom_')?'custom':nsVal;G.narratorCustomId=nsVal.startsWith('custom_')?nsVal.replace('custom_',''):null;const rsVal=gv('rules')||'free';G.rules=rsVal.startsWith('custom_')?'custom':rsVal;G.rulesCustomId=rsVal.startsWith('custom_')?rsVal.replace('custom_',''):null;G.lang=document.querySelector('[data-lang].on')?.dataset.lang||globalSettings.lang||'ru';G.chars=setupChars.filter(c=>c.name.trim());if(G.activeChar>=G.chars.length)G.activeChar=0;G.useOwnKey=aiChoice==='own';G.gameModel=el('game-model-sel')?.value||user?.own_model||'';
+  // Механики D&D
+  G.dndMech={};
+  document.querySelectorAll('#dnd-mechanics [data-mech]').forEach(function(b){G.dndMech[b.dataset.mech]=b.classList.contains('on');});
   const tierVal=document.querySelector(`[onclick*="selMC(this,'serverTier')"].sel`)?.dataset.v||'haiku';
   G.serverTier=tierVal; // 'haiku' | 'sonnet'
   if(!G.useOwnKey){G.gameModel=tierVal==='sonnet'?'claude-sonnet-4-20250514':'claude-haiku-4-5-20251001';}}
 function startGame(){collectSetup();showPage('game-page');history=[];journal=[];summaryCache='';inventory={};charStats={};blockVariants={};trackGameStart();// Init charStats from setup
-G.chars.forEach(c=>{var ds={STR:10,DEX:10,CON:10,INT:10,WIS:10,CHA:10};var cs2=c.stats&&Object.keys(c.stats).length?c.stats:ds;charStats[c.name]={abilities:c.abilities||'',equipment:c.equipment||'',traits:c.traits||'',cls:c.cls||'',appearance:c.appearance||'',hp:c.hp||'',hpCur:c.hpCur||c.hp||'',ac:c.ac||'10',stats:cs2,level:parseInt(c.level)||1,xp:parseInt(c.xp)||0};inventory[c.name]=c.inventory||[];});enterGame(true);}
+G.chars.forEach(c=>{var ds={STR:10,DEX:10,CON:10,INT:10,WIS:10,CHA:10};var cs2=c.stats&&Object.keys(c.stats).length?c.stats:ds;charStats[c.name]={abilities:c.abilities||'',equipment:c.equipment||'',traits:c.traits||'',cls:c.cls||'',appearance:c.appearance||'',hp:c.hp||'',hpCur:c.hpCur||c.hp||'',ac:c.ac||'10',stats:cs2,level:parseInt(c.level)||1,xp:parseInt(c.xp)||0,hunger:100,thirst:100,fatigue:0};inventory[c.name]=c.inventory||[];});enterGame(true);}
 
 // ══ GAME ENGINE ══════════════════════════════════
 function enterGame(isNew){showPage('game-page');
@@ -1285,6 +1350,7 @@ function renderCharPanel(){
   if(!char){c.innerHTML='<p style="font-size:12px;color:var(--text3);padding:8px">Нет персонажей</p>';return;}
   var cs=charStats[char.name]||{};
   var isDnd=G.rules==='dnd';
+  var isSurvival=G.rules==='survival';
   var html='<div style="padding:8px">';
 
   // Имя и класс
@@ -1293,6 +1359,24 @@ function renderCharPanel(){
   if(cs.cls)html+='<div style="font-size:11px;color:var(--text3)">'+esc(cs.cls)+'</div>';
   html+='</div>';
 
+  if(isSurvival){
+    // Полоски выживания: голод, жажда, усталость
+    var cn2=char.name.replace(/'/g,"\\'");
+    [['hunger','🍖 Голод','#e0a050'],['thirst','💧 Жажда','#50a0e0'],['fatigue','😴 Усталость','#a080d0']].forEach(function(bar){
+      var key=bar[0],label=bar[1],color=bar[2];
+      var val=Math.max(0,Math.min(100,parseInt(cs[key]!=null?cs[key]:100)));
+      html+='<div style="margin-bottom:7px">';
+      html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">';
+      html+='<span style="font-size:10px;color:var(--text3)">'+label+'</span>';
+      html+='<input type="number" value="'+val+'" min="0" max="100" data-cn="'+esc(char.name)+'" data-key="'+key+'" ';
+      html+='style="width:42px;background:var(--bg);border:.5px solid var(--border2);border-radius:3px;padding:1px 3px;font-size:11px;color:var(--text2);text-align:center" ';
+      html+='onchange="updateCharStat(this.dataset.cn,this.dataset.key,Math.max(0,Math.min(100,parseInt(this.value)||0)));renderCharPanel()" />';
+      html+='</div>';
+      html+='<div style="height:5px;background:var(--bg3);border-radius:3px;overflow:hidden">';
+      html+='<div style="height:100%;width:'+val+'%;background:'+color+';transition:width .3s;border-radius:3px"></div>';
+      html+='</div></div>';
+    });
+  }
   if(isDnd){
     // Уровень и XP
     var lvl=Math.max(1,Math.min(20,parseInt(cs.level)||1));
@@ -1326,7 +1410,7 @@ function renderCharPanel(){
       html+='style="width:40px;background:var(--bg);border:.5px solid var(--border2);border-radius:3px;padding:1px 3px;font-size:13px;font-weight:600;color:'+col+';text-align:center" ';
       html+='onchange="updateHP(''+cn+'',this.value,'+hpMax+')" />';
       html+='<span style="font-size:11px;color:var(--text3)">/ '+hpMax+'</span>';
-      html+='<span style="font-size:10px;padding:1px 5px;border-radius:3px;background:var(--bg3);color:var(--text3);margin-left:4px">AC '+(cs.ac||10)+'</span>';
+      html+='<span style="font-size:10px;padding:1px 5px;border-radius:3px;background:var(--bg3);color:var(--text3);margin-left:4px">КБ '+(cs.ac||10)+'</span>';
       html+='</div></div>';
       html+='<div style="height:5px;background:var(--bg3);border-radius:3px;overflow:hidden">';
       html+='<div id="'+barId+'" style="height:100%;width:'+pct+'%;background:'+col+';transition:width .3s;border-radius:3px"></div>';
@@ -1412,9 +1496,17 @@ function renderQA(){const e=el('qa-btns');if(!e)return;e.innerHTML='';qaList.for
 function buildSys(){const mD={game:'Режим: Приключение — действия имеют реальные последствия.',story:'Режим: Совместная история.',chat:'Режим: Диалоги и NPC.',sim:'Режим: Симуляция мира.'};const nD={classic:'Стиль: Литературный нарратор, богатый язык.',gm:'Стиль: Мастер игры с юмором.',cold:'Стиль: Хроникёр, сухо и по делу.',poet:'Стиль: Поэтично и образно.'};const dD={1:'Ответ 1-2 предложения.',2:'Ответ 2-3 предложения.',3:'Ответ 3-5 предложений.',4:'Ответ 1-2 абзаца.',5:'Ответ 2-4 абзаца.'};const activeLabel=partyMode==='all'?'[ВСЯ ГРУППА]':'[АКТИВНЫЙ]';const chars=G.chars.length?G.chars.map((c,i)=>{const cs=charStats[c.name]||{};return `${i===G.activeChar?activeLabel:''}${c.name}${cs.cls?' ('+cs.cls+')':''}${c.desc?': '+c.desc.slice(0,60):''}${cs.abilities?' Навыки: '+cs.abilities.slice(0,60):''}${cs.equipment?' Снаряжение: '+cs.equipment.slice(0,60):''}`}).join(' | '):'Нет конкретного персонажа.';const partyNote=partyMode==='all'&&G.chars.length>1?' Все персонажи действуют одновременно.':'';// Custom narrator
 let narratorInstr=nD[G.narratorStyle]||nD.classic;if(G.narratorStyle==='custom'&&G.narratorCustomId){const cn=customNarrators.find(n=>n.id===G.narratorCustomId);if(cn)narratorInstr='Стиль: '+cn.desc;}// Rules
 let rulesInstr='';if(G.rules==='dnd'){
-  const dndChars=G.chars.map(c=>{const cs=charStats[c.name]||{};const stats=cs.stats||{};const modStr=Object.entries(stats).map(([s,v])=>{const mod=Math.floor((parseInt(v)||10-10)/2);return s+':'+(parseInt(v)||10)+'('+( mod>=0?'+':'')+mod+')'}).join(', ');return c.name+(cs.cls?' ('+cs.cls+')':'')+(modStr?' ['+modStr+']':'')+(cs.hp?' HP:'+(cs.hpCur||cs.hp)+'/'+cs.hp:'')+( cs.ac?' AC:'+cs.ac:'');}).join(' | ');
-  rulesInstr='Система D&D 5e. Персонажи: '+dndChars+'. Применяй проверки характеристик (Athletics, Stealth, Perception и тд). Когда нужна проверка — добавь {"dice":true,"dc":число от 5 до 25,"skill":"Название навыка","hideDC":false} (hideDC:true только для скрытых проверок). Учитывай модификаторы характеристик при описании результата.';
-}else if(G.rules==='survival'){rulesInstr='Режим выживания: отслеживай ресурсы, голод, усталость.';}else if(G.rules==='custom'&&G.rulesCustomId){const cs=customSystems.find(s=>s.id===G.rulesCustomId);if(cs)rulesInstr='Система правил: '+cs.desc;}else if(G.customRules){rulesInstr='Правила: '+G.customRules.slice(0,150);}return `Ты нарратор Artist Quest. ${G.lang==='en'?'Answer ONLY in English.':'Отвечай ТОЛЬКО на русском.'}${partyNote}\nМир: ${G.worldName}. ${G.worldDesc.slice(0,400)}\nЖанр: ${G.genres.join(', ')||'—'}\nПерсонажи: ${chars}\n${mD[G.mode]||mD.game} ${narratorInstr} ${dD[G.detail]||dD[3]}\n${G.npcs?'NPC: '+G.npcs.slice(0,200):''}${rulesInstr?' '+rulesInstr:''}${G.hardcore?' Хардкор: без перманентной смерти, но напряжение максимальное.':''}${G.narratorExtra?' '+G.narratorExtra.slice(0,200):''}\n[правка: текст] = изменение без хода. После ответа добавь {"note":"факт"} для журнала. Если есть предметы: {"item":"название","icon":"эмодзи","char":"имя","desc":"описание"}.${summaryCache?'\n\nРЕЗЮМЕ ПРОШЛЫХ СОБЫТИЙ: '+summaryCache.slice(0,800):''}`;}
+  var mech=G.dndMech||{};
+  var mechParts=[];
+  if(mech.dice!==false)mechParts.push('Когда нужна проверка навыка — добавь {"dice":true,"dc":число 5-25,"skill":"Название","hideDC":false} (hideDC:true для скрытых проверок).');
+  if(mech.hp!==false)mechParts.push('Отслеживай HP персонажей, сообщай об уроне.');
+  if(mech.stats!==false){
+    var dndChars=G.chars.map(function(c){var cs=charStats[c.name]||{};var stats=cs.stats||{};var modStr=Object.keys(stats).map(function(s){var v=parseInt(stats[s])||10;var mod=Math.floor((v-10)/2);return s+':'+v+'('+(mod>=0?'+':'')+mod+')';}).join(', ');return c.name+(modStr?' ['+modStr+']':'')+(mech.hp!==false&&cs.hp?' HP:'+(cs.hpCur||cs.hp)+'/'+cs.hp:'')+(mech.ac!==false&&cs.ac?' КБ:'+cs.ac:'');}).join(' | ');
+    mechParts.push('Персонажи: '+dndChars+'. Учитывай модификаторы при проверках.');
+  }
+  if(mech.levels!==false)mechParts.push('За достижения давай XP: {"xp":{"char":"имя","amount":N}}.');
+  rulesInstr='Система D&D 5e. '+mechParts.join(' ');
+}else if(G.rules==='survival'){rulesInstr='Режим выживания. У персонажей есть шкалы (0-100): голод, жажда, усталость. Отслеживай их и сообщай изменения через {"survival":{"char":"имя","hunger":N,"thirst":N,"fatigue":N}}. Голод/жажда падают со временем, усталость растёт от нагрузки.';}else if(G.rules==='custom'&&G.rulesCustomId){const cs=customSystems.find(s=>s.id===G.rulesCustomId);if(cs)rulesInstr='Система правил: '+cs.desc;}else if(G.customRules){rulesInstr='Правила: '+G.customRules.slice(0,150);}return `Ты нарратор Artist Quest. ${G.lang==='en'?'Answer ONLY in English.':'Отвечай ТОЛЬКО на русском.'}${partyNote}\nМир: ${G.worldName}. ${G.worldDesc.slice(0,400)}\nЖанр: ${G.genres.join(', ')||'—'}\nПерсонажи: ${chars}\n${mD[G.mode]||mD.game} ${narratorInstr} ${dD[G.detail]||dD[3]}\n${G.npcs?'NPC: '+G.npcs.slice(0,200):''}${rulesInstr?' '+rulesInstr:''}${G.hardcore?' Хардкор: без перманентной смерти, но напряжение максимальное.':''}${G.narratorExtra?' '+G.narratorExtra.slice(0,200):''}\n[правка: текст] = изменение без хода. После ответа добавь {"note":"факт"} для журнала. Если есть предметы: {"item":"название","icon":"эмодзи","char":"имя","desc":"описание"}.${summaryCache?'\n\nРЕЗЮМЕ ПРОШЛЫХ СОБЫТИЙ: '+summaryCache.slice(0,800):''}`;}
 function buildMsgs(msg,isSys){
   if(isSys)return [{role:'user',content:msg}];
   // Шлём только последние 14 сообщений — резюме уже в системном промпте
@@ -1437,7 +1529,7 @@ if(isPlayer){const actor=actorOverride||(G.chars[G.activeChar]?.name||'Путн�
   ${G.hardcore?'':'<div class="player-controls"><button class="nc-btn" onclick="startInlineEdit(\''+id+'\',true)">✏ Изменить</button></div>'}
 </div>`;}
 else{// Parse JSON metadata from reply
-let clean=text.replace(/\{"note":[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.note){journal.unshift(o.note.slice(0,120));if(journal.length>30)journal.pop();renderJournal();}}catch(e){}return '';}).replace(/\{"item":[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.item){const charName=o.char||(G.chars[G.activeChar]?.name||'Герой');if(!inventory[charName])inventory[charName]=[];if(!inventory[charName].find(i=>i.name===o.item))inventory[charName].push({name:o.item,icon:o.icon||'📦',desc:o.desc||''});if(rightTab==='inv')renderInvPanel();}}catch(e){}return '';}).trim();
+let clean=text.replace(/\{"note":[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.note){journal.unshift(o.note.slice(0,120));if(journal.length>30)journal.pop();renderJournal();}}catch(e){}return '';}).replace(/\{"item":[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.item){const charName=o.char||(G.chars[G.activeChar]?.name||'Герой');if(!inventory[charName])inventory[charName]=[];if(!inventory[charName].find(i=>i.name===o.item))inventory[charName].push({name:o.item,icon:o.icon||'📦',desc:o.desc||''});if(rightTab==='inv')renderInvPanel();}}catch(e){}return '';}).replace(/\{"survival":[^}]+\}\}/g,m=>{try{const o=JSON.parse(m);if(o.survival&&o.survival.char){const cn=o.survival.char;if(!charStats[cn])charStats[cn]={};['hunger','thirst','fatigue'].forEach(k=>{if(o.survival[k]!=null)charStats[cn][k]=Math.max(0,Math.min(100,parseInt(o.survival[k])));});if(rightTab==='chars')renderCharPanel();}}catch(e){}return '';}).replace(/\{"xp":[^}]+\}\}/g,m=>{try{const o=JSON.parse(m);if(o.xp&&o.xp.char){const cn=o.xp.char;if(!charStats[cn])charStats[cn]={};charStats[cn].xp=(parseInt(charStats[cn].xp)||0)+(parseInt(o.xp.amount)||0);if(rightTab==='chars')renderCharPanel();notif('+'+(o.xp.amount||0)+' XP — '+cn,'info');}}catch(e){}return '';}).trim();
 // D&D dice check
 let diceBlock='';
 clean=clean.replace(/\{"dice":true[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.dice&&isOn("dice")){diceBlock=makeDiceBlock(o.dc,o.skill,o.hideDC===true);}}catch(e){}return '';}).trim();

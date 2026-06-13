@@ -5,7 +5,11 @@ const pool    = require('../db/pool');
 const auth    = require('../middleware/auth');
 const router  = express.Router();
 
+// Серверный провайдер: ANTHROPIC_API_KEY (Claude) ИЛИ AITUNNEL_API_KEY (AITunnel, РФ)
 const SERVER_ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
+const SERVER_AITUNNEL_KEY  = process.env.AITUNNEL_API_KEY;
+const SERVER_KEY      = SERVER_ANTHROPIC_KEY || SERVER_AITUNNEL_KEY;
+const SERVER_PROVIDER = SERVER_ANTHROPIC_KEY ? 'claude' : 'aitunnel';
 
 const PROVIDERS = {
   claude:   { name: 'Claude (Anthropic)',   models: ['claude-sonnet-4-20250514','claude-haiku-4-5-20251001'] },
@@ -138,12 +142,12 @@ router.post('/chat', auth, async (req, res) => {
       provider = user.own_provider || detectProvider(apiKey, null);
       model    = reqModel || user.own_model || null;
     } else {
-      if (!SERVER_ANTHROPIC_KEY)
+      if (!SERVER_KEY)
         return res.status(503).json({ error: 'no_server_key', message: 'Серверный ключ не настроен.', action: 'Добавьте свой API ключ в Настройках.' });
       if (user.tokens_balance < 500)
         return res.status(402).json({ error: 'insufficient_tokens', message: `Недостаточно токенов (у вас ${user.tokens_balance}, нужно минимум 500).`, action: 'Пополните баланс (значок 💎 на главном экране) или добавьте свой API ключ в Настройках.' });
-      apiKey   = SERVER_ANTHROPIC_KEY;
-      provider = 'claude';
+      apiKey   = SERVER_KEY;
+      provider = SERVER_PROVIDER;
       // Тариф: клиент передаёт model — разрешаем только haiku или sonnet
       const allowed = ['claude-haiku-4-5-20251001', 'claude-sonnet-4-20250514'];
       model = allowed.includes(reqModel) ? reqModel : 'claude-haiku-4-5-20251001';
