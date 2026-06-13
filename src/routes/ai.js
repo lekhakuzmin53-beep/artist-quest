@@ -144,7 +144,9 @@ router.post('/chat', auth, async (req, res) => {
         return res.status(402).json({ error: 'insufficient_tokens', message: `Недостаточно токенов (у вас ${user.tokens_balance}, нужно минимум 500).`, action: 'Пополните баланс (значок 💎 на главном экране) или добавьте свой API ключ в Настройках.' });
       apiKey   = SERVER_ANTHROPIC_KEY;
       provider = 'claude';
-      model    = 'claude-sonnet-4-20250514';
+      // Тариф: клиент передаёт model — разрешаем только haiku или sonnet
+      const allowed = ['claude-haiku-4-5-20251001', 'claude-sonnet-4-20250514'];
+      model = allowed.includes(reqModel) ? reqModel : 'claude-haiku-4-5-20251001';
     }
 
     const safeMax = Math.min(max_tokens, user.own_api_key ? 2000 : Math.min(2000, user.tokens_balance));

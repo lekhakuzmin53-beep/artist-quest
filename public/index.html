@@ -572,6 +572,15 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
       </div>
     </div>
 
+    <!-- Features -->
+    <div class="settings-sec" id="set-features">
+      <div class="settings-sec-hdr" onclick="toggleSec(this)"><span class="sec-icon">🎛</span><span class="sec-title">Возможности игры</span><span class="sec-badge" id="feat-badge"></span><span class="sec-arrow">▾</span></div>
+      <div class="settings-sec-body">
+        <p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.6">Включайте и выключайте функции игры.</p>
+        <div id="features-list" style="display:flex;flex-direction:column;gap:0"></div>
+      </div>
+    </div>
+
     <!-- AI Keys -->
     <div class="settings-sec" id="set-keys">
       <div class="settings-sec-hdr" onclick="toggleSec(this)"><span class="sec-icon">🔑</span><span class="sec-title">Мои нейросети</span><span class="sec-badge" id="keys-badge"></span><span class="sec-arrow">▾</span></div>
@@ -878,6 +887,7 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
       <div class="dd-wrap">
         <div class="tb-user" id="game-user-btn" onclick="toggleDD('game-dd','game-user-btn')"><span id="game-uname">—</span> ▾</div>
         <div class="dd-menu" id="game-dd">
+          <button class="dd-item" onclick="closeDD();showGameSettings()">🌍 Настройки мира</button>
           <button class="dd-item" onclick="closeDD();showPage('settings-page');loadSettingsData()">⚙ Настройки</button>
           <div class="dd-sep"></div>
           <button class="dd-item" onclick="closeDD();showPage('create-page');initCreatePage()">⚔ Новое приключение</button>
@@ -1162,8 +1172,8 @@ function doLogout(){token='';user=null;prices=null;localStorage.removeItem('aq_t
 async function loadUserData(){const me=await apiFetch('/api/auth/me');if(me.error){doLogout();return;}user=me.user;el('menu-uname').textContent=user.username;if(!prices){const pd=await apiFetch('/api/payment/prices');prices=pd;buildPkgMini('pkg-grid-game');}}
 
 // ══ SETTINGS ═════════════════════════════════════
-async function loadSettingsData(){renderProviderCards();renderKeyForm();renderCustomNarrators();renderCustomSystems();buildThemeCards();buildCustomThemesList();renderProgressPage();const saved=localStorage.getItem('aq_theme')||'';
-  const ph=await apiFetch('/api/payment/history');const phl=el('pay-history-body');if(phl){phl.innerHTML='';if(!ph.payments?.length){phl.innerHTML='<div style="font-size:13px;color:var(--text3)">Пока нет платежей</div>';return;}ph.payments.forEach(p=>{const dt=new Date(p.created_at).toLocaleDateString('ru',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});const ok=p.status==='succeeded';phl.innerHTML+=`<div class="pay-item"><span>${dt} · <b>${p.amount_rub}₽</b> → +${Number(p.tokens_granted).toLocaleString('ru')} токенов</span><span class="pay-badge ${ok?'ok':'pending'}">${ok?'✓ Оплачено':'⏳ Ожидание'}</span></div>`;});}
+async function loadSettingsData(){renderProviderCards();renderKeyForm();renderCustomNarrators();renderCustomSystems();buildThemeCards();buildCustomThemesList();renderProgressPage();renderFeaturesList();const saved=localStorage.getItem('aq_theme')||'';
+  
   // Init global det slider
   el('global-det').value=globalSettings.detail||3;el('global-dv').textContent=detLabels[(globalSettings.detail||3)-1];
   el('global-det').oninput=function(){globalSettings.detail=parseInt(this.value);el('global-dv').textContent=detLabels[this.value-1];saveGlobalSettings();};
@@ -1210,8 +1220,8 @@ function goStep(s){currentStep=s;document.querySelectorAll('.wizard-section').fo
 function nextStep(){if(currentStep===1&&!el('wn').value.trim()){notif('Введите название мира','err');return;}goStep(Math.min(currentStep+1,totalSteps-1));}
 function prevStep(){goStep(Math.max(currentStep-1,0));}
 function addCG(){const i=el('cg'),v=i.value.trim();if(!v)return;const b=document.createElement('button');b.className='tag on';b.onclick=()=>b.classList.toggle('on');b.textContent=v;el('genre-tags').appendChild(b);i.value='';}
-function addCh(){const i=el('nc'),name=i.value.trim()||'Безымянный';setupChars.push({name,cls:'',desc:'',appearance:'',abilities:'',equipment:'',traits:'',inventory:[]});i.value='';renderSetupChars();}
-function rmCh(i){setupChars.splice(i,1);renderSetupChars();}
+function addCh(){var i=el('nc'),name=i.value.trim()||'Безымянный';setupChars.push({name:name,cls:'',desc:'',appearance:'',abilities:'',equipment:'',traits:'',inventory:[]});i.value='';renderSetupChars();if(setupChars.length>=2){var p=document.querySelector('#step-2 [data-v="party"]');if(p){MC_GROUPS.charMode=null;selMC(p,'charMode');}}}
+function rmCh(i){setupChars.splice(i,1);renderSetupChars();if(setupChars.length<=1){var s=document.querySelector('#step-2 [data-v="single"]');if(s){MC_GROUPS.charMode=null;selMC(s,'charMode');}}}
 function makeDndStatsHtml(c, i) {
   var stats = ['STR','DEX','CON','INT','WIS','CHA'];
   var statsGrid = stats.map(function(stat) {
@@ -1258,7 +1268,7 @@ function collectSetup(){G.worldName=el('wn').value.trim()||'Безымянный
   G.serverTier=tierVal; // 'haiku' | 'sonnet'
   if(!G.useOwnKey){G.gameModel=tierVal==='sonnet'?'claude-sonnet-4-20250514':'claude-haiku-4-5-20251001';}}
 function startGame(){collectSetup();showPage('game-page');history=[];journal=[];summaryCache='';inventory={};charStats={};blockVariants={};trackGameStart();// Init charStats from setup
-G.chars.forEach(c=>{charStats[c.name]={abilities:c.abilities||'',equipment:c.equipment||'',traits:c.traits||'',cls:c.cls||'',appearance:c.appearance||'',hp:c.hp||'',hpCur:c.hpCur||c.hp||'',ac:c.ac||'10',stats:c.stats||{}};inventory[c.name]=c.inventory||[];});enterGame(true);}
+G.chars.forEach(c=>{var ds={STR:10,DEX:10,CON:10,INT:10,WIS:10,CHA:10};var cs2=c.stats&&Object.keys(c.stats).length?c.stats:ds;charStats[c.name]={abilities:c.abilities||'',equipment:c.equipment||'',traits:c.traits||'',cls:c.cls||'',appearance:c.appearance||'',hp:c.hp||'',hpCur:c.hpCur||c.hp||'',ac:c.ac||'10',stats:cs2,level:parseInt(c.level)||1,xp:parseInt(c.xp)||0};inventory[c.name]=c.inventory||[];});enterGame(true);}
 
 // ══ GAME ENGINE ══════════════════════════════════
 function enterGame(isNew){showPage('game-page');
@@ -1270,55 +1280,97 @@ const savedNotes=localStorage.getItem('aq_notes_'+G.slotId)||'';el('g-notes').va
 function renderGChars(){const e=el('g-chars');if(!e)return;e.innerHTML='';if(!G.chars.length){e.innerHTML='<p style="padding:8px;font-size:12px;color:var(--text3);font-style:italic">Нет персонажей</p>';return;}G.chars.forEach((c,i)=>{const isActive=i===G.activeChar&&partyMode==='single';const d=document.createElement('div');d.className='char-card'+(isActive?' active':'');const cs=charStats[c.name]||{};d.innerHTML=`<div class="char-card-name">${isActive?'<span class="char-active-dot"></span>':''} ${esc(c.name)}${cs.cls?` <span style="font-size:10px;color:var(--text3)">${esc(cs.cls)}</span>`:''}</div><div class="char-card-sub">${cs.abilities?esc(cs.abilities.slice(0,45)):'—'}</div>`;d.onclick=()=>{G.activeChar=i;partyMode='single';renderGChars();renderCharPanel();el('pi').placeholder=`Что делает ${c.name}?`;notif('Активен: '+c.name);};e.appendChild(d);});if(G.chars.length>=2){const allBtn=document.createElement('button');allBtn.className='char-all-btn'+(partyMode==='all'?' active':'');allBtn.innerHTML='⚔ Действие всей группы';allBtn.onclick=()=>{partyMode='all';renderGChars();el('pi').placeholder='Что делает группа?';notif('Вся группа');};e.appendChild(allBtn);}}
 
 function renderCharPanel(){
-  const c=el('char-panel-body');if(!c)return;
-  const char=G.chars[G.activeChar];
+  var c=el('char-panel-body'); if(!c)return;
+  var char=G.chars[G.activeChar];
   if(!char){c.innerHTML='<p style="font-size:12px;color:var(--text3);padding:8px">Нет персонажей</p>';return;}
-  const cs=charStats[char.name]||{};
-  const isDnd=G.rules==='dnd';
-  var html='<div style="padding:8px"><div class="char-panel-name">'+esc(char.name)+'</div>';
-  if(isDnd&&cs.hp){
-    var hpMax=parseInt(cs.hp)||10;
-    var hpCur=parseInt(cs.hpCur!=null?cs.hpCur:cs.hp)||hpMax;
-    var pct=Math.max(0,Math.min(100,Math.round(hpCur/hpMax*100)));
-    var hpColor=pct>50?'var(--success)':pct>25?'var(--ac)':'var(--danger)';
-    var barId='hp-bar-'+char.name.replace(/[^a-z0-9]/gi,'_');
-    var charEscName=char.name.replace(/'/g,"\\'");
-    html+='<div style="margin-bottom:10px">'
-      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">'
-      +'<span class="char-stat-label">HP</span>'
-      +'<div style="display:flex;align-items:center;gap:4px">'
-      +'<input type="number" value="'+hpCur+'" min="0" max="'+hpMax+'" '
-      +'style="width:44px;background:var(--bg);border:.5px solid var(--border2);border-radius:3px;padding:2px 4px;font-size:13px;font-weight:600;color:'+hpColor+';text-align:center" '
-      +'oninput="updateHP(\''+charEscName+"',this.value,"+hpMax+')"/>'
-      +'<span style="font-size:12px;color:var(--text3)">/ '+hpMax+'</span>'
-      +'<span style="font-size:11px;padding:1px 6px;border-radius:3px;background:var(--bg3);color:var(--text3)">AC '+(cs.ac||10)+'</span>'
-      +'</div></div>'
-      +'<div style="height:6px;background:var(--bg3);border-radius:3px;overflow:hidden">'
-      +'<div id="'+barId+'" style="height:100%;width:'+pct+'%;background:'+hpColor+';transition:width .3s;border-radius:3px"></div>'
-      +'</div></div>';
-  }
-  if(isDnd&&cs.stats){
-    html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:10px">';
-    Object.entries(cs.stats||{}).slice(0,6).forEach(function(entry){
-      var stat=entry[0],val=entry[1];
-      var v=parseInt(val)||10;
+  var cs=charStats[char.name]||{};
+  var isDnd=G.rules==='dnd';
+  var html='<div style="padding:8px">';
+
+  // Имя и класс
+  html+='<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:10px">';
+  html+='<div style="font-family:Cinzel,serif;font-size:13px;color:var(--ac);font-weight:500;flex:1">'+esc(char.name)+'</div>';
+  if(cs.cls)html+='<div style="font-size:11px;color:var(--text3)">'+esc(cs.cls)+'</div>';
+  html+='</div>';
+
+  if(isDnd){
+    // Уровень и XP
+    var lvl=Math.max(1,Math.min(20,parseInt(cs.level)||1));
+    var xpCur=parseInt(cs.xp)||0;
+    var xpTbl=[0,300,900,2700,6500,14000,23000,34000,48000,64000,85000,100000,120000,140000,165000,195000,225000,265000,305000,355000];
+    var xpNext=lvl<20?xpTbl[lvl]:'макс';
+    var cn=char.name.replace(/'/g,"\'");
+    html+='<div style="background:var(--bg3);border-radius:4px;padding:7px 10px;margin-bottom:8px;display:flex;align-items:center;gap:8px">';
+    html+='<div style="font-size:10px;font-weight:600;color:var(--text3)">УР.</div>';
+    html+='<input type="number" value="'+lvl+'" min="1" max="20" ';
+    html+='style="width:36px;background:transparent;border:none;font-size:18px;font-weight:700;color:var(--ac);text-align:center;outline:none" ';
+    html+='onchange="updateCharStat(''+cn+'','level',Math.max(1,Math.min(20,parseInt(this.value)||1)))" />';
+    html+='<div style="font-size:10px;color:var(--text3)">XP: ';
+    html+='<input type="number" value="'+xpCur+'" min="0" ';
+    html+='style="width:55px;background:var(--bg);border:.5px solid var(--border2);border-radius:3px;padding:1px 3px;font-size:11px;color:var(--text2);text-align:center" ';
+    html+='onchange="updateCharStat(''+cn+'','xp',parseInt(this.value)||0)" />';
+    html+=' / '+xpNext+'</div></div>';
+
+    // HP + AC
+    if(cs.hp){
+      var hpMax=parseInt(cs.hp)||10;
+      var hpCur=parseInt(cs.hpCur!=null?cs.hpCur:cs.hp)||hpMax;
+      var pct=Math.max(0,Math.min(100,Math.round(hpCur/hpMax*100)));
+      var col=pct>50?'var(--success)':pct>25?'var(--ac)':'var(--danger)';
+      var barId='hp-bar-'+char.name.replace(/[^a-z0-9]/gi,'_');
+      html+='<div style="margin-bottom:8px">';
+      html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">';
+      html+='<span style="font-size:9px;font-weight:600;color:var(--text3);text-transform:uppercase">HP</span>';
+      html+='<div style="display:flex;align-items:center;gap:4px">';
+      html+='<input type="number" value="'+hpCur+'" min="0" max="'+hpMax+'" ';
+      html+='style="width:40px;background:var(--bg);border:.5px solid var(--border2);border-radius:3px;padding:1px 3px;font-size:13px;font-weight:600;color:'+col+';text-align:center" ';
+      html+='onchange="updateHP(''+cn+'',this.value,'+hpMax+')" />';
+      html+='<span style="font-size:11px;color:var(--text3)">/ '+hpMax+'</span>';
+      html+='<span style="font-size:10px;padding:1px 5px;border-radius:3px;background:var(--bg3);color:var(--text3);margin-left:4px">AC '+(cs.ac||10)+'</span>';
+      html+='</div></div>';
+      html+='<div style="height:5px;background:var(--bg3);border-radius:3px;overflow:hidden">';
+      html+='<div id="'+barId+'" style="height:100%;width:'+pct+'%;background:'+col+';transition:width .3s;border-radius:3px"></div>';
+      html+='</div></div>';
+    }
+
+    // STR/DEX/CON/INT/WIS/CHA — редактируемые, 1-30
+    var stats=cs.stats||{STR:10,DEX:10,CON:10,INT:10,WIS:10,CHA:10};
+    html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:10px">';
+    ['STR','DEX','CON','INT','WIS','CHA'].forEach(function(st){
+      var v=Math.max(1,Math.min(30,parseInt(stats[st])||10));
       var mod=Math.floor((v-10)/2);
       var mc=mod>=0?'var(--success)':'var(--danger)';
-      html+='<div style="text-align:center;padding:6px 4px;background:var(--bg3);border-radius:4px;border:.5px solid var(--border)">'
-        +'<div style="font-size:9px;font-weight:600;color:var(--text3);letter-spacing:.04em">'+stat+'</div>'
-        +'<div style="font-size:16px;font-weight:700;color:var(--text);line-height:1.2">'+v+'</div>'
-        +'<div style="font-size:11px;color:'+mc+'">'+(mod>=0?'+':'')+mod+'</div>'
-        +'</div>';
+      html+='<div style="text-align:center;padding:4px 2px;background:var(--bg3);border-radius:4px;border:.5px solid var(--border)">';
+      html+='<div style="font-size:8px;font-weight:600;color:var(--text3);letter-spacing:.04em">'+st+'</div>';
+      html+='<input type="number" value="'+v+'" min="1" max="30" ';
+      html+='style="width:32px;background:transparent;border:none;font-size:14px;font-weight:700;color:var(--text);text-align:center;outline:none;padding:0" ';
+      html+='onchange="updateStat(''+cn+'',''+st+'',this.value)" />';
+      html+='<div style="font-size:10px;color:'+mc+'">'+(mod>=0?'+':'')+mod+'</div>';
+      html+='</div>';
     });
     html+='</div>';
   }
-  if(cs.cls)html+='<div class="char-stat-group"><div class="char-stat-label">Класс</div><div class="char-stat-val">'+esc(cs.cls)+'</div></div>';
-  if(cs.appearance)html+='<div class="char-stat-group"><div class="char-stat-label">Внешность</div><div class="char-stat-val">'+esc(cs.appearance)+'</div></div>';
+
   if(cs.abilities)html+='<div class="char-stat-group"><div class="char-stat-label">Способности</div><div class="char-stat-val">'+esc(cs.abilities)+'</div></div>';
+  if(cs.appearance)html+='<div class="char-stat-group"><div class="char-stat-label">Внешность</div><div class="char-stat-val">'+esc(cs.appearance)+'</div></div>';
   if(cs.traits)html+='<div class="char-stat-group"><div class="char-stat-label">Черты</div><div class="char-stat-val">'+esc(cs.traits)+'</div></div>';
   if(char.desc)html+='<div class="char-stat-group"><div class="char-stat-label">История</div><div class="char-stat-val">'+esc(char.desc)+'</div></div>';
   html+='</div>';
   c.innerHTML=html;
+}
+
+function updateStat(charName,stat,val){
+  if(!charStats[charName])charStats[charName]={};
+  if(!charStats[charName].stats)charStats[charName].stats={};
+  charStats[charName].stats[stat]=Math.max(1,Math.min(30,parseInt(val)||10));
+  renderCharPanel();
+  autoSave();
+}
+
+function updateCharStat(charName,key,val){
+  if(!charStats[charName])charStats[charName]={};
+  charStats[charName][key]=val;
+  autoSave();
 }
 function updateHP(charName,cur,max){
   if(!charStats[charName])charStats[charName]={};
@@ -1362,8 +1414,12 @@ let narratorInstr=nD[G.narratorStyle]||nD.classic;if(G.narratorStyle==='custom'&
 let rulesInstr='';if(G.rules==='dnd'){
   const dndChars=G.chars.map(c=>{const cs=charStats[c.name]||{};const stats=cs.stats||{};const modStr=Object.entries(stats).map(([s,v])=>{const mod=Math.floor((parseInt(v)||10-10)/2);return s+':'+(parseInt(v)||10)+'('+( mod>=0?'+':'')+mod+')'}).join(', ');return c.name+(cs.cls?' ('+cs.cls+')':'')+(modStr?' ['+modStr+']':'')+(cs.hp?' HP:'+(cs.hpCur||cs.hp)+'/'+cs.hp:'')+( cs.ac?' AC:'+cs.ac:'');}).join(' | ');
   rulesInstr='Система D&D 5e. Персонажи: '+dndChars+'. Применяй проверки характеристик (Athletics, Stealth, Perception и тд). Когда нужна проверка — добавь {"dice":true,"dc":число от 5 до 25,"skill":"Название навыка","hideDC":false} (hideDC:true только для скрытых проверок). Учитывай модификаторы характеристик при описании результата.';
-}else if(G.rules==='survival'){rulesInstr='Режим выживания: отслеживай ресурсы, голод, усталость.';}else if(G.rules==='custom'&&G.rulesCustomId){const cs=customSystems.find(s=>s.id===G.rulesCustomId);if(cs)rulesInstr='Система правил: '+cs.desc;}else if(G.customRules){rulesInstr='Правила: '+G.customRules.slice(0,150);}return `Ты нарратор Artist Quest. ${G.lang==='en'?'Answer ONLY in English.':'Отвечай ТОЛЬКО на русском.'}${partyNote}\nМир: ${G.worldName}. ${G.worldDesc.slice(0,400)}\nЖанр: ${G.genres.join(', ')||'—'}\nПерсонажи: ${chars}\n${mD[G.mode]||mD.game} ${narratorInstr} ${dD[G.detail]||dD[3]}\n${G.npcs?'NPC: '+G.npcs.slice(0,200):''}${rulesInstr?' '+rulesInstr:''}${G.hardcore?' Хардкор: без перманентной смерти, но напряжение максимальное.':''}${G.narratorExtra?' '+G.narratorExtra.slice(0,200):''}\n[правка: текст] = изменение без хода. После ответа добавь {"note":"факт"} для журнала. Если есть предметы: {"item":"название","icon":"эмодзи","char":"имя","desc":"описание"}.`;}
-function buildMsgs(msg,isSys){if(isSys)return [{role:'user',content:msg}];const msgs=[...history];if(summaryCache&&msgs.length>6)return [{role:'user',content:'[Резюме: '+summaryCache+']'},{role:'assistant',content:'Понял, продолжаю.'},...msgs.slice(-16)];return msgs.slice(-22);}
+}else if(G.rules==='survival'){rulesInstr='Режим выживания: отслеживай ресурсы, голод, усталость.';}else if(G.rules==='custom'&&G.rulesCustomId){const cs=customSystems.find(s=>s.id===G.rulesCustomId);if(cs)rulesInstr='Система правил: '+cs.desc;}else if(G.customRules){rulesInstr='Правила: '+G.customRules.slice(0,150);}return `Ты нарратор Artist Quest. ${G.lang==='en'?'Answer ONLY in English.':'Отвечай ТОЛЬКО на русском.'}${partyNote}\nМир: ${G.worldName}. ${G.worldDesc.slice(0,400)}\nЖанр: ${G.genres.join(', ')||'—'}\nПерсонажи: ${chars}\n${mD[G.mode]||mD.game} ${narratorInstr} ${dD[G.detail]||dD[3]}\n${G.npcs?'NPC: '+G.npcs.slice(0,200):''}${rulesInstr?' '+rulesInstr:''}${G.hardcore?' Хардкор: без перманентной смерти, но напряжение максимальное.':''}${G.narratorExtra?' '+G.narratorExtra.slice(0,200):''}\n[правка: текст] = изменение без хода. После ответа добавь {"note":"факт"} для журнала. Если есть предметы: {"item":"название","icon":"эмодзи","char":"имя","desc":"описание"}.${summaryCache?'\n\nРЕЗЮМЕ ПРОШЛЫХ СОБЫТИЙ: '+summaryCache.slice(0,800):''}`;}
+function buildMsgs(msg,isSys){
+  if(isSys)return [{role:'user',content:msg}];
+  // Шлём только последние 14 сообщений — резюме уже в системном промпте
+  return history.slice(-14);
+}
 
 async function sendAI(msg,isSystem=false){if(thinking)return;if(!G.useOwnKey&&user&&!user.own_api_key&&parseInt(user.tokens_balance)<500){addError('Недостаточно токенов',`У вас ${parseInt(user.tokens_balance||0)} токенов, нужно минимум 500.`,'Нажмите 💎 в верхней панели, или добавьте API ключ в Настройках.');return;}if(G.useOwnKey&&!user?.own_api_key){addError('Ключ не настроен','Свой ключ не добавлен.','Настройки → Мои нейросети.');return;}thinking=true;el('send-btn').disabled=true;if(!isSystem){const actor=partyMode==='all'?'Группа':(G.chars[G.activeChar]?.name||'Путник');addBlock(msg,true,null,actor);history.push({role:'user',content:partyMode==='all'&&G.chars.length>1?`[Группа]: ${msg}`:`[${G.chars[G.activeChar]?.name||'Путник'}]: ${msg}`});}showThink();try{const resp=await apiFetch('/api/ai/chat',{method:'POST',body:JSON.stringify({system:buildSys(),messages:buildMsgs(msg,isSystem),max_tokens:900,model:G.gameModel||undefined})});hideThink();if(resp.error){addError('Ошибка нейросети',resp.message||resp.error,resp.action||'Попробуйте ещё раз.');thinking=false;el('send-btn').disabled=false;return;}const reply=resp.content?.map(c=>c.text||'').join('')||'...';const blockId=addBlock(reply,false);blockVariants[blockId]={v0:reply,versions:[reply],current:0};if(isSystem)history.push({role:'user',content:msg,_sys:true});history.push({role:'assistant',content:reply});if(history.length>60)history=history.slice(-60);if(resp._meta?.tokens_balance!==null&&resp._meta?.tokens_balance!==undefined&&user){user.tokens_balance=resp._meta.tokens_balance;updateGameBal();}trackMessage();await maybeSummarize();autoSave();}catch(e){hideThink();addError('Ошибка соединения','Не удалось связаться с сервером.','Проверьте интернет и попробуйте снова.');}thinking=false;el('send-btn').disabled=false;}
 
@@ -1384,7 +1440,7 @@ else{// Parse JSON metadata from reply
 let clean=text.replace(/\{"note":[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.note){journal.unshift(o.note.slice(0,120));if(journal.length>30)journal.pop();renderJournal();}}catch(e){}return '';}).replace(/\{"item":[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.item){const charName=o.char||(G.chars[G.activeChar]?.name||'Герой');if(!inventory[charName])inventory[charName]=[];if(!inventory[charName].find(i=>i.name===o.item))inventory[charName].push({name:o.item,icon:o.icon||'📦',desc:o.desc||''});if(rightTab==='inv')renderInvPanel();}}catch(e){}return '';}).trim();
 // D&D dice check
 let diceBlock='';
-clean=clean.replace(/\{"dice":true[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.dice){diceBlock=makeDiceBlock(o.dc,o.skill,o.hideDC===true);}}catch(e){}return '';}).trim();
+clean=clean.replace(/\{"dice":true[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.dice&&isOn("dice")){diceBlock=makeDiceBlock(o.dc,o.skill,o.hideDC===true);}}catch(e){}return '';}).trim();
 
 wrap.innerHTML=`<div class="narrator-wrap" id="nwrap_${id}">
   <div class="narrator-text" id="ntxt_${id}"><p>${fmt(clean)}</p></div>
@@ -1444,7 +1500,27 @@ function showGameSettings(){el('gs-wn').value=G.worldName;el('gs-wd').value=G.wo
 function saveGameSettings(){G.worldName=el('gs-wn').value.trim()||G.worldName;G.worldDesc=el('gs-wd').value.trim();G.worldStart=el('gs-ws').value.trim();G.npcs=el('gs-np').value.trim();G.narratorExtra=el('gs-ne').value.trim();el('g-wn').textContent=G.worldName;cm('gsettings-modal');autoSave();notif('Настройки обновлены');}
 
 // ── SAVE ──────────────────────────────────────────
-async function maybeSummarize(){const turns=history.filter(m=>m.role==='user'&&!m._sys).length;if(turns>0&&turns%10===0){try{const r=await apiFetch('/api/ai/chat',{method:'POST',body:JSON.stringify({system:'Сожми в 3-4 предложения: ключевые события, имена, состояние мира.',messages:[{role:'user',content:history.slice(-20).map(m=>(m.role==='user'?'Игрок':'Нарратор')+': '+m.content).join('\n')}],max_tokens:250})});const s=r.content?.map(c=>c.text||'').join('');if(s)summaryCache=(summaryCache?summaryCache+' | ':'')+s;}catch(e){}}}
+async function maybeSummarize(){
+  // Умная компрессия: когда история > 18 сообщений, сжимаем старые 10 в резюме
+  // Резюме ЗАМЕНЯЕТСЯ целиком (не растёт бесконечно)
+  if(history.length<=18)return;
+  const toCompress=history.slice(0,history.length-10); // всё кроме последних 10
+  const keepRecent=history.slice(-10);
+  try{
+    const prevSummary=summaryCache?('Прошлое резюме: '+summaryCache.slice(0,600)+'\n\n'):'';
+    const r=await apiFetch('/api/ai/chat',{method:'POST',body:JSON.stringify({
+      system:'Ты сжимаешь историю RPG в компактное резюме. Сохрани: ключевые события, имена персонажей и NPC, важные предметы, текущие цели, состояние мира. Максимум 150 слов. Отвечай ТОЛЬКО резюме без вступлений.',
+      messages:[{role:'user',content:prevSummary+toCompress.map(m=>(m.role==='user'?'Игрок':'Мастер')+': '+String(m.content).slice(0,300)).join('\n')}],
+      max_tokens:300,
+      model:'claude-haiku-4-5-20251001'
+    })});
+    const s=r.content?.map(c=>c.text||'').join('');
+    if(s&&s.length>20){
+      summaryCache=s.trim();      // ЗАМЕНА, не конкатенация
+      history=keepRecent;          // обрезаем историю — она теперь в резюме
+    }
+  }catch(e){/* резюме не критично — продолжаем без него */}
+}
 async function autoSave(){if(G.slotId===null){if(G.hardcore){// Hardcore: always slot 0
 G.slotId=0;}else return;}const data={...G,_history:history.slice(-24),_journal:journal.slice(0,25),_summary:summaryCache,_inventory:inventory,_charStats:charStats};await apiFetch('/api/saves/'+G.slotId,{method:'POST',body:JSON.stringify({data,name:G.worldName})}).catch(()=>{});}
 async function manSave(){if(G.hardcore){// Hardcore autosaves to slot 0 only, manual save allowed as explicit trigger
@@ -1486,6 +1562,61 @@ function renderProgressPage(){
     d.style.cssText=`display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--rad);border:.5px solid var(--border);background:var(--bg3);${unlocked?'border-color:var(--ac)':'opacity:.5'}`;
     d.innerHTML=`<span style="font-size:20px">${a.icon}</span><div><div style="font-size:13px;font-weight:500;color:${unlocked?'var(--ac)':'var(--text)'}">${a.name}</div><div style="font-size:11px;color:var(--text3)">${a.desc}</div></div>${unlocked?'<span style="margin-left:auto;font-size:12px;color:var(--success);font-weight:600">✓</span>':''}`;
     achEl.appendChild(d);
+  });
+}
+
+
+// ── FEATURE FLAGS ──────────────────────────────────
+var FEATURES=[
+  {id:'dice',     name:'Кубики D&D',      desc:'Броски кубика при D&D проверках'},
+  {id:'variants', name:'Варианты ответа',  desc:'Кнопка «Другой ответ» и сравнение вариантов'},
+  {id:'edit',     name:'Редактирование',   desc:'Изменять сообщения нарратора и игрока'},
+  {id:'journal',  name:'Журнал событий',   desc:'Правая панель с журналом событий'},
+  {id:'inventory',name:'Инвентарь',        desc:'Отслеживание предметов в инвентаре'},
+  {id:'party',    name:'Режим группы',     desc:'Кнопка «Действие всей группы»'},
+  {id:'notes',    name:'Заметки',          desc:'Поле заметок в левой панели'},
+];
+function getFlags(){return JSON.parse(localStorage.getItem('aq_feats')||'{}');}
+function setFlag(id,val){var f=getFlags();f[id]=val;localStorage.setItem('aq_feats',JSON.stringify(f));applyFlags();}
+function isOn(id){try{var f=getFlags();return f[id]!==false;}catch(e){return true;}}
+function applyFlags(){
+  // dice: block is generated conditionally in addBlock already
+  // party: all-group button
+  var pb=document.querySelector('.char-all-btn');
+  if(pb)pb.style.display=isOn('party')?'':'none';
+  // notes
+  var na=document.querySelector('.notes-area');
+  if(na)na.style.display=isOn('notes')?'':'none';
+  // journal tab
+  var jt=document.querySelector('.right-tab:first-child');
+  if(jt)jt.style.display=isOn('journal')?'':'none';
+}
+function renderFeaturesList(){
+  var c=el('features-list'); if(!c)return;
+  var flags=getFlags();
+  c.innerHTML='';
+  FEATURES.forEach(function(feat){
+    var on=flags[feat.id]!==false;
+    var row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:.5px solid var(--border)';
+    // Toggle switch
+    var sw=document.createElement('label');
+    sw.style.cssText='position:relative;display:inline-block;width:38px;height:20px;flex-shrink:0;cursor:pointer';
+    var inp=document.createElement('input');
+    inp.type='checkbox'; inp.checked=on;
+    inp.style.cssText='opacity:0;width:0;height:0;position:absolute';
+    inp.onchange=(function(fid){return function(){setFlag(fid,this.checked);renderFeaturesList();};})(feat.id);
+    var track=document.createElement('span');
+    track.style.cssText='position:absolute;inset:0;border-radius:20px;background:'+(on?'var(--ac)':'var(--border2)')+';transition:.25s';
+    var thumb=document.createElement('span');
+    thumb.style.cssText='position:absolute;width:14px;height:14px;left:'+(on?'21px':'3px')+';top:3px;background:#fff;border-radius:50%;transition:.25s';
+    track.appendChild(thumb); sw.appendChild(inp); sw.appendChild(track);
+    var info=document.createElement('div');
+    info.style.cssText='flex:1';
+    info.innerHTML='<div style="font-size:13px;font-weight:500;color:'+(on?'var(--text)':'var(--text3)')+'">'+feat.name+'</div>'
+      +'<div style="font-size:11px;color:var(--text3);margin-top:1px">'+feat.desc+'</div>';
+    row.appendChild(sw); row.appendChild(info);
+    c.appendChild(row);
   });
 }
 
