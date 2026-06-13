@@ -16,7 +16,7 @@ const PROVIDERS = {
   openai:   { name: 'OpenAI (GPT)',         models: ['gpt-4o','gpt-4o-mini','gpt-4-turbo','gpt-3.5-turbo'] },
   gemini:   { name: 'Google Gemini',        models: ['gemini-1.5-pro','gemini-1.5-flash','gemini-2.0-flash'] },
   mistral:  { name: 'Mistral AI',           models: ['mistral-large-latest','mistral-small-latest','open-mistral-7b'] },
-  aitunnel: { name: 'AITunnel (РФ)',        models: ['claude-sonnet-4-20250514','claude-haiku-4-5-20251001','gpt-4o','gpt-4o-mini','gpt-3.5-turbo'] },
+  aitunnel: { name: 'AITunnel (РФ)',        models: ['claude-sonnet-4.5','claude-haiku-4.5','gpt-4o','gpt-4o-mini'] },
 };
 
 // Определяем провайдера по ключу
@@ -148,9 +148,14 @@ router.post('/chat', auth, async (req, res) => {
         return res.status(402).json({ error: 'insufficient_tokens', message: `Недостаточно токенов (у вас ${user.tokens_balance}, нужно минимум 500).`, action: 'Пополните баланс (значок 💎 на главном экране) или добавьте свой API ключ в Настройках.' });
       apiKey   = SERVER_KEY;
       provider = SERVER_PROVIDER;
-      // Тариф: клиент передаёт model — разрешаем только haiku или sonnet
-      const allowed = ['claude-haiku-4-5-20251001', 'claude-sonnet-4-20250514'];
-      model = allowed.includes(reqModel) ? reqModel : 'claude-haiku-4-5-20251001';
+      // Тариф: клиент передаёт haiku или sonnet, подставляем правильное имя для провайдера
+      const tier = (reqModel && reqModel.indexOf('sonnet') >= 0) ? 'sonnet' : 'haiku';
+      const MODEL_MAP = {
+        claude:   { haiku: 'claude-haiku-4-5-20251001', sonnet: 'claude-sonnet-4-20250514' },
+        aitunnel: { haiku: 'claude-haiku-4.5',          sonnet: 'claude-sonnet-4.5' }
+      };
+      const map = MODEL_MAP[SERVER_PROVIDER] || MODEL_MAP.aitunnel;
+      model = map[tier];
     }
 
     const safeMax = Math.min(max_tokens, user.own_api_key ? 2000 : Math.min(2000, user.tokens_balance));
