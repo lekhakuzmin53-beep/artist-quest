@@ -381,6 +381,16 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
 .send-btn:disabled{animation:pulse-dim .8s infinite}
 @keyframes pulse-dim{0%,100%{opacity:.35}50%{opacity:.2}}
 /* Notif slide up */
+
+/* ─── ACHIEVEMENT POPUP ─── */
+.ach-popup{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-20px);z-index:99998;background:var(--bg2);border:1px solid var(--ac);border-radius:10px;padding:14px 22px;display:flex;align-items:center;gap:14px;box-shadow:0 8px 40px rgba(0,0,0,.7),0 0 24px rgba(212,168,48,.25);opacity:0;transition:all .4s cubic-bezier(.2,.9,.3,1.2);pointer-events:none;min-width:280px}
+.ach-popup.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.ach-popup-icon{font-size:34px;flex-shrink:0;animation:achPulse 1s ease infinite alternate}
+@keyframes achPulse{from{transform:scale(1)}to{transform:scale(1.12)}}
+.ach-popup-label{font-size:10px;font-weight:600;color:var(--ac);letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
+.ach-popup-name{font-family:'Cinzel',serif;font-size:15px;font-weight:600;color:var(--text)}
+.ach-popup-desc{font-size:11px;color:var(--text3);margin-top:1px}
+
 #notif{transform:translateY(8px);transition:opacity .3s, transform .3s}
 #notif[style*="opacity: 1"],#notif[style*="opacity:1"]{transform:translateY(0)}
 /* Topbar logo hover */
@@ -467,6 +477,16 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
 .preset-card:active{transform:translateY(0)}
 
 /* Notif */
+
+/* ─── ACHIEVEMENT POPUP ─── */
+.ach-popup{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-20px);z-index:99998;background:var(--bg2);border:1px solid var(--ac);border-radius:10px;padding:14px 22px;display:flex;align-items:center;gap:14px;box-shadow:0 8px 40px rgba(0,0,0,.7),0 0 24px rgba(212,168,48,.25);opacity:0;transition:all .4s cubic-bezier(.2,.9,.3,1.2);pointer-events:none;min-width:280px}
+.ach-popup.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.ach-popup-icon{font-size:34px;flex-shrink:0;animation:achPulse 1s ease infinite alternate}
+@keyframes achPulse{from{transform:scale(1)}to{transform:scale(1.12)}}
+.ach-popup-label{font-size:10px;font-weight:600;color:var(--ac);letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
+.ach-popup-name{font-family:'Cinzel',serif;font-size:15px;font-weight:600;color:var(--text)}
+.ach-popup-desc{font-size:11px;color:var(--text3);margin-top:1px}
+
 #notif{transition:opacity .3s ease}
 
 /* Dropdown slide */
@@ -495,6 +515,16 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
 }
 @media(min-width:701px){.mobile-bar{display:none}}
 /* ─── TOAST ─── */
+
+/* ─── ACHIEVEMENT POPUP ─── */
+.ach-popup{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-20px);z-index:99998;background:var(--bg2);border:1px solid var(--ac);border-radius:10px;padding:14px 22px;display:flex;align-items:center;gap:14px;box-shadow:0 8px 40px rgba(0,0,0,.7),0 0 24px rgba(212,168,48,.25);opacity:0;transition:all .4s cubic-bezier(.2,.9,.3,1.2);pointer-events:none;min-width:280px}
+.ach-popup.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.ach-popup-icon{font-size:34px;flex-shrink:0;animation:achPulse 1s ease infinite alternate}
+@keyframes achPulse{from{transform:scale(1)}to{transform:scale(1.12)}}
+.ach-popup-label{font-size:10px;font-weight:600;color:var(--ac);letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
+.ach-popup-name{font-family:'Cinzel',serif;font-size:15px;font-weight:600;color:var(--text)}
+.ach-popup-desc{font-size:11px;color:var(--text3);margin-top:1px}
+
 #notif{position:fixed;bottom:18px;right:18px;z-index:99999;padding:10px 18px;border-radius:var(--rad);font-size:13px;font-weight:500;pointer-events:none;opacity:0;transition:opacity .3s;background:var(--bg2);border:.5px solid var(--ac);box-shadow:0 5px 18px rgba(0,0,0,.6)}
 </style>
 </head>
@@ -571,15 +601,6 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
       </div>
     </div>
 
-    <!-- Features -->
-    <div class="settings-sec" id="set-features">
-      <div class="settings-sec-hdr" onclick="toggleSec(this)"><span class="sec-icon">🎛</span><span class="sec-title">Возможности игры</span><span class="sec-badge" id="feat-badge"></span><span class="sec-arrow">▾</span></div>
-      <div class="settings-sec-body">
-        <p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.6">Включайте и выключайте функции игры.</p>
-        <div id="features-list" style="display:flex;flex-direction:column;gap:0"></div>
-      </div>
-    </div>
-
     <!-- AI Keys -->
     <div class="settings-sec" id="set-keys">
       <div class="settings-sec-hdr" onclick="toggleSec(this)"><span class="sec-icon">🔑</span><span class="sec-title">Мои нейросети</span><span class="sec-badge" id="keys-badge"></span><span class="sec-arrow">▾</span></div>
@@ -639,6 +660,18 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
         <div style="background:var(--bg3);border:.5px solid var(--border);border-radius:var(--rad);padding:14px;display:flex;flex-direction:column;gap:10px">
           <div class="form-group"><label class="field-label">Название системы</label><input class="input" id="sys-name" placeholder="Моя система..."/></div>
           <div class="form-group"><label class="field-label">Правила (инструкция для нейросети)</label><textarea class="input" id="sys-desc" rows="3" placeholder="Используй систему очков судьбы: каждые 3 хода игрок может потратить 1 очко судьбы чтобы изменить исход..."></textarea></div>
+          <div class="form-group"><label class="field-label">Механики системы — включи нужные</label>
+            <div style="display:flex;flex-wrap:wrap;gap:6px" id="sys-mech-tags">
+              <button class="tag" data-m="dice" onclick="this.classList.toggle('on')">🎲 Кубики</button>
+              <button class="tag" data-m="hp" onclick="this.classList.toggle('on')">❤ HP</button>
+              <button class="tag" data-m="stats" onclick="this.classList.toggle('on')">💪 Характеристики</button>
+              <button class="tag" data-m="levels" onclick="this.classList.toggle('on')">⬆ Уровни</button>
+              <button class="tag" data-m="ac" onclick="this.classList.toggle('on')">🛡 КБ</button>
+              <button class="tag" data-m="hunger" onclick="this.classList.toggle('on')">🍖 Голод</button>
+              <button class="tag" data-m="thirst" onclick="this.classList.toggle('on')">💧 Жажда</button>
+              <button class="tag" data-m="fatigue" onclick="this.classList.toggle('on')">😴 Усталость</button>
+            </div>
+          </div>
           <button class="btn primary btn-sm" onclick="saveCustomSystem()" style="align-self:flex-start">Сохранить систему</button>
           <div id="sys-err" class="field-error"></div>
         </div>
@@ -692,8 +725,8 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
       <div class="wizard-steps" id="wizard-steps">
         <div class="wizard-step active" onclick="goStep(0)"><span class="wizard-step-num">1</span>Сценарий</div>
         <div class="wizard-step" onclick="goStep(1)"><span class="wizard-step-num">2</span>Мир</div>
-        <div class="wizard-step" onclick="goStep(2)"><span class="wizard-step-num">3</span>Герои</div>
-        <div class="wizard-step" onclick="goStep(3)"><span class="wizard-step-num">4</span>Режим</div>
+        <div class="wizard-step" onclick="goStep(2)"><span class="wizard-step-num">3</span>Режим</div>
+        <div class="wizard-step" onclick="goStep(3)"><span class="wizard-step-num">4</span>Герои</div>
         <div class="wizard-step" onclick="goStep(4)" style="border-color:var(--ac);background:rgba(212,168,48,.06)"><span class="wizard-step-num" style="background:var(--ac);border-color:var(--ac);color:var(--bg)">5</span><span style="color:var(--ac)">Нейросеть</span></div>
       </div>
 
@@ -735,22 +768,6 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
       </div>
 
       <!-- Step 2: Characters -->
-      <div class="wizard-section" id="step-2">
-        <div class="form-group" style="margin-bottom:10px">
-          <label class="field-label">Режим персонажей</label>
-          <div class="grid2">
-            <div class="mc sel" onclick="selMC(this,'charMode')" data-v="single"><div class="mc-title">Один герой</div><div class="mc-desc">История от одного лица</div></div>
-            <div class="mc" onclick="selMC(this,'charMode')" data-v="party"><div class="mc-title">Группа</div><div class="mc-desc">Несколько персонажей</div></div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="field-label">Персонажи (разверни для заполнения)</label>
-          <div id="ch-list"></div>
-          <div style="display:flex;gap:6px;margin-top:7px"><input class="input" id="nc" placeholder="Имя персонажа..." onkeydown="if(event.key==='Enter')addCh()"/><button class="btn btn-sm" onclick="addCh()">+ Добавить героя</button></div>
-        </div>
-      </div>
-
-      <!-- Step 3: Mode & Rules -->
       <div class="wizard-section" id="step-3">
         <div class="form-group">
           <label class="field-label">Режим игры</label>
@@ -767,7 +784,7 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
             <div class="mc sel" onclick="selMC(this,'rules')" data-v="free"><div class="mc-title">Свободная</div><div class="mc-desc">Нарратор решает исходы</div></div>
             <div class="mc" onclick="selMC(this,'rules')" data-v="dnd"><div class="mc-title">⚔ D&D</div><div class="mc-desc">Кубики, проверки навыков — дайсы включены</div></div>
             <div class="mc" onclick="selMC(this,'rules')" data-v="survival"><div class="mc-title">Выживание</div><div class="mc-desc">Ресурсы, голод, усталость</div></div>
-            <div class="mc" onclick="selMC(this,'rules')" data-v="custom"><div class="mc-title">Своя система</div><div class="mc-desc">Опишите ниже</div></div>
+            <div class="mc" onclick="selMC(this,'rules')" data-v="detective"><div class="mc-title">🔍 Детектив</div><div class="mc-desc">Улики, допросы, дедукция</div></div>
           </div>
           <!-- Custom user systems appended here by JS -->
           <div id="custom-rules-systems" style="margin-top:8px;display:flex;flex-direction:column;gap:6px"></div>
@@ -775,16 +792,22 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
           <div id="dnd-mechanics" style="display:none;margin-top:10px;padding:12px;background:var(--bg3);border-radius:var(--rad);border:.5px solid var(--border)">
             <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">Механики D&D — выключи ненужные:</div>
             <div style="display:flex;flex-wrap:wrap;gap:6px">
-              <button class="tag on" data-mech="dice" onclick="this.classList.toggle('on')">🎲 Броски кубиков</button>
-              <button class="tag on" data-mech="hp" onclick="this.classList.toggle('on')">❤ HP и урон</button>
-              <button class="tag on" data-mech="stats" onclick="this.classList.toggle('on')">💪 Характеристики</button>
-              <button class="tag on" data-mech="levels" onclick="this.classList.toggle('on')">⬆ Уровни и XP</button>
-              <button class="tag on" data-mech="ac" onclick="this.classList.toggle('on')">🛡 Класс брони</button>
+              <button class="tag on" data-mech="dice" onclick="this.classList.toggle('on');renderSetupChars()">🎲 Броски кубиков</button>
+              <button class="tag on" data-mech="hp" onclick="this.classList.toggle('on');renderSetupChars()">❤ HP и урон</button>
+              <button class="tag on" data-mech="stats" onclick="this.classList.toggle('on');renderSetupChars()">💪 Характеристики</button>
+              <button class="tag on" data-mech="levels" onclick="this.classList.toggle('on');renderSetupChars()">⬆ Уровни и XP</button>
+              <button class="tag on" data-mech="ac" onclick="this.classList.toggle('on');renderSetupChars()">🛡 Класс брони</button>
             </div>
           </div>
           <!-- Выживание (показывается при выборе Выживания) -->
           <div id="survival-info" style="display:none;margin-top:10px;padding:12px;background:var(--bg3);border-radius:var(--rad);border:.5px solid var(--border)">
-            <div style="font-size:12px;color:var(--text2);line-height:1.6">В режиме выживания у персонажей появятся полоски: 🍖 Голод, 💧 Жажда, 😴 Усталость. Нарратор будет отслеживать их в процессе игры.</div>
+            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">Шкалы выживания — выключи ненужные (можно оставить одну):</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px">
+              <button class="tag on" data-surv="hunger" onclick="this.classList.toggle('on')">🍖 Голод</button>
+              <button class="tag on" data-surv="thirst" onclick="this.classList.toggle('on')">💧 Жажда</button>
+              <button class="tag on" data-surv="fatigue" onclick="this.classList.toggle('on')">😴 Усталость</button>
+              <button class="tag on" data-surv="hp" onclick="this.classList.toggle('on')">❤ HP</button>
+            </div>
           </div>
         </div>
         <input type="hidden" id="cr" value=""/>
@@ -812,6 +835,22 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
       </div>
 
       <!-- Step 4: AI (most prominent) -->
+      <div class="wizard-section" id="step-2">
+        <div class="form-group" style="margin-bottom:10px">
+          <label class="field-label">Режим персонажей</label>
+          <div class="grid2">
+            <div class="mc sel" onclick="selMC(this,'charMode')" data-v="single"><div class="mc-title">Один герой</div><div class="mc-desc">История от одного лица</div></div>
+            <div class="mc" onclick="selMC(this,'charMode')" data-v="party"><div class="mc-title">Группа</div><div class="mc-desc">Несколько персонажей</div></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="field-label">Персонажи (разверни для заполнения)</label>
+          <div id="ch-list"></div>
+          <div style="display:flex;gap:6px;margin-top:7px"><input class="input" id="nc" placeholder="Имя персонажа..." onkeydown="if(event.key==='Enter')addCh()"/><button class="btn btn-sm" onclick="addCh()">+ Добавить героя</button></div>
+        </div>
+      </div>
+
+      <!-- Step 3: Mode & Rules -->
       <div class="wizard-section" id="step-4">
         <div style="padding:14px;background:rgba(212,168,48,.06);border:.5px solid var(--ac);border-radius:var(--rad);margin-bottom:14px">
           <div style="font-size:14px;font-weight:600;color:var(--ac);margin-bottom:4px">⚡ Выберите нейросеть</div>
@@ -1062,17 +1101,17 @@ const PRESETS=[
    npcs:'Старейшина Фьорн — скупой, хочет дешёвого решения. Ведьма Лешка — знает о чудовищах. Стражник Петровиц — враждебен к ведьмакам.',
    chars:[{name:'Герой',cls:'Ведьмак',desc:'Мутант-охотник за чудовищами, прошедший Испытание Трав',appearance:'Белые волосы, желтоватые кошачьи глаза, шрамы по всему телу',abilities:'Ведьмачьи знаки (Аард, Игни, Квен), алхимия, два меча — сталь и серебро',equipment:'Стальной меч, серебряный меч, доспех ведьмака, набор для алхимии',traits:'Циник, но с кодексом чести. Деньги важны, но дети — неприкосновенны.',inventory:[]}],
    narratorStyle:'cold',mode:'game'},
-  {id:'omega',name:'Станция Омега-7',system:'free',icon:'🚀',genre:['Sci-Fi','Хоррор'],
-   desc:'2387 год. Орбитальная исследовательская станция Омега-7 изучала пространственную аномалию в поясе Койпера. Три недели назад связь оборвалась. Корпорация «Арес» отправила команду спасателей — то есть вас.',
-   worldStart:'Стыковочный шлюз открыт изнутри. Освещение работает в половину мощности. Журнал доступа: последняя запись 18 дней назад. Температура в норме. Воздух пригоден. Но на станции нет никого.',
-   npcs:'ИИ станции «Оракл» — отвечает, но странно. Запись с камеры #7 — что-то произошло в лаборатории. Спасательная капсула — была активирована, но не улетела.',
-   chars:[{name:'Командир Вела',cls:'Офицер',desc:'Скептик. Не верит в паранормальное. Виновата всегда техника.',appearance:'Короткие тёмные волосы, форма корпорации, планшет в руке',abilities:'Пилотирование, тактика, первая помощь, обращение с оружием',equipment:'Корпоративный бластер, аптечка, взломщик замков, рация',traits:'Не поддаётся панике. Принимает решения быстро.',inventory:[]}],
+  {id:'taiga',name:'Мёртвая Тайга',system:'survival',icon:'🌲',genre:['Постапок'],
+   desc:'Ваш самолёт рухнул в сибирской тайге в разгар зимы. До ближайшего посёлка триста километров. Минус тридцать ночью. Из живых — только вы. Из припасов — то, что удалось вытащить из горящего фюзеляжа. Волки уже знают, что вы здесь.',
+   worldStart:'Снег скрипит под ногами. Обломки дымятся за спиной. У вас час до заката, рюкзак с горсткой вещей и нож. Холод уже пробирается под куртку.',
+   npcs:'Старый охотник Игнат — живёт в зимовье где-то на востоке. Стая волков — следует по пятам. Рация — изредка ловит обрывки переговоров.',
+   chars:[{name:'Выживший',cls:'Пилот',desc:'Пилот малой авиации. Летал над тайгой сотни раз, но впервые — в ней.',appearance:'Лётная куртка, обмороженные щёки, упрямый взгляд',abilities:'Ориентирование, ремонт техники, первая помощь',equipment:'Нож, зажигалка, фляга, аптечка, сигнальная ракета ×2',traits:'Не сдаётся. Считает припасы. Говорит сам с собой, чтобы не сойти с ума.',inventory:[]}],
    narratorStyle:'cold',mode:'game'},
-  {id:'hotel',name:'Проклятый Отель',system:'free',icon:'🏨',genre:['Нуар','Хоррор'],
-   desc:'Отель «Вечность» существует вне законов времени и пространства. Сорок постояльцев из сорока разных эпох — от Древнего Рима до 2150 года — застряли в нём. Кто-то убивает их по одному. Убийца среди постояльцев. Выход только один — найти виновного.',
-   worldStart:'Вы в номере 13. Светает. Под дверью — записка, написанная вашим почерком: «Следующая — ты. Не выходи в коридор после полуночи». Вы этой записки не писали.',
-   npcs:'Консьерж Адам — знает всех постояльцев, но молчит. Профессор Лима (1920) — утверждает что разгадал тайну. Танцовщица Нора (1955) — видела убийцу.',
-   chars:[{name:'Детектив',cls:'Следователь',desc:'Циник. Частный детектив из 1940-х. В кармане фото незнакомки — но вы её не знаете.',appearance:'Помятый костюм, дождевик, шляпа. Усталые серые глаза.',abilities:'Дедукция, допрос, стрельба из пистолета, чтение людей',equipment:'Браунинг .32, записная книжка, зажигалка, flask с виски',traits:'Не врёт. Не доверяет красивым объяснениям.',inventory:[]}],
+  {id:'noir',name:'Дело о Полуночи',system:'detective',icon:'🔍',genre:['Нуар'],
+   desc:'Город, который никогда не признаётся в своих грехах. Дочь судьи найдена мёртвой в номере отеля «Полночь». Полиция закрыла дело за сутки — самоубийство. Её мать не верит и платит вам втрое. У всех свидетелей алиби. У всех алиби — трещины.',
+   worldStart:'Дождь барабанит по вывеске вашей конторы. Женщина в чёрном кладёт на стол конверт с деньгами и фотографию дочери: «Найдите того, кто это сделал».',
+   npcs:'Судья Гаррисон — отец погибшей, слишком спокоен. Портье Лу — видел всё, говорит мало. Джаз-певица Вера — была с погибшей в ту ночь. Детектив Коул — закрыл дело, торопился.',
+   chars:[{name:'Частный детектив',cls:'Сыщик',desc:'Бывший полицейский, ушёл после того как закрыли дело, которое нельзя было закрывать.',appearance:'Помятый плащ, трёхдневная щетина, глаза, которые всё замечают',abilities:'Дедукция, допрос, слежка, стрельба',equipment:'Револьвер, блокнот, фотоаппарат, фляжка',traits:'Не берёт грязных денег. Доводит дела до конца. Не доверяет полиции.',inventory:[]}],
    narratorStyle:'cold',mode:'game'},
   {id:'cyberpunk',name:'Неоновый Город',system:'free',icon:'🌆',genre:['Киберпанк'],
    desc:'Нео-Шанхай, 2087. Мегакорпорации контролируют всё. Граница между живым и машиной стёрта. Нейроинтерфейсы — обязательны для работы. В трущобах Нижнего Уровня люди без имплантов умирают молодыми. Бегущие по тени — единственный способ остаться свободным.',
@@ -1113,7 +1152,19 @@ function getProgress(){return JSON.parse(localStorage.getItem('aq_progress')||'{
 function saveProgress(p){localStorage.setItem('aq_progress',JSON.stringify(p));}
 function trackMessage(){const p=getProgress();p.messages=(p.messages||0)+1;checkAchievements(p);saveProgress(p);}
 function trackGameStart(){const p=getProgress();p.games=(p.games||0)+1;if(G.rules==='dnd')p.dndGames=(p.dndGames||0)+1;if(G.worldName&&!p.worlds?.includes(G.worldName)){p.worlds=p.worlds||[];p.worlds.push(G.worldName);}checkAchievements(p);saveProgress(p);}
-function checkAchievements(p){const unlocked=p.unlocked||[];const toUnlock=[];if(p.games>=1&&!unlocked.includes('first_step'))toUnlock.push('first_step');if(p.messages>=50&&!unlocked.includes('storyteller'))toUnlock.push('storyteller');if(p.messages>=200&&!unlocked.includes('epic'))toUnlock.push('epic');if(p.dndGames>=5&&!unlocked.includes('dnd_master'))toUnlock.push('dnd_master');if((p.worlds||[]).length>=5&&!unlocked.includes('world_builder'))toUnlock.push('world_builder');toUnlock.forEach(id=>{unlocked.push(id);const a=ACHIEVEMENTS.find(x=>x.id===id);if(a)setTimeout(()=>notif(a.icon+' Достижение: «'+a.name+'»!','info'),500);});p.unlocked=unlocked;}
+function showAchievement(a){
+  var old=document.querySelector('.ach-popup'); if(old)old.remove();
+  var d=document.createElement('div');
+  d.className='ach-popup';
+  d.innerHTML='<div class="ach-popup-icon">'+a.icon+'</div>'
+    +'<div><div class="ach-popup-label">Достижение получено</div>'
+    +'<div class="ach-popup-name">'+a.name+'</div>'
+    +'<div class="ach-popup-desc">'+a.desc+'</div></div>';
+  document.body.appendChild(d);
+  requestAnimationFrame(function(){requestAnimationFrame(function(){d.classList.add('show');});});
+  setTimeout(function(){d.classList.remove('show');setTimeout(function(){d.remove();},450);},4200);
+}
+function checkAchievements(p){const unlocked=p.unlocked||[];const toUnlock=[];if(p.games>=1&&!unlocked.includes('first_step'))toUnlock.push('first_step');if(p.messages>=50&&!unlocked.includes('storyteller'))toUnlock.push('storyteller');if(p.messages>=200&&!unlocked.includes('epic'))toUnlock.push('epic');if(p.dndGames>=5&&!unlocked.includes('dnd_master'))toUnlock.push('dnd_master');if((p.worlds||[]).length>=5&&!unlocked.includes('world_builder'))toUnlock.push('world_builder');toUnlock.forEach((id,ix)=>{unlocked.push(id);const a=ACHIEVEMENTS.find(x=>x.id===id);if(a)setTimeout(()=>showAchievement(a),600+ix*4500);});p.unlocked=unlocked;}
 const totalSteps=5;
 let rightTab='journal';
 let selectedPreset=null;
@@ -1185,7 +1236,7 @@ function renderCustomNarrators(){const c=el('custom-narrators-list');if(!c)retur
 function saveCustomNarrator(){if(customNarrators.length>=4){el('nar-err').textContent='Лимит: 4 нарратора';return;}const name=el('nar-name').value.trim();const desc=el('nar-desc').value.trim();if(!name||!desc){el('nar-err').textContent='Заполните все поля';return;}customNarrators.push({id:'nar_'+Date.now(),name,desc});localStorage.setItem('aq_narrators',JSON.stringify(customNarrators));el('nar-name').value='';el('nar-desc').value='';el('nar-err').textContent='';renderCustomNarrators();notif('Нарратор сохранён!');}
 function deleteNarrator(i){customNarrators.splice(i,1);localStorage.setItem('aq_narrators',JSON.stringify(customNarrators));renderCustomNarrators();}
 function renderCustomSystems(){const c=el('custom-systems-list');if(!c)return;c.innerHTML='';customSystems.forEach((s,i)=>{const d=document.createElement('div');d.className='custom-list-item';d.innerHTML=`<div><div class="custom-list-name">${esc(s.name)}</div><div class="custom-list-desc">${esc(s.desc.slice(0,60))}...</div></div><button class="btn danger btn-xs" onclick="deleteSystem(${i})">🗑</button>`;c.appendChild(d);});el('systems-badge').textContent=`${customSystems.length} / 4`;}
-function saveCustomSystem(){if(customSystems.length>=4){el('sys-err').textContent='Лимит: 4 системы';return;}const name=el('sys-name').value.trim();const desc=el('sys-desc').value.trim();if(!name||!desc){el('sys-err').textContent='Заполните все поля';return;}customSystems.push({id:'sys_'+Date.now(),name,desc});localStorage.setItem('aq_systems',JSON.stringify(customSystems));el('sys-name').value='';el('sys-desc').value='';el('sys-err').textContent='';renderCustomSystems();notif('Система сохранена!');}
+function saveCustomSystem(){if(customSystems.length>=4){el('sys-err').textContent='Лимит: 4 системы';return;}const name=el('sys-name').value.trim();const desc=el('sys-desc').value.trim();if(!name||!desc){el('sys-err').textContent='Заполните все поля';return;}var mech={};document.querySelectorAll('#sys-mech-tags [data-m]').forEach(function(b){mech[b.dataset.m]=b.classList.contains('on');});customSystems.push({id:'sys_'+Date.now(),name,desc,mech});localStorage.setItem('aq_systems',JSON.stringify(customSystems));el('sys-name').value='';el('sys-desc').value='';el('sys-err').textContent='';renderCustomSystems();notif('Система сохранена!');}
 function deleteSystem(i){customSystems.splice(i,1);localStorage.setItem('aq_systems',JSON.stringify(customSystems));renderCustomSystems();}
 
 // ══ API ══════════════════════════════════════════
@@ -1204,7 +1255,7 @@ function doLogout(){token='';user=null;prices=null;localStorage.removeItem('aq_t
 async function loadUserData(){const me=await apiFetch('/api/auth/me');if(me.error){doLogout();return;}user=me.user;el('menu-uname').textContent=user.username;if(!prices){const pd=await apiFetch('/api/payment/prices');prices=pd;buildPkgMini('pkg-grid-game');}}
 
 // ══ SETTINGS ═════════════════════════════════════
-async function loadSettingsData(){renderProviderCards();renderKeyForm();renderCustomNarrators();renderCustomSystems();buildThemeCards();buildCustomThemesList();renderProgressPage();renderFeaturesList();const saved=localStorage.getItem('aq_theme')||'';
+async function loadSettingsData(){renderProviderCards();renderKeyForm();renderCustomNarrators();renderCustomSystems();buildThemeCards();buildCustomThemesList();renderProgressPage();const saved=localStorage.getItem('aq_theme')||'';
   
   // Init global det slider
   el('global-det').value=globalSettings.detail||3;el('global-dv').textContent=detLabels[(globalSettings.detail||3)-1];
@@ -1236,7 +1287,7 @@ function newWorldInSlot(slot){G.slotId=slot;showPage('create-page');initCreatePa
 function initCreatePage(){currentStep=0;selectedPreset=null;aiChoice='server';setupChars=[];MC_GROUPS.charMode=null;MC_GROUPS.mode=null;MC_GROUPS.narratorStyle=null;MC_GROUPS.rules=null;MC_GROUPS.hardcore=null;// Reset form
 ['wn','wd','ws','np','ne','cr'].forEach(id=>{const e=el(id);if(e)e.value='';});document.querySelectorAll('#genre-tags .tag').forEach(t=>t.classList.remove('on'));window._autoCharMode=true;['mode','charMode','hardcore','narratorStyle','rules'].forEach(g=>{MC_GROUPS[g]=null;const first=document.querySelector(`[onclick*="selMC(this,'${g}')"]`);if(first)selMC(first,g);});window._autoCharMode=false;document.querySelector('[data-lang="ru"]')?.classList.add('on');el('det').value=globalSettings.detail||3;el('dv').textContent=detLabels[(globalSettings.detail||3)-1];
   renderSetupChars();buildPresetGrid();buildNarratorPick();buildRulesPick();updateAIPicker();goStep(0);}
-function buildPresetGrid(){const g=el('preset-grid');if(!g)return;g.innerHTML='';PRESETS.forEach(p=>{const c=document.createElement('div');c.className='preset-card'+(selectedPreset===p.id?' sel':'');c.innerHTML=`<div class="preset-icon">${p.icon}</div><div class="preset-name">${p.name}</div><div class="preset-system">${p.system==='dnd'?'⚔ D&D':'Свободная система'}</div><div class="preset-desc">${esc(p.desc.slice(0,100))}...</div>`;c.onclick=()=>selectPreset(p.id);g.appendChild(c);});}
+function buildPresetGrid(){const g=el('preset-grid');if(!g)return;g.innerHTML='';PRESETS.forEach(p=>{const c=document.createElement('div');c.className='preset-card'+(selectedPreset===p.id?' sel':'');c.innerHTML=`<div class="preset-icon">${p.icon}</div><div class="preset-name">${p.name}</div><div class="preset-system">${p.system==='dnd'?'⚔ D&D':p.system==='survival'?'🌲 Выживание':p.system==='detective'?'🔍 Детектив':'Свободная система'}</div><div class="preset-desc">${esc(p.desc.slice(0,100))}...</div>`;c.onclick=()=>selectPreset(p.id);g.appendChild(c);});}
 function selectPreset(id){selectedPreset=id;document.querySelectorAll('.preset-card').forEach(c=>c.classList.remove('sel'));if(id){const p=PRESETS.find(x=>x.id===id);if(p){const cards=document.querySelectorAll('.preset-card');PRESETS.forEach((x,i)=>{if(x.id===id)cards[i]?.classList.add('sel');});// Fill form
 el('wn').value=p.worldName;el('wd').value=p.desc;el('ws').value=p.worldStart;el('np').value=p.npcs||'';document.querySelectorAll('#genre-tags .tag').forEach(t=>t.classList.toggle('on',p.genre.includes(t.textContent.trim())));setupChars=JSON.parse(JSON.stringify(p.chars||[]));renderSetupChars();// Set system
 MC_GROUPS.rules=null;const rscard=document.querySelector(`[onclick*="selMC(this,'rules')"][data-v="${p.system}"]`);if(rscard)selMC(rscard,'rules');// Set narrator
@@ -1275,7 +1326,13 @@ function changeSetupStat(ci, stat, delta){
   st[stat]=next;
   renderSetupChars();
 }
+function getMechFromDOM(){
+  var m={};
+  document.querySelectorAll('#dnd-mechanics [data-mech]').forEach(function(b){m[b.dataset.mech]=b.classList.contains('on');});
+  return m;
+}
 function makeDndStatsHtml(c, i) {
+  var mech=getMechFromDOM();
   if(!c.stats)c.stats={STR:8,DEX:8,CON:8,INT:8,WIS:8,CHA:8};
   var used=dndPointsUsed(c.stats);
   var left=BG3_BUDGET-used;
@@ -1293,16 +1350,19 @@ function makeDndStatsHtml(c, i) {
       +'<div style="font-size:10px;color:'+(mod>=0?'var(--success)':'var(--danger)')+'">'+(mod>=0?'+':'')+mod+'</div>'
       +'</div>';
   });
-  var html='<div class="char-sheet-full" style="margin-top:6px">'
-    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'
-    +'<div class="field-label" style="margin:0">Характеристики (point-buy, как в Baldur&#39;s Gate 3)</div>'
-    +'<div style="font-size:11px;font-weight:600;color:'+(left>0?'var(--ac)':'var(--text3)')+'">Очков: '+left+' / '+BG3_BUDGET+'</div>'
-    +'</div>'
-    +'<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:8px">'+grid+'</div>'
-    +'<div style="display:flex;gap:8px">'
-    +'<div class="form-group" style="flex:1"><label class="field-label">HP Максимум</label><input class="input" value="'+esc(c.hp||'10')+'" type="number" min="1" max="999" data-ci="'+i+'" oninput="setupChars[parseInt(this.dataset.ci)].hp=this.value"/></div>'
-    +'<div class="form-group" style="flex:1"><label class="field-label">КБ (класс брони)</label><input class="input" value="'+esc(c.ac||'10')+'" type="number" min="1" max="30" data-ci="'+i+'" oninput="setupChars[parseInt(this.dataset.ci)].ac=this.value"/></div>'
-    +'</div></div>';
+  var html='<div class="char-sheet-full" style="margin-top:6px">';
+  if(mech.stats!==false){
+    html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'
+      +'<div class="field-label" style="margin:0">Характеристики (point-buy, как в Baldur&#39;s Gate 3)</div>'
+      +'<div style="font-size:11px;font-weight:600;color:'+(left>0?'var(--ac)':'var(--text3)')+'">Очков: '+left+' / '+BG3_BUDGET+'</div>'
+      +'</div>'
+      +'<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:8px">'+grid+'</div>';
+  }
+  var rowFields='';
+  if(mech.hp!==false)rowFields+='<div class="form-group" style="flex:1"><label class="field-label">HP Максимум</label><input class="input" value="'+esc(c.hp||'10')+'" type="number" min="1" max="999" data-ci="'+i+'" oninput="setupChars[parseInt(this.dataset.ci)].hp=this.value"/></div>';
+  if(mech.ac!==false)rowFields+='<div class="form-group" style="flex:1"><label class="field-label">КБ (класс брони)</label><input class="input" value="'+esc(c.ac||'10')+'" type="number" min="1" max="30" data-ci="'+i+'" oninput="setupChars[parseInt(this.dataset.ci)].ac=this.value"/></div>';
+  if(rowFields)html+='<div style="display:flex;gap:8px">'+rowFields+'</div>';
+  html+='</div>';
   return html;
 }
 function renderSetupChars(){
@@ -1326,6 +1386,9 @@ function renderSetupChars(){
   });
 }
 function collectSetup(){G.worldName=el('wn').value.trim()||'Безымянный мир';G.worldDesc=el('wd').value.trim();G.worldStart=el('ws').value.trim();G.narratorExtra=el('ne').value.trim();G.customRules=el('cr').value.trim();G.npcs=el('np').value.trim();G.detail=parseInt(el('det').value);G.genres=[];document.querySelectorAll('#genre-tags .tag.on').forEach(t=>G.genres.push(t.textContent.trim()));const gv=g=>document.querySelector(`[onclick*="selMC(this,'${g}')"].sel`)?.dataset.v;G.mode=gv('mode')||'game';G.charMode=gv('charMode')||'single';G.hardcore=gv('hardcore')==='1';const nsVal=gv('narratorStyle')||'classic';G.narratorStyle=nsVal.startsWith('custom_')?'custom':nsVal;G.narratorCustomId=nsVal.startsWith('custom_')?nsVal.replace('custom_',''):null;const rsVal=gv('rules')||'free';G.rules=rsVal.startsWith('custom_')?'custom':rsVal;G.rulesCustomId=rsVal.startsWith('custom_')?rsVal.replace('custom_',''):null;G.lang=document.querySelector('[data-lang].on')?.dataset.lang||globalSettings.lang||'ru';G.chars=setupChars.filter(c=>c.name.trim());if(G.activeChar>=G.chars.length)G.activeChar=0;G.useOwnKey=aiChoice==='own';G.gameModel=el('game-model-sel')?.value||user?.own_model||'';
+  // Шкалы выживания
+  G.survMech={};
+  document.querySelectorAll('#survival-info [data-surv]').forEach(function(b){G.survMech[b.dataset.surv]=b.classList.contains('on');});
   // Механики D&D
   G.dndMech={};
   document.querySelectorAll('#dnd-mechanics [data-mech]').forEach(function(b){G.dndMech[b.dataset.mech]=b.classList.contains('on');});
@@ -1351,20 +1414,28 @@ function renderCharPanel(){
   var cs=charStats[char.name]||{};
   var isDnd=G.rules==='dnd';
   var isSurvival=G.rules==='survival';
+  var mech=G.dndMech||{};
+  var surv=G.survMech||{};
+  // Для кастомных систем — их механики
+  if(G.rules==='custom'&&G.rulesCustomId){
+    var csys=customSystems.find(function(s){return s.id===G.rulesCustomId;});
+    if(csys&&csys.mech){mech=csys.mech;surv=csys.mech;isDnd=!!(csys.mech.dice||csys.mech.hp||csys.mech.stats||csys.mech.levels||csys.mech.ac);isSurvival=!!(csys.mech.hunger||csys.mech.thirst||csys.mech.fatigue);}
+  }
   var html='<div style="padding:8px">';
-
-  // Имя и класс
   html+='<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:10px">';
   html+='<div style="font-family:Cinzel,serif;font-size:13px;color:var(--ac);font-weight:500;flex:1">'+esc(char.name)+'</div>';
   if(cs.cls)html+='<div style="font-size:11px;color:var(--text3)">'+esc(cs.cls)+'</div>';
   html+='</div>';
 
+  // Шкалы выживания (только включённые)
   if(isSurvival){
-    // Полоски выживания: голод, жажда, усталость
-    var cn2=char.name.replace(/'/g,"\\'");
-    [['hunger','🍖 Голод','#e0a050'],['thirst','💧 Жажда','#50a0e0'],['fatigue','😴 Усталость','#a080d0']].forEach(function(bar){
+    var bars=[];
+    if(surv.hunger!==false)bars.push(['hunger','🍖 Голод','#e0a050']);
+    if(surv.thirst!==false)bars.push(['thirst','💧 Жажда','#50a0e0']);
+    if(surv.fatigue!==false)bars.push(['fatigue','😴 Усталость','#a080d0']);
+    bars.forEach(function(bar){
       var key=bar[0],label=bar[1],color=bar[2];
-      var val=Math.max(0,Math.min(100,parseInt(cs[key]!=null?cs[key]:100)));
+      var val=Math.max(0,Math.min(100,parseInt(cs[key]!=null?cs[key]:(key==='fatigue'?0:100))));
       html+='<div style="margin-bottom:7px">';
       html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">';
       html+='<span style="font-size:10px;color:var(--text3)">'+label+'</span>';
@@ -1377,26 +1448,28 @@ function renderCharPanel(){
       html+='</div></div>';
     });
   }
-  if(isDnd){
-    // Уровень и XP
-    var lvl=Math.max(1,Math.min(20,parseInt(cs.level)||1));
-    var xpCur=parseInt(cs.xp)||0;
-    var xpTbl=[0,300,900,2700,6500,14000,23000,34000,48000,64000,85000,100000,120000,140000,165000,195000,225000,265000,305000,355000];
-    var xpNext=lvl<20?xpTbl[lvl]:'макс';
-    var cn=char.name.replace(/'/g,"\'");
-    html+='<div style="background:var(--bg3);border-radius:4px;padding:7px 10px;margin-bottom:8px;display:flex;align-items:center;gap:8px">';
-    html+='<div style="font-size:10px;font-weight:600;color:var(--text3)">УР.</div>';
-    html+='<input type="number" value="'+lvl+'" min="1" max="20" ';
-    html+='style="width:36px;background:transparent;border:none;font-size:18px;font-weight:700;color:var(--ac);text-align:center;outline:none" ';
-    html+='data-cn="'+esc(char.name)+'" onchange="updateCharStat(this.dataset.cn,&quot;level&quot;,Math.max(1,Math.min(20,parseInt(this.value)||1)))" />';
-    html+='<div style="font-size:10px;color:var(--text3)">XP: ';
-    html+='<input type="number" value="'+xpCur+'" min="0" ';
-    html+='style="width:55px;background:var(--bg);border:.5px solid var(--border2);border-radius:3px;padding:1px 3px;font-size:11px;color:var(--text2);text-align:center" ';
-    html+='data-cn="'+esc(char.name)+'" data-k1="xp" onchange="updateCharStat(this.dataset.cn,this.dataset.k1,parseInt(this.value)||0)" />';
-    html+=' / '+xpNext+'</div></div>';
 
-    // HP + AC
-    if(cs.hp){
+  if(isDnd){
+    // Уровень и XP (если включены)
+    if(mech.levels!==false){
+      var lvl=Math.max(1,Math.min(20,parseInt(cs.level)||1));
+      var xpCur=parseInt(cs.xp)||0;
+      var xpTbl=[0,300,900,2700,6500,14000,23000,34000,48000,64000,85000,100000,120000,140000,165000,195000,225000,265000,305000,355000];
+      var xpNext=lvl<20?xpTbl[lvl]:'макс';
+      html+='<div style="background:var(--bg3);border-radius:4px;padding:7px 10px;margin-bottom:8px;display:flex;align-items:center;gap:8px">';
+      html+='<div style="font-size:10px;font-weight:600;color:var(--text3)">УР.</div>';
+      html+='<input type="number" value="'+lvl+'" min="1" max="20" data-cn="'+esc(char.name)+'" ';
+      html+='style="width:36px;background:transparent;border:none;font-size:18px;font-weight:700;color:var(--ac);text-align:center;outline:none" ';
+      html+='onchange="updateCharStat(this.dataset.cn,this.dataset.k1,Math.max(1,Math.min(20,parseInt(this.value)||1)))" data-k1="level" />';
+      html+='<div style="font-size:10px;color:var(--text3)">XP: ';
+      html+='<input type="number" value="'+xpCur+'" min="0" data-cn="'+esc(char.name)+'" data-k1="xp" ';
+      html+='style="width:55px;background:var(--bg);border:.5px solid var(--border2);border-radius:3px;padding:1px 3px;font-size:11px;color:var(--text2);text-align:center" ';
+      html+='onchange="updateCharStat(this.dataset.cn,this.dataset.k1,parseInt(this.value)||0)" />';
+      html+=' / '+xpNext+'</div></div>';
+    }
+
+    // HP с кнопками +/− (если включён)
+    if(mech.hp!==false&&cs.hp){
       var hpMax=parseInt(cs.hp)||10;
       var hpCur=parseInt(cs.hpCur!=null?cs.hpCur:cs.hp)||hpMax;
       var pct=Math.max(0,Math.min(100,Math.round(hpCur/hpMax*100)));
@@ -1405,34 +1478,50 @@ function renderCharPanel(){
       html+='<div style="margin-bottom:8px">';
       html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">';
       html+='<span style="font-size:9px;font-weight:600;color:var(--text3);text-transform:uppercase">HP</span>';
-      html+='<div style="display:flex;align-items:center;gap:4px">';
-      html+='<input type="number" value="'+hpCur+'" min="0" max="'+hpMax+'" ';
+      html+='<div style="display:flex;align-items:center;gap:3px">';
+      html+='<button class="stat-pm" data-cn="'+esc(char.name)+'" data-d="-1" data-max="'+hpMax+'" onclick="bumpHP(this.dataset.cn,parseInt(this.dataset.d),parseInt(this.dataset.max))">&minus;</button>';
+      html+='<input type="number" value="'+hpCur+'" min="0" max="'+hpMax+'" data-cn="'+esc(char.name)+'" data-hpmax="'+hpMax+'" ';
       html+='style="width:40px;background:var(--bg);border:.5px solid var(--border2);border-radius:3px;padding:1px 3px;font-size:13px;font-weight:600;color:'+col+';text-align:center" ';
-      html+='data-cn="'+esc(char.name)+'" data-hpmax="'+hpMax+'" onchange="updateHP(this.dataset.cn,this.value,parseInt(this.dataset.hpmax))" />';
+      html+='onchange="updateHP(this.dataset.cn,this.value,parseInt(this.dataset.hpmax))" />';
+      html+='<button class="stat-pm" data-cn="'+esc(char.name)+'" data-d="1" data-max="'+hpMax+'" onclick="bumpHP(this.dataset.cn,parseInt(this.dataset.d),parseInt(this.dataset.max))">+</button>';
       html+='<span style="font-size:11px;color:var(--text3)">/ '+hpMax+'</span>';
-      html+='<span style="font-size:10px;padding:1px 5px;border-radius:3px;background:var(--bg3);color:var(--text3);margin-left:4px">КБ '+(cs.ac||10)+'</span>';
       html+='</div></div>';
       html+='<div style="height:5px;background:var(--bg3);border-radius:3px;overflow:hidden">';
       html+='<div id="'+barId+'" style="height:100%;width:'+pct+'%;background:'+col+';transition:width .3s;border-radius:3px"></div>';
       html+='</div></div>';
     }
 
-    // STR/DEX/CON/INT/WIS/CHA — редактируемые, 1-30
-    var stats=cs.stats||{STR:10,DEX:10,CON:10,INT:10,WIS:10,CHA:10};
-    html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:10px">';
-    ['STR','DEX','CON','INT','WIS','CHA'].forEach(function(st){
-      var v=Math.max(1,Math.min(30,parseInt(stats[st])||10));
-      var mod=Math.floor((v-10)/2);
-      var mc=mod>=0?'var(--success)':'var(--danger)';
-      html+='<div style="text-align:center;padding:4px 2px;background:var(--bg3);border-radius:4px;border:.5px solid var(--border)">';
-      html+='<div style="font-size:8px;font-weight:600;color:var(--text3);letter-spacing:.04em">'+st+'</div>';
-      html+='<input type="number" value="'+v+'" min="1" max="30" ';
-      html+='style="width:32px;background:transparent;border:none;font-size:14px;font-weight:700;color:var(--text);text-align:center;outline:none;padding:0" ';
-      html+='data-cn="'+esc(char.name)+'" data-st="'+st+'" onchange="updateStat(this.dataset.cn,this.dataset.st,this.value)" />';
-      html+='<div style="font-size:10px;color:'+mc+'">'+(mod>=0?'+':'')+mod+'</div>';
+    // КБ с кнопками +/− (если включён)
+    if(mech.ac!==false){
+      var acv=Math.max(1,Math.min(30,parseInt(cs.ac)||10));
+      html+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;padding:6px 10px;background:var(--bg3);border-radius:4px">';
+      html+='<span style="font-size:10px;font-weight:600;color:var(--text3)">🛡 КБ</span>';
+      html+='<button class="stat-pm" data-cn="'+esc(char.name)+'" data-d="-1" onclick="bumpAC(this.dataset.cn,parseInt(this.dataset.d))">&minus;</button>';
+      html+='<input type="number" value="'+acv+'" min="1" max="30" data-cn="'+esc(char.name)+'" ';
+      html+='style="width:38px;background:var(--bg);border:.5px solid var(--border2);border-radius:3px;padding:1px 3px;font-size:13px;font-weight:600;color:var(--text);text-align:center" ';
+      html+='onchange="updateCharStat(this.dataset.cn,this.dataset.k1,Math.max(1,Math.min(30,parseInt(this.value)||10)));renderCharPanel()" data-k1="ac" />';
+      html+='<button class="stat-pm" data-cn="'+esc(char.name)+'" data-d="1" onclick="bumpAC(this.dataset.cn,parseInt(this.dataset.d))">+</button>';
       html+='</div>';
-    });
-    html+='</div>';
+    }
+
+    // Характеристики (если включены)
+    if(mech.stats!==false){
+      var stats=cs.stats||{STR:10,DEX:10,CON:10,INT:10,WIS:10,CHA:10};
+      html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:10px">';
+      ['STR','DEX','CON','INT','WIS','CHA'].forEach(function(st){
+        var v=Math.max(1,Math.min(30,parseInt(stats[st])||10));
+        var mod=Math.floor((v-10)/2);
+        var mc=mod>=0?'var(--success)':'var(--danger)';
+        html+='<div style="text-align:center;padding:4px 2px;background:var(--bg3);border-radius:4px;border:.5px solid var(--border)">';
+        html+='<div style="font-size:8px;font-weight:600;color:var(--text3);letter-spacing:.04em">'+st+'</div>';
+        html+='<input type="number" value="'+v+'" min="1" max="30" data-cn="'+esc(char.name)+'" data-st="'+st+'" ';
+        html+='style="width:32px;background:transparent;border:none;font-size:14px;font-weight:700;color:var(--text);text-align:center;outline:none;padding:0" ';
+        html+='onchange="updateStat(this.dataset.cn,this.dataset.st,this.value)" />';
+        html+='<div style="font-size:10px;color:'+mc+'">'+(mod>=0?'+':'')+mod+'</div>';
+        html+='</div>';
+      });
+      html+='</div>';
+    }
   }
 
   if(cs.abilities)html+='<div class="char-stat-group"><div class="char-stat-label">Способности</div><div class="char-stat-val">'+esc(cs.abilities)+'</div></div>';
@@ -1442,7 +1531,18 @@ function renderCharPanel(){
   html+='</div>';
   c.innerHTML=html;
 }
-
+function bumpHP(cn,d,max){
+  if(!charStats[cn])charStats[cn]={};
+  var cur=parseInt(charStats[cn].hpCur!=null?charStats[cn].hpCur:charStats[cn].hp)||0;
+  charStats[cn].hpCur=Math.max(0,Math.min(max,cur+d));
+  renderCharPanel(); autoSave();
+}
+function bumpAC(cn,d){
+  if(!charStats[cn])charStats[cn]={};
+  var cur=parseInt(charStats[cn].ac)||10;
+  charStats[cn].ac=Math.max(1,Math.min(30,cur+d));
+  renderCharPanel(); autoSave();
+}
 function updateStat(charName,stat,val){
   if(!charStats[charName])charStats[charName]={};
   if(!charStats[charName].stats)charStats[charName].stats={};
@@ -1506,7 +1606,7 @@ let rulesInstr='';if(G.rules==='dnd'){
   }
   if(mech.levels!==false)mechParts.push('За достижения давай XP: {"xp":{"char":"имя","amount":N}}.');
   rulesInstr='Система D&D 5e. '+mechParts.join(' ');
-}else if(G.rules==='survival'){rulesInstr='Режим выживания. У персонажей есть шкалы (0-100): голод, жажда, усталость. Отслеживай их и сообщай изменения через {"survival":{"char":"имя","hunger":N,"thirst":N,"fatigue":N}}. Голод/жажда падают со временем, усталость растёт от нагрузки.';}else if(G.rules==='custom'&&G.rulesCustomId){const cs=customSystems.find(s=>s.id===G.rulesCustomId);if(cs)rulesInstr='Система правил: '+cs.desc;}else if(G.customRules){rulesInstr='Правила: '+G.customRules.slice(0,150);}return `Ты нарратор Artist Quest. ${G.lang==='en'?'Answer ONLY in English.':'Отвечай ТОЛЬКО на русском.'}${partyNote}\nМир: ${G.worldName}. ${G.worldDesc.slice(0,400)}\nЖанр: ${G.genres.join(', ')||'—'}\nПерсонажи: ${chars}\n${mD[G.mode]||mD.game} ${narratorInstr} ${dD[G.detail]||dD[3]}\n${G.npcs?'NPC: '+G.npcs.slice(0,200):''}${rulesInstr?' '+rulesInstr:''}${G.hardcore?' Хардкор: без перманентной смерти, но напряжение максимальное.':''}${G.narratorExtra?' '+G.narratorExtra.slice(0,200):''}\n[правка: текст] = изменение без хода. После ответа добавь {"note":"факт"} для журнала. Если есть предметы: {"item":"название","icon":"эмодзи","char":"имя","desc":"описание"}.${summaryCache?'\n\nРЕЗЮМЕ ПРОШЛЫХ СОБЫТИЙ: '+summaryCache.slice(0,800):''}`;}
+}else if(G.rules==='survival'){var sv=G.survMech||{};var scales=[];if(sv.hunger!==false)scales.push('hunger (голод)');if(sv.thirst!==false)scales.push('thirst (жажда)');if(sv.fatigue!==false)scales.push('fatigue (усталость)');rulesInstr='Режим выживания. У персонажей шкалы (0-100): '+(scales.join(', ')||'нет')+'. Отслеживай их и сообщай изменения через {"survival":{"char":"имя"'+(sv.hunger!==false?',"hunger":N':'')+(sv.thirst!==false?',"thirst":N':'')+(sv.fatigue!==false?',"fatigue":N':'')+'}}.'+(sv.hp!==false?' Также отслеживай здоровье персонажей.':'');}else if(G.rules==='detective'){rulesInstr='Режим детектива: игрок ведёт расследование. Подбрасывай улики, противоречия в показаниях, ложные следы. Записывай важные улики через {"note":"улика: ..."}. НЕ раскрывай разгадку раньше времени — пусть игрок дедуктирует сам.';}else if(G.rules==='custom'&&G.rulesCustomId){const cs=customSystems.find(s=>s.id===G.rulesCustomId);if(cs){rulesInstr='Система правил: '+cs.desc;if(cs.mech){var mp=[];if(cs.mech.dice)mp.push('используй броски кубиков через {"dice":true,"dc":N,"skill":"..."}');if(cs.mech.hp)mp.push('отслеживай HP');if(cs.mech.stats)mp.push('учитывай характеристики');if(cs.mech.hunger||cs.mech.thirst||cs.mech.fatigue)mp.push('отслеживай шкалы выживания через {"survival":{...}}');if(mp.length)rulesInstr+=' Механики: '+mp.join(', ')+'.';}}}else if(G.customRules){rulesInstr='Правила: '+G.customRules.slice(0,150);}return `Ты нарратор Artist Quest. ${G.lang==='en'?'Answer ONLY in English.':'Отвечай ТОЛЬКО на русском.'}${partyNote}\nМир: ${G.worldName}. ${G.worldDesc.slice(0,400)}\nЖанр: ${G.genres.join(', ')||'—'}\nПерсонажи: ${chars}\n${mD[G.mode]||mD.game} ${narratorInstr} ${dD[G.detail]||dD[3]}\n${G.npcs?'NPC: '+G.npcs.slice(0,200):''}${rulesInstr?' '+rulesInstr:''}${G.hardcore?' Хардкор: без перманентной смерти, но напряжение максимальное.':''}${G.narratorExtra?' '+G.narratorExtra.slice(0,200):''}\n[правка: текст] = изменение без хода. После ответа добавь {"note":"факт"} для журнала. Если есть предметы: {"item":"название","icon":"эмодзи","char":"имя","desc":"описание"}.${summaryCache?'\n\nРЕЗЮМЕ ПРОШЛЫХ СОБЫТИЙ: '+summaryCache.slice(0,800):''}`;}
 function buildMsgs(msg,isSys){
   if(isSys)return [{role:'user',content:msg}];
   // Шлём только последние 14 сообщений — резюме уже в системном промпте
