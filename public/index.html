@@ -520,6 +520,11 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
 .switch-thumb{position:absolute;width:17px;height:17px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.25s}
 .switch input:checked + .switch-track{background:var(--ac)}
 .switch input:checked + .switch-track .switch-thumb{left:22px}
+.inv-use-btn{margin-top:6px;padding:4px 12px;border:.5px solid var(--ac);border-radius:var(--rad);background:var(--bg3);color:var(--ac);cursor:pointer;font-size:11px;font-weight:600;transition:all .15s}
+.inv-use-btn:hover{background:var(--ac);color:var(--bg);box-shadow:0 0 12px rgba(212,168,48,.25)}
+.inv-use-btn:active{transform:scale(.95)}
+.inv-del-btn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;padding:2px 5px;align-self:flex-start;transition:color .15s;border-radius:4px}
+.inv-del-btn:hover{color:var(--danger);background:var(--bg3)}
 /* ─── STAT BUTTONS (единый стиль, реагирует на тему) ─── */
 .stat-pm{width:22px;height:22px;border-radius:5px;border:.5px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;font-size:13px;font-weight:600;line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:0;transition:all .12s;flex-shrink:0}
 .stat-pm:hover{border-color:var(--ac);color:var(--ac);background:var(--bg3)}
@@ -1551,23 +1556,26 @@ function renderCharPanel(){
 
   if(isDnd){
     // Уровень и XP (если включены)
+    var canEdit=!!G.statsEditable;
     if(mech.levels!==false){
       var lvl=Math.max(1,Math.min(20,parseInt(cs.level)||1));
       var xpCur=parseInt(cs.xp)||0;
       var xpTbl=[0,300,900,2700,6500,14000,23000,34000,48000,64000,85000,100000,120000,140000,165000,195000,225000,265000,305000,355000];
       var xpNext=lvl<20?xpTbl[lvl]:'макс';
-      html+='<div style="background:var(--bg3);border-radius:4px;padding:7px 10px;margin-bottom:8px;display:flex;align-items:center;gap:8px">';
+      html+='<div style="background:var(--bg3);border-radius:4px;padding:7px 10px;margin-bottom:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">';
       html+='<div style="font-size:10px;font-weight:600;color:var(--text3)">УР.</div>';
-      html+='<input type="number" value="'+lvl+'" min="1" max="20" data-cn="'+esc(char.name)+'" ';
-      html+='style="width:36px;background:transparent;border:none;font-size:18px;font-weight:700;color:var(--ac);text-align:center;outline:none" ';
-      html+='onchange="updateCharStat(this.dataset.cn,this.dataset.k1,Math.max(1,Math.min(20,parseInt(this.value)||1)))" data-k1="level" />';
-      html+='<div style="font-size:10px;color:var(--text3)">XP: ';
-      html+='<input type="number" value="'+xpCur+'" min="0" data-cn="'+esc(char.name)+'" data-k1="xp" ';
-      html+='style="width:55px;background:var(--bg);border:.5px solid var(--border2);border-radius:3px;padding:1px 3px;font-size:11px;color:var(--text2);text-align:center" ';
-      html+='onchange="updateCharStat(this.dataset.cn,this.dataset.k1,parseInt(this.value)||0)" />';
-      html+=' / '+xpNext+'</div></div>';
+      if(canEdit){
+        html+='<div style="display:flex;align-items:center;gap:3px">';
+        html+='<button class="stat-pm" style="width:18px;height:18px;font-size:11px" data-cn="'+esc(char.name)+'" data-k="level" data-d="-1" onclick="bumpMeta(this.dataset.cn,this.dataset.k,parseInt(this.dataset.d),1,20)">&minus;</button>';
+        html+='<span style="font-size:18px;font-weight:700;color:var(--ac);min-width:22px;text-align:center">'+lvl+'</span>';
+        html+='<button class="stat-pm" style="width:18px;height:18px;font-size:11px" data-cn="'+esc(char.name)+'" data-k="level" data-d="1" onclick="bumpMeta(this.dataset.cn,this.dataset.k,parseInt(this.dataset.d),1,20)">+</button>';
+        html+='</div>';
+      } else {
+        html+='<span style="font-size:18px;font-weight:700;color:var(--ac)">'+lvl+'</span>';
+      }
+      html+='<div style="font-size:10px;color:var(--text3);margin-left:auto">XP: <b style="color:var(--text2)">'+xpCur+'</b> / '+xpNext+'</div>';
+      html+='</div>';
     }
-
     // HP с кнопками +/− (если включён)
     if(mech.hp!==false&&cs.hp){
       var hpMax=parseInt(cs.hp)||10;
@@ -1591,19 +1599,20 @@ function renderCharPanel(){
       html+='</div></div>';
     }
 
-    // КБ с кнопками +/− (если включён)
+    // КБ — редактируется только в режиме редактирования
     if(mech.ac!==false){
       var acv=Math.max(1,Math.min(30,parseInt(cs.ac)||10));
       html+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;padding:6px 10px;background:var(--bg3);border-radius:4px">';
       html+='<span style="font-size:10px;font-weight:600;color:var(--text3)">🛡 КБ</span>';
-      html+='<button class="stat-pm" data-cn="'+esc(char.name)+'" data-d="-1" onclick="bumpAC(this.dataset.cn,parseInt(this.dataset.d))">&minus;</button>';
-      html+='<input type="number" value="'+acv+'" min="1" max="30" data-cn="'+esc(char.name)+'" ';
-      html+='style="width:38px;background:var(--bg);border:.5px solid var(--border2);border-radius:3px;padding:1px 3px;font-size:13px;font-weight:600;color:var(--text);text-align:center" ';
-      html+='onchange="updateCharStat(this.dataset.cn,this.dataset.k1,Math.max(1,Math.min(30,parseInt(this.value)||10)));renderCharPanel()" data-k1="ac" />';
-      html+='<button class="stat-pm" data-cn="'+esc(char.name)+'" data-d="1" onclick="bumpAC(this.dataset.cn,parseInt(this.dataset.d))">+</button>';
+      if(canEdit){
+        html+='<button class="stat-pm" data-cn="'+esc(char.name)+'" data-d="-1" onclick="bumpAC(this.dataset.cn,parseInt(this.dataset.d))">&minus;</button>';
+        html+='<span style="font-size:14px;font-weight:700;color:var(--text);min-width:24px;text-align:center">'+acv+'</span>';
+        html+='<button class="stat-pm" data-cn="'+esc(char.name)+'" data-d="1" onclick="bumpAC(this.dataset.cn,parseInt(this.dataset.d))">+</button>';
+      } else {
+        html+='<span style="font-size:14px;font-weight:700;color:var(--text)">'+acv+'</span>';
+      }
       html+='</div>';
     }
-
     // Характеристики (если включены)
     if(mech.stats!==false){
       var stats=cs.stats||{STR:10,DEX:10,CON:10,INT:10,WIS:10,CHA:10};
@@ -1650,6 +1659,12 @@ function bumpAC(cn,d){
   charStats[cn].ac=Math.max(1,Math.min(30,cur+d));
   renderCharPanel(); autoSave();
 }
+function bumpMeta(cn,key,d,lo,hi){
+  if(!charStats[cn])charStats[cn]={};
+  var cur=parseInt(charStats[cn][key])||lo;
+  charStats[cn][key]=Math.max(lo,Math.min(hi,cur+d));
+  renderCharPanel(); autoSave();
+}
 function bumpStat(cn,st,d){
   if(!charStats[cn])charStats[cn]={};
   if(!charStats[cn].stats)charStats[cn].stats={};
@@ -1688,23 +1703,54 @@ function updateHP(charName,cur,max){
 function switchRightTab(tab){rightTab=tab;document.querySelectorAll('.right-tab').forEach(t=>t.classList.remove('on'));document.querySelectorAll('.right-tab-panel').forEach(p=>p.style.display='none');const tabs={journal:0,chars:1,inv:2};document.querySelectorAll('.right-tab')[tabs[tab]]?.classList.add('on');const panelId='rp-'+{journal:'journal',chars:'chars',inv:'inv'}[tab];const panel=el(panelId);if(panel){panel.style.display='';panel.classList.add('tab-entering');setTimeout(()=>panel.classList.remove('tab-entering'),200);}if(tab==='chars')renderCharPanel();if(tab==='inv')renderInvPanel();}
 
 function renderInvPanel(){
-  const c=el('inv-list');if(!c)return;
-  const char=G.chars[G.activeChar];
+  var c=el('inv-list');if(!c)return;
+  var char=G.chars[G.activeChar];
   if(!char){c.innerHTML='<div class="inv-empty">Нет персонажей</div>';return;}
-  const items=inventory[char.name]||[];const cs=charStats[char.name]||{};
-  let html='';
-  // Base equipment
-  if(cs.equipment){html+=`<div class="inv-item"><div class="inv-item-icon">⚔</div><div style="flex:1"><div class="inv-item-name">Базовое снаряжение</div><div class="inv-item-desc">${esc(cs.equipment)}</div></div></div>`;}
-  // Items found during game
-  if(items.length){items.forEach((item,i)=>{html+=`<div class="inv-item"><div class="inv-item-icon">${item.icon||'📦'}</div><div style="flex:1"><div class="inv-item-name">${esc(item.name)}</div><div class="inv-item-desc">${esc(item.desc||'')}</div></div><button onclick="removeInvItem('${char.name}',${i})" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;padding:2px 5px;align-self:flex-start" title="Удалить">✕</button></div>`;});}
-  // Add item manually
-  html+=`<div style="display:flex;gap:5px;margin-top:8px;padding:0 0 4px">
-    <input id="inv-add-input" class="input" placeholder="Добавить предмет..." style="flex:1;font-size:12px;min-height:32px;padding:5px 8px" onkeydown="if(event.key==='Enter')addInvItem('${char.name}')"/>
-    <button class="btn btn-sm" onclick="addInvItem('${char.name}')" style="min-height:32px;padding:0 10px">+</button>
-  </div>`;
+  var items=inventory[char.name]||[];
+  var cs=charStats[char.name]||{};
+  var html='';
+  // Базовое снаряжение — тоже можно упомянуть
+  if(cs.equipment){
+    html+='<div class="inv-item">'
+      +'<div class="inv-item-icon">⚔</div>'
+      +'<div style="flex:1"><div class="inv-item-name">Снаряжение</div>'
+      +'<div class="inv-item-desc">'+esc(cs.equipment)+'</div>'
+      +'<button class="inv-use-btn" data-use="'+esc(cs.equipment)+'" onclick="useItem(this.dataset.use)">Использовать</button>'
+      +'</div></div>';
+  }
+  // Предметы инвентаря
+  if(items.length){
+    items.forEach(function(item,i){
+      html+='<div class="inv-item">'
+        +'<div class="inv-item-icon">'+(item.icon||'📦')+'</div>'
+        +'<div style="flex:1"><div class="inv-item-name">'+esc(item.name)+'</div>'
+        +(item.desc?'<div class="inv-item-desc">'+esc(item.desc)+'</div>':'')
+        +'<button class="inv-use-btn" data-use="'+esc(item.name)+'" onclick="useItem(this.dataset.use)">Использовать</button>'
+        +'</div>'
+        +'<button class="inv-del-btn" data-cn="'+esc(char.name)+'" data-i="'+i+'" onclick="removeInvItem(this.dataset.cn,parseInt(this.dataset.i))" title="Удалить">✕</button>'
+        +'</div>';
+    });
+  }
+  // Добавление вручную
+  html+='<div style="display:flex;gap:5px;margin-top:8px">'
+    +'<input id="inv-add-input" class="input" placeholder="Добавить предмет..." style="flex:1;font-size:12px;min-height:32px;padding:5px 8px" data-cn="'+esc(char.name)+'" onkeydown="if(event.key===\'Enter\')addInvItem(this.dataset.cn)"/>'
+    +'<button class="btn btn-sm" data-cn="'+esc(char.name)+'" onclick="addInvItem(this.dataset.cn)" style="min-height:32px;padding:0 12px">+</button>'
+    +'</div>';
   if(!cs.equipment&&!items.length)html='<div class="inv-empty">Пусто. Добавь предмет или напиши «Проверяю инвентарь».</div>'+html;
   c.innerHTML=html;
 }
+function useItem(name){
+  var pi=el('pi');
+  if(!pi)return;
+  var cur=pi.value.trim();
+  var phrase='Использую: '+name;
+  pi.value=cur?(cur+' '+phrase):phrase;
+  pi.focus();
+  // авто-высота
+  pi.style.height='auto'; pi.style.height=Math.min(pi.scrollHeight,110)+'px';
+  notif('Добавлено в действие: '+name,'info');
+}
+
 function addInvItem(charName){const inp=el('inv-add-input');if(!inp||!inp.value.trim())return;if(!inventory[charName])inventory[charName]=[];inventory[charName].push({name:inp.value.trim(),icon:'📦',desc:''});inp.value='';renderInvPanel();autoSave();}
 function removeInvItem(charName,idx){if(!inventory[charName])return;inventory[charName].splice(idx,1);renderInvPanel();autoSave();}
 
