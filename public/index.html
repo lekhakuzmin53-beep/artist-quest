@@ -1180,7 +1180,7 @@ const ACHIEVEMENTS=[
 function getProgress(){return JSON.parse(localStorage.getItem('aq_progress')||'{"messages":0,"games":0,"dndGames":0,"worlds":[],"unlocked":[]}');}
 function saveProgress(p){localStorage.setItem('aq_progress',JSON.stringify(p));}
 function trackMessage(){const p=getProgress();p.messages=(p.messages||0)+1;checkAchievements(p);saveProgress(p);}
-function trackGameStart(){const p=getProgress();p.games=(p.games||0)+1;if(G.rules==='dnd')p.dndGames=(p.dndGames||0)+1;if(G.worldName&&!p.worlds?.includes(G.worldName)){p.worlds=p.worlds||[];p.worlds.push(G.worldName);}checkAchievements(p);saveProgress(p);}
+function trackGameStart(){const p=getProgress();p.games=(p.games||0)+1;if(G.rules==='dnd')p.dndGames=(p.dndGames||0)+1;if(G.worldName&&!p.worlds?.includes(G.worldName)){p.worlds=p.worlds||[];p.worlds.push(G.worldName);}p.maxParty=Math.max(p.maxParty||0,(G.chars||[]).length);if(G.hardcore)p.hardcorePlayed=true;checkAchievements(p);saveProgress(p);}
 function showAchievement(a){
   var old=document.querySelector('.ach-popup'); if(old)old.remove();
   var d=document.createElement('div');
@@ -1193,7 +1193,7 @@ function showAchievement(a){
   requestAnimationFrame(function(){requestAnimationFrame(function(){d.classList.add('show');});});
   setTimeout(function(){d.classList.remove('show');setTimeout(function(){d.remove();},450);},4200);
 }
-function checkAchievements(p){const unlocked=p.unlocked||[];const toUnlock=[];if(p.games>=1&&!unlocked.includes('first_step'))toUnlock.push('first_step');if(p.messages>=50&&!unlocked.includes('storyteller'))toUnlock.push('storyteller');if(p.messages>=200&&!unlocked.includes('epic'))toUnlock.push('epic');if(p.dndGames>=5&&!unlocked.includes('dnd_master'))toUnlock.push('dnd_master');if((p.worlds||[]).length>=5&&!unlocked.includes('world_builder'))toUnlock.push('world_builder');toUnlock.forEach((id,ix)=>{unlocked.push(id);const a=ACHIEVEMENTS.find(x=>x.id===id);if(a)setTimeout(()=>showAchievement(a),600+ix*4500);});p.unlocked=unlocked;}
+function checkAchievements(p){const unlocked=p.unlocked||[];const toUnlock=[];if(p.games>=1&&!unlocked.includes('first_step'))toUnlock.push('first_step');if(p.messages>=50&&!unlocked.includes('storyteller'))toUnlock.push('storyteller');if(p.messages>=200&&!unlocked.includes('epic'))toUnlock.push('epic');if(p.dndGames>=5&&!unlocked.includes('dnd_master'))toUnlock.push('dnd_master');if((p.worlds||[]).length>=5&&!unlocked.includes('world_builder'))toUnlock.push('world_builder');if((p.maxParty||0)>=3&&!unlocked.includes('party'))toUnlock.push('party');if(p.hardcorePlayed&&!unlocked.includes('hardcore'))toUnlock.push('hardcore');toUnlock.forEach((id,ix)=>{unlocked.push(id);const a=ACHIEVEMENTS.find(x=>x.id===id);if(a)setTimeout(()=>showAchievement(a),600+ix*4500);});p.unlocked=unlocked;}
 const totalSteps=5;
 let rightTab='journal';
 let selectedPreset=null;
@@ -1758,27 +1758,68 @@ function renderJournal(){const jl=el('journal');if(!jl)return;jl.innerHTML=journ
 function renderQA(){const e=el('qa-btns');if(!e)return;e.innerHTML='';qaList.forEach(a=>{const txt=typeof a==='string'?a:a.text;const cat=typeof a==='string'?'custom':a.cat;if(!txt?.trim())return;const b=document.createElement('button');b.className='qa-btn '+(cat||'custom');b.textContent=txt.endsWith(': ')?txt.slice(0,-2):txt;b.onclick=()=>{const pi=el('pi');if(sendMode==='send'&&!txt.endsWith(': ')){pi.value=txt;doSend();}else{pi.value=txt;pi.focus();}};e.appendChild(b);});}
 
 // ── AI CORE ──────────────────────────────────────
-function buildSys(){const mD={game:'Режим: Приключение — действия имеют реальные последствия.',story:'Режим: Совместная история.',chat:'Режим: Диалоги и NPC.',sim:'Режим: Симуляция мира.'};const nD={classic:'Стиль: Литературный нарратор, богатый язык.',gm:'Стиль: Мастер игры с юмором.',cold:'Стиль: Хроникёр, сухо и по делу.',poet:'Стиль: Поэтично и образно.'};const dD={1:'Ответ 1-2 предложения.',2:'Ответ 2-3 предложения.',3:'Ответ 3-5 предложений.',4:'Ответ 1-2 абзаца.',5:'Ответ 2-4 абзаца.'};const activeLabel=partyMode==='all'?'[ВСЯ ГРУППА]':'[АКТИВНЫЙ]';const chars=G.chars.length?G.chars.map((c,i)=>{const cs=charStats[c.name]||{};return `${i===G.activeChar?activeLabel:''}${c.name}${cs.cls?' ('+cs.cls+')':''}${c.desc?': '+c.desc.slice(0,60):''}${cs.abilities?' Навыки: '+cs.abilities.slice(0,60):''}${cs.equipment?' Снаряжение: '+cs.equipment.slice(0,60):''}`}).join(' | '):'Нет конкретного персонажа.';const partyNote=partyMode==='all'&&G.chars.length>1?' Все персонажи действуют одновременно.':'';// Custom narrator
-let narratorInstr=nD[G.narratorStyle]||nD.classic;if(G.narratorStyle==='custom'&&G.narratorCustomId){const cn=customNarrators.find(n=>n.id===G.narratorCustomId);if(cn)narratorInstr='Стиль: '+cn.desc;}// Rules
-let rulesInstr='';if(G.rules==='dnd'){
-  var mech=G.dndMech||{};
-  var mechParts=[];
-  if(mech.dice!==false)mechParts.push('Когда нужна проверка навыка — добавь {"dice":true,"dc":число 5-25,"skill":"Название","hideDC":false} (hideDC:true для скрытых). ВАЖНО про текст перед кубиком: коротко объясни ТОЛЬКО какой модификатор применяется и почему (например: "Скрытность: ловкость +2, темнота даёт ещё +1, итого +3"). НЕ описывай заранее что будет при успехе или провале, НЕ спрашивай какой результат хочет игрок — просто дай бросить кубик, исход опишешь после броска.');
-  if(mech.hp!==false)mechParts.push('Отслеживай HP персонажей, сообщай об уроне.');
-  if(mech.stats!==false){
-    var dndChars=G.chars.map(function(c){var cs=charStats[c.name]||{};var stats=cs.stats||{};var modStr=STAT_ORDER.map(function(s){var v=parseInt(stats[s])||10;var mod=abilityMod(v);return STAT_RU[s]+' '+v+'('+(mod>=0?'+':'')+mod+')';}).join(', ');return c.name+(modStr?' ['+modStr+']':'')+(mech.hp!==false&&cs.hp?' HP:'+(cs.hpCur||cs.hp)+'/'+cs.hp:'')+(mech.ac!==false&&cs.ac?' КБ:'+cs.ac:'');}).join(' | ');
-    mechParts.push('Персонажи: '+dndChars+'. Учитывай модификаторы при проверках.');
+function buildSys(){
+  // Компактные коды режимов/стилей — экономим токены
+  var mD={game:'Приключение: действия имеют последствия.',story:'Совместная история.',chat:'Диалоги с NPC.',sim:'Симуляция мира.'};
+  var nD={classic:'Литературный, богатый язык.',gm:'Мастер игры, с юмором.',cold:'Сухо, по делу.',poet:'Поэтично.'};
+  var dD={1:'1-2 предложения.',2:'2-3 предложения.',3:'3-5 предложений.',4:'1-2 абзаца.',5:'2-4 абзаца.'};
+  var partyNote=(partyMode==='all'&&G.chars.length>1)?' Все герои действуют вместе.':'';
+
+  // Персонажи: полное описание шлём ТОЛЬКО когда статы реально нужны нарратору.
+  // В обычном режиме — только имена + активный, остальное модель помнит из истории.
+  var chars;
+  if(G.rules==='dnd'&&(G.dndMech||{}).stats!==false){
+    chars=G.chars.map(function(c,i){
+      var cs=charStats[c.name]||{};var st=cs.stats||{};
+      var mods=STAT_ORDER.map(function(s){var v=parseInt(st[s])||10;var m=abilityMod(v);return STAT_RU[s].slice(0,3)+(m>=0?'+':'')+m;}).join(',');
+      return (i===G.activeChar?'▸':'')+c.name+(cs.cls?'/'+cs.cls:'')+' ['+mods+']'+((G.dndMech||{}).hp!==false&&cs.hp?' HP'+(cs.hpCur||cs.hp)+'/'+cs.hp:'')+((G.dndMech||{}).ac!==false&&cs.ac?' КБ'+cs.ac:'');
+    }).join(' | ');
+  } else {
+    chars=G.chars.length?G.chars.map(function(c,i){return (i===G.activeChar?'▸':'')+c.name+(charStats[c.name]&&charStats[c.name].cls?'/'+charStats[c.name].cls:'');}).join(', '):'нет героя';
   }
-  if(mech.levels!==false)mechParts.push('За достижения давай XP: {"xp":{"char":"имя","amount":N}}.');
-  rulesInstr='Система D&D 5e. '+mechParts.join(' ');
-}else if(G.rules==='survival'){var sv=G.survMech||{};var scales=[];if(sv.hunger!==false)scales.push('hunger (голод)');if(sv.thirst!==false)scales.push('thirst (жажда)');if(sv.fatigue!==false)scales.push('fatigue (усталость)');rulesInstr='Режим выживания. У персонажей шкалы (0-100): '+(scales.join(', ')||'нет')+'. Отслеживай их и сообщай изменения через {"survival":{"char":"имя"'+(sv.hunger!==false?',"hunger":N':'')+(sv.thirst!==false?',"thirst":N':'')+(sv.fatigue!==false?',"fatigue":N':'')+'}}.'+(sv.hp!==false?' Также отслеживай здоровье персонажей.':'');}else if(G.rules==='detective'){rulesInstr='Режим детектива: игрок ведёт расследование. Подбрасывай улики, противоречия в показаниях, ложные следы. Записывай важные улики через {"note":"улика: ..."}. НЕ раскрывай разгадку раньше времени — пусть игрок дедуктирует сам.';}else if(G.rules==='custom'&&G.rulesCustomId){const cs=customSystems.find(s=>s.id===G.rulesCustomId);if(cs){rulesInstr='Система правил: '+cs.desc;if(cs.mech){var mp=[];if(cs.mech.dice)mp.push('используй броски кубиков через {"dice":true,"dc":N,"skill":"..."}');if(cs.mech.hp)mp.push('отслеживай HP');if(cs.mech.stats)mp.push('учитывай характеристики');if(cs.mech.hunger||cs.mech.thirst||cs.mech.fatigue)mp.push('отслеживай шкалы выживания через {"survival":{...}}');if(mp.length)rulesInstr+=' Механики: '+mp.join(', ')+'.';}}}else if(G.customRules){rulesInstr='Правила: '+G.customRules.slice(0,150);}return `Ты нарратор Artist Quest. ${G.lang==='en'?'Answer ONLY in English.':'Отвечай ТОЛЬКО на русском.'}${partyNote}\nМир: ${G.worldName}. ${G.worldDesc.slice(0,400)}\nЖанр: ${G.genres.join(', ')||'—'}\nПерсонажи: ${chars}\n${mD[G.mode]||mD.game} ${narratorInstr} ${dD[G.detail]||dD[3]}\n${G.npcs?'NPC: '+G.npcs.slice(0,200):''}${rulesInstr?' '+rulesInstr:''}${G.hardcore?' Хардкор: без перманентной смерти, но напряжение максимальное.':''}${G.narratorExtra?' '+G.narratorExtra.slice(0,200):''}\n[правка: текст] = изменение без хода. После ответа добавь {"note":"факт"} для журнала. Если есть предметы: {"item":"название","icon":"эмодзи","char":"имя","desc":"описание"}.${summaryCache?'\n\nРЕЗЮМЕ ПРОШЛЫХ СОБЫТИЙ: '+summaryCache.slice(0,800):''}`;}
+
+  var narratorInstr=nD[G.narratorStyle]||nD.classic;
+  if(G.narratorStyle==='custom'&&G.narratorCustomId){var cn=customNarrators.find(function(n){return n.id===G.narratorCustomId;});if(cn)narratorInstr=cn.desc.slice(0,120);}
+
+  var rulesInstr='';
+  if(G.rules==='dnd'){
+    var mech=G.dndMech||{};var mp=[];
+    if(mech.dice!==false)mp.push('Для проверок: {"dice":true,"dc":5-25,"skill":"...","hideDC":false}. Перед кубиком кратко укажи только модификатор (напр. "Скрытность: Ловкость+2, итого +2"). Не описывай исходы заранее, не спрашивай выбор — исход опишешь после броска.');
+    if(mech.hp!==false)mp.push('Следи за HP, сообщай урон.');
+    if(mech.levels!==false)mp.push('XP за успехи: {"xp":{"char":"имя","amount":N}}.');
+    rulesInstr='D&D 5e. '+mp.join(' ');
+  }else if(G.rules==='survival'){
+    var sv=G.survMech||{};var sc=[];
+    if(sv.hunger!==false)sc.push('голод');if(sv.thirst!==false)sc.push('жажда');if(sv.fatigue!==false)sc.push('усталость');
+    rulesInstr='Выживание. Шкалы 0-100: '+(sc.join(', ')||'—')+'. Меняй через {"survival":{"char":"имя"'+(sv.hunger!==false?',"hunger":N':'')+(sv.thirst!==false?',"thirst":N':'')+(sv.fatigue!==false?',"fatigue":N':'')+'}}.';
+  }else if(G.rules==='detective'){
+    rulesInstr='Детектив: улики, противоречия, ложные следы. Улики: {"note":"улика: ..."}. Не раскрывай разгадку раньше времени.';
+  }else if(G.rules==='custom'&&G.rulesCustomId){
+    var csd=customSystems.find(function(s){return s.id===G.rulesCustomId;});
+    if(csd){rulesInstr=csd.desc.slice(0,200);}
+  }else if(G.customRules){rulesInstr='Правила: '+G.customRules.slice(0,120);}
+
+  // Сборка. worldDesc/npcs/narratorExtra сильно урезаны — детали модель помнит из истории.
+  var p='Ты нарратор Artist Quest. '+(G.lang==='en'?'Reply ONLY in English.':'Отвечай ТОЛЬКО по-русски.')+partyNote
+    +'\nМир: '+G.worldName+'. '+G.worldDesc.slice(0,250)
+    +(G.genres.length?'\nЖанр: '+G.genres.join(', '):'')
+    +'\nГерои: '+chars
+    +'\n'+(mD[G.mode]||mD.game)+' '+narratorInstr+' '+(dD[G.detail]||dD[3])
+    +(G.npcs?'\nNPC: '+G.npcs.slice(0,150):'')
+    +(rulesInstr?'\n'+rulesInstr:'')
+    +(G.hardcore?' Хардкор: напряжение максимальное.':'')
+    +(G.narratorExtra?'\n'+G.narratorExtra.slice(0,150):'')
+    +'\nКоманды: {"note":"факт"} в журнал; {"item":"назв","icon":"эмодзи","char":"имя","desc":"..."} для предметов. [правка: текст] — изменение без хода.'
+    +(summaryCache?'\nПРЕДЫСТОРИЯ: '+summaryCache.slice(0,700):'');
+  return p;
+}
 function buildMsgs(msg,isSys){
   if(isSys)return [{role:'user',content:msg}];
-  // Шлём только последние 14 сообщений — резюме уже в системном промпте
-  return history.slice(-14);
+  // Шлём только последние 10 сообщений — предыстория в системном промпте
+  return history.slice(-10);
 }
 
-async function sendAI(msg,isSystem=false){if(thinking)return;if(!G.useOwnKey&&user&&!user.own_api_key&&parseInt(user.tokens_balance)<500){addError('Недостаточно токенов',`У вас ${parseInt(user.tokens_balance||0)} токенов, нужно минимум 500.`,'Нажмите 💎 в верхней панели, или добавьте API ключ в Настройках.');return;}if(G.useOwnKey&&!user?.own_api_key){addError('Ключ не настроен','Свой ключ не добавлен.','Настройки → Мои нейросети.');return;}thinking=true;el('send-btn').disabled=true;if(!isSystem){const actor=partyMode==='all'?'Группа':(G.chars[G.activeChar]?.name||'Путник');addBlock(msg,true,null,actor);history.push({role:'user',content:partyMode==='all'&&G.chars.length>1?`[Группа]: ${msg}`:`[${G.chars[G.activeChar]?.name||'Путник'}]: ${msg}`});}showThink();try{const resp=await apiFetch('/api/ai/chat',{method:'POST',body:JSON.stringify({system:buildSys(),messages:buildMsgs(msg,isSystem),max_tokens:900,model:G.gameModel||undefined})});hideThink();if(resp.error){addError('Ошибка нейросети',resp.message||resp.error,resp.action||'Попробуйте ещё раз.');thinking=false;el('send-btn').disabled=false;return;}const reply=resp.content?.map(c=>c.text||'').join('')||'...';const blockId=addBlock(reply,false);blockVariants[blockId]={v0:reply,versions:[reply],current:0};if(isSystem)history.push({role:'user',content:msg,_sys:true});history.push({role:'assistant',content:reply});if(history.length>60)history=history.slice(-60);if(resp._meta?.tokens_balance!==null&&resp._meta?.tokens_balance!==undefined&&user){user.tokens_balance=resp._meta.tokens_balance;updateGameBal();}trackMessage();await maybeSummarize();autoSave();}catch(e){hideThink();addError('Ошибка соединения','Не удалось связаться с сервером.','Проверьте интернет и попробуйте снова.');}thinking=false;el('send-btn').disabled=false;}
+async function sendAI(msg,isSystem=false){if(thinking)return;if(!G.useOwnKey&&user&&!user.own_api_key&&parseInt(user.tokens_balance)<500){addError('Недостаточно токенов',`У вас ${parseInt(user.tokens_balance||0)} токенов, нужно минимум 500.`,'Нажмите 💎 в верхней панели, или добавьте API ключ в Настройках.');return;}if(G.useOwnKey&&!user?.own_api_key){addError('Ключ не настроен','Свой ключ не добавлен.','Настройки → Мои нейросети.');return;}thinking=true;el('send-btn').disabled=true;if(!isSystem){const actor=partyMode==='all'?'Группа':(G.chars[G.activeChar]?.name||'Путник');addBlock(msg,true,null,actor);history.push({role:'user',content:partyMode==='all'&&G.chars.length>1?`[Группа]: ${msg}`:`[${G.chars[G.activeChar]?.name||'Путник'}]: ${msg}`});}showThink();try{const resp=await apiFetch('/api/ai/chat',{method:'POST',body:JSON.stringify({system:buildSys(),messages:buildMsgs(msg,isSystem),max_tokens:700,model:G.gameModel||undefined})});hideThink();if(resp.error){addError('Ошибка нейросети',resp.message||resp.error,resp.action||'Попробуйте ещё раз.');thinking=false;el('send-btn').disabled=false;return;}const reply=resp.content?.map(c=>c.text||'').join('')||'...';const blockId=addBlock(reply,false);blockVariants[blockId]={v0:reply,versions:[reply],current:0};if(isSystem)history.push({role:'user',content:msg,_sys:true});history.push({role:'assistant',content:reply});if(history.length>60)history=history.slice(-60);if(resp._meta?.tokens_balance!==null&&resp._meta?.tokens_balance!==undefined&&user){user.tokens_balance=resp._meta.tokens_balance;updateGameBal();}trackMessage();await maybeSummarize();autoSave();}catch(e){hideThink();addError('Ошибка соединения','Не удалось связаться с сервером.','Проверьте интернет и попробуйте снова.');}thinking=false;el('send-btn').disabled=false;}
 
 // ── STORY BLOCKS ──────────────────────────────────
 function addBlock(text,isPlayer,blockId,actorOverride){const area=el('story');const wrap=document.createElement('div');wrap.className='story-block';const id=blockId||('blk_'+Date.now()+'_'+Math.random().toString(36).slice(2,6));wrap.dataset.id=id;
@@ -1857,7 +1898,7 @@ function startInlineEdit(blockId,isPlayer){if(G.hardcore)return;const ie=el('ied
 function cancelInlineEdit(blockId){const ie=el('iedit_'+blockId);if(ie)ie.classList.remove('open');}
 function saveInlineEdit(blockId,isPlayer){if(G.hardcore)return;const ta=el('ieta_'+blockId);if(!ta)return;const newText=ta.value.trim();if(!newText)return;if(isPlayer){const el2=el('ptxt_'+blockId);if(el2)el2.textContent=newText;const blk=document.querySelector(`.story-block[data-id="${blockId}"]`);if(blk){const actorEl=blk.querySelector('.player-name');const actor=actorEl?actorEl.textContent:'Путник';const idx=history.findLastIndex(m=>m.role==='user'&&!m._sys);if(idx>=0)history[idx]={...history[idx],content:`[${actor}]: ${newText}`};}}else{const ntxt=el('ntxt_'+blockId);if(ntxt)ntxt.innerHTML=`<p>${fmt(newText)}</p>`;const idx=history.findLastIndex(m=>m.role==='assistant');if(idx>=0)history[idx]={role:'assistant',content:newText};if(blockVariants[blockId]){blockVariants[blockId].versions[blockVariants[blockId].current]=newText;}}cancelInlineEdit(blockId);autoSave();notif('Изменено');}
 
-async function regenBlock(blockId){if(G.hardcore||thinking){notif(G.hardcore?'Хардкор — нельзя':'Подождите...','err');return;}const ntxt=el('ntxt_'+blockId);if(!ntxt)return;const lastAssIdx=history.findLastIndex(m=>m.role==='assistant');if(lastAssIdx<0)return;const curText=blockVariants[blockId]?.versions[blockVariants[blockId]?.current]||history[lastAssIdx]?.content||'';history.splice(lastAssIdx,1);ntxt.style.opacity='0.4';thinking=true;el('send-btn').disabled=true;try{const resp=await apiFetch('/api/ai/chat',{method:'POST',body:JSON.stringify({system:buildSys(),messages:buildMsgs('',false),max_tokens:900})});if(resp.error){notif('Ошибка','err');ntxt.style.opacity='1';thinking=false;el('send-btn').disabled=false;return;}const reply=resp.content?.map(c=>c.text||'').join('')||'...';history.push({role:'assistant',content:reply});let clean=reply.replace(/\{"note":[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.note){journal.unshift(o.note.slice(0,120));renderJournal();}}catch(e){}return '';}).replace(/\{"item":[^}]+\}/g,'').replace(/\{"dice":[^}]+\}/g,'').trim();ntxt.innerHTML=`<p>${fmt(clean)}</p>`;ntxt.style.opacity='1';if(!blockVariants[blockId])blockVariants[blockId]={v0:curText,versions:[curText],current:0};blockVariants[blockId].versions.push(reply);blockVariants[blockId].current=blockVariants[blockId].versions.length-1;const vBtn=el('vbtn_'+blockId);if(vBtn&&blockVariants[blockId].versions.length>=2)vBtn.style.display='';if(resp._meta?.tokens_balance!==null&&resp._meta?.tokens_balance!==undefined&&user){user.tokens_balance=resp._meta.tokens_balance;updateGameBal();}autoSave();}catch(e){notif('Ошибка соединения','err');ntxt.style.opacity='1';}thinking=false;el('send-btn').disabled=false;}
+async function regenBlock(blockId){if(G.hardcore||thinking){notif(G.hardcore?'Хардкор — нельзя':'Подождите...','err');return;}const ntxt=el('ntxt_'+blockId);if(!ntxt)return;const lastAssIdx=history.findLastIndex(m=>m.role==='assistant');if(lastAssIdx<0)return;const curText=blockVariants[blockId]?.versions[blockVariants[blockId]?.current]||history[lastAssIdx]?.content||'';history.splice(lastAssIdx,1);ntxt.style.opacity='0.4';thinking=true;el('send-btn').disabled=true;try{const resp=await apiFetch('/api/ai/chat',{method:'POST',body:JSON.stringify({system:buildSys(),messages:buildMsgs('',false),max_tokens:700})});if(resp.error){notif('Ошибка','err');ntxt.style.opacity='1';thinking=false;el('send-btn').disabled=false;return;}const reply=resp.content?.map(c=>c.text||'').join('')||'...';history.push({role:'assistant',content:reply});let clean=reply.replace(/\{"note":[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.note){journal.unshift(o.note.slice(0,120));renderJournal();}}catch(e){}return '';}).replace(/\{"item":[^}]+\}/g,'').replace(/\{"dice":[^}]+\}/g,'').trim();ntxt.innerHTML=`<p>${fmt(clean)}</p>`;ntxt.style.opacity='1';if(!blockVariants[blockId])blockVariants[blockId]={v0:curText,versions:[curText],current:0};blockVariants[blockId].versions.push(reply);blockVariants[blockId].current=blockVariants[blockId].versions.length-1;const vBtn=el('vbtn_'+blockId);if(vBtn&&blockVariants[blockId].versions.length>=2)vBtn.style.display='';if(resp._meta?.tokens_balance!==null&&resp._meta?.tokens_balance!==undefined&&user){user.tokens_balance=resp._meta.tokens_balance;updateGameBal();}autoSave();}catch(e){notif('Ошибка соединения','err');ntxt.style.opacity='1';}thinking=false;el('send-btn').disabled=false;}
 
 function toggleVariants(blockId){const wrap=document.querySelector(`.story-block[data-id="${blockId}"] .narrator-wrap`);if(!wrap)return;const existing=wrap.querySelector('.variants-panel');if(existing){existing.remove();return;}const bv=blockVariants[blockId];if(!bv||bv.versions.length<2)return;const panel=document.createElement('div');panel.className='variants-panel';const label=document.createElement('div');label.className='variants-label';label.textContent=`${bv.versions.length} вариант(а) — выберите:`;panel.appendChild(label);const list=document.createElement('div');list.className='variants-list';bv.versions.forEach((v,i)=>{let clean=v.replace(/\{[^}]+\}/g,'').trim();const card=document.createElement('div');card.className='variant-card'+(i===bv.current?' chosen':'');card.innerHTML=`<div class="variant-num">${i===0?'Оригинал':'Вариант '+i}</div><div class="variant-text">${fmt(clean.slice(0,200))}...</div>`;card.onclick=()=>{bv.current=i;const ntxt=el('ntxt_'+blockId);if(ntxt)ntxt.innerHTML=`<p>${fmt(clean)}</p>`;const idx=history.findLastIndex(m=>m.role==='assistant');if(idx>=0)history[idx]={role:'assistant',content:v};list.querySelectorAll('.variant-card').forEach((c,j)=>c.classList.toggle('chosen',j===i));autoSave();notif(i===0?'Оригинал выбран':'Вариант '+i+' выбран');};list.appendChild(card);});panel.appendChild(list);wrap.appendChild(panel);}
 
@@ -1873,15 +1914,15 @@ function saveGameSettings(){G.worldName=el('gs-wn').value.trim()||G.worldName;G.
 async function maybeSummarize(){
   // Умная компрессия: когда история > 18 сообщений, сжимаем старые 10 в резюме
   // Резюме ЗАМЕНЯЕТСЯ целиком (не растёт бесконечно)
-  if(history.length<=18)return;
-  const toCompress=history.slice(0,history.length-10); // всё кроме последних 10
-  const keepRecent=history.slice(-10);
+  if(history.length<=14)return;
+  const toCompress=history.slice(0,history.length-8); // всё кроме последних 8
+  const keepRecent=history.slice(-8);
   try{
     const prevSummary=summaryCache?('Прошлое резюме: '+summaryCache.slice(0,600)+'\n\n'):'';
     const r=await apiFetch('/api/ai/chat',{method:'POST',body:JSON.stringify({
       system:'Ты сжимаешь историю RPG в компактное резюме. Сохрани: ключевые события, имена персонажей и NPC, важные предметы, текущие цели, состояние мира. Максимум 150 слов. Отвечай ТОЛЬКО резюме без вступлений.',
       messages:[{role:'user',content:prevSummary+toCompress.map(m=>(m.role==='user'?'Игрок':'Мастер')+': '+String(m.content).slice(0,300)).join('\n')}],
-      max_tokens:300,
+      max_tokens:220,
       model:'claude-haiku-4-5-20251001'
     })});
     const s=r.content?.map(c=>c.text||'').join('');

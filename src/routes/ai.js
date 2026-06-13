@@ -141,6 +141,11 @@ router.post('/chat', auth, async (req, res) => {
       apiKey   = user.own_api_key;
       provider = user.own_provider || detectProvider(apiKey, null);
       model    = reqModel || user.own_model || null;
+      // Нормализация имени модели Claude для AITunnel (формат с точкой)
+      if (provider === 'aitunnel' && model) {
+        if (model.indexOf('haiku') >= 0)  model = 'claude-haiku-4.5';
+        else if (model.indexOf('sonnet') >= 0) model = 'claude-sonnet-4.5';
+      }
     } else {
       if (!SERVER_KEY)
         return res.status(503).json({ error: 'no_server_key', message: 'Серверный ключ не настроен.', action: 'Добавьте свой API ключ в Настройках.' });
