@@ -1388,11 +1388,11 @@ function renderCharPanel(){
     html+='<div style="font-size:10px;font-weight:600;color:var(--text3)">УР.</div>';
     html+='<input type="number" value="'+lvl+'" min="1" max="20" ';
     html+='style="width:36px;background:transparent;border:none;font-size:18px;font-weight:700;color:var(--ac);text-align:center;outline:none" ';
-    html+='onchange="updateCharStat(''+cn+'','level',Math.max(1,Math.min(20,parseInt(this.value)||1)))" />';
+    html+='data-cn="'+esc(char.name)+'" onchange="updateCharStat(this.dataset.cn,&quot;level&quot;,Math.max(1,Math.min(20,parseInt(this.value)||1)))" />';
     html+='<div style="font-size:10px;color:var(--text3)">XP: ';
     html+='<input type="number" value="'+xpCur+'" min="0" ';
     html+='style="width:55px;background:var(--bg);border:.5px solid var(--border2);border-radius:3px;padding:1px 3px;font-size:11px;color:var(--text2);text-align:center" ';
-    html+='onchange="updateCharStat(''+cn+'','xp',parseInt(this.value)||0)" />';
+    html+='data-cn="'+esc(char.name)+'" data-k1="xp" onchange="updateCharStat(this.dataset.cn,this.dataset.k1,parseInt(this.value)||0)" />';
     html+=' / '+xpNext+'</div></div>';
 
     // HP + AC
@@ -1408,7 +1408,7 @@ function renderCharPanel(){
       html+='<div style="display:flex;align-items:center;gap:4px">';
       html+='<input type="number" value="'+hpCur+'" min="0" max="'+hpMax+'" ';
       html+='style="width:40px;background:var(--bg);border:.5px solid var(--border2);border-radius:3px;padding:1px 3px;font-size:13px;font-weight:600;color:'+col+';text-align:center" ';
-      html+='onchange="updateHP(''+cn+'',this.value,'+hpMax+')" />';
+      html+='data-cn="'+esc(char.name)+'" data-hpmax="'+hpMax+'" onchange="updateHP(this.dataset.cn,this.value,parseInt(this.dataset.hpmax))" />';
       html+='<span style="font-size:11px;color:var(--text3)">/ '+hpMax+'</span>';
       html+='<span style="font-size:10px;padding:1px 5px;border-radius:3px;background:var(--bg3);color:var(--text3);margin-left:4px">КБ '+(cs.ac||10)+'</span>';
       html+='</div></div>';
@@ -1428,7 +1428,7 @@ function renderCharPanel(){
       html+='<div style="font-size:8px;font-weight:600;color:var(--text3);letter-spacing:.04em">'+st+'</div>';
       html+='<input type="number" value="'+v+'" min="1" max="30" ';
       html+='style="width:32px;background:transparent;border:none;font-size:14px;font-weight:700;color:var(--text);text-align:center;outline:none;padding:0" ';
-      html+='onchange="updateStat(''+cn+'',''+st+'',this.value)" />';
+      html+='data-cn="'+esc(char.name)+'" data-st="'+st+'" onchange="updateStat(this.dataset.cn,this.dataset.st,this.value)" />';
       html+='<div style="font-size:10px;color:'+mc+'">'+(mod>=0?'+':'')+mod+'</div>';
       html+='</div>';
     });
