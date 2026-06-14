@@ -525,12 +525,14 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
 .inv-use-btn:active{transform:scale(.95)}
 .inv-del-btn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;padding:2px 5px;align-self:flex-start;transition:color .15s;border-radius:4px}
 .inv-del-btn:hover{color:var(--danger);background:var(--bg3)}
-.entity-card{display:flex;align-items:flex-start;gap:8px;background:var(--bg3);border:.5px solid var(--border);border-radius:var(--rad);padding:7px 9px;margin-bottom:5px}
+.entity-card{display:flex;flex-direction:column;gap:5px;background:var(--bg3);border:.5px solid var(--border);border-radius:var(--rad);padding:7px 9px;margin-bottom:5px}
 .entity-name{font-size:12px;font-weight:600;color:var(--text)}
 .entity-desc{font-size:11px;color:var(--text3);line-height:1.4;margin-top:1px}
-.entity-use{flex-shrink:0;padding:4px 10px;border:.5px solid var(--ac);border-radius:var(--rad);background:var(--bg2);color:var(--ac);cursor:pointer;font-size:10px;font-weight:600;transition:all .15s;align-self:center}
+.entity-use{align-self:flex-start;padding:2px 9px;border:.5px solid var(--ac);border-radius:20px;background:none;color:var(--ac);cursor:pointer;font-size:10px;font-weight:500;transition:all .15s;min-height:0}
 .entity-use:hover{background:var(--ac);color:var(--bg)}
 .entity-use:active{transform:scale(.95)}
+.char-check{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:4px;border:.5px solid var(--border3);font-size:9px;color:var(--bg);background:transparent;vertical-align:middle;transition:all .15s}
+.char-check.on{background:var(--ac);border-color:var(--ac)}
 /* ─── STAT BUTTONS (единый стиль, реагирует на тему) ─── */
 .stat-pm{width:22px;height:22px;border-radius:5px;border:.5px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;font-size:13px;font-weight:600;line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:0;transition:all .12s;flex-shrink:0}
 .stat-pm:hover{border-color:var(--ac);color:var(--ac);background:var(--bg3)}
@@ -1119,40 +1121,63 @@ const QA_DEFAULTS=[{text:'Осматриваюсь вокруг',cat:'examine'},
 // Preset scenarios — always fixed
 const PRESETS=[
   {id:'shadows',name:'Тени Могильника',system:'dnd',icon:'💀',genre:['Тёмное фэнтези','Хоррор'],
-   desc:'Магическое королевство Валдрас медленно умирает. Некромант Морак нашёл способ удерживать мёртвых в мире живых — они сохраняют осколки памяти и выполняют его волю. Церковь Света разослала охотников на нежить, но многие из них не вернулись.',
-   worldStart:'Вы приходите в себя среди трупов на поле у стен деревни Горький брод. Алый свет пробивается сквозь густой туман вдалеке. Где-то скрипит дерево — и это не ветер.',
-   npcs:'Морак — Некромант, главный антагонист. Жрица Алва — союзник, знает слабости нежити. Дух Кеара — мёртвый стражник, помнит тайный проход.',
-   chars:[{name:'Арвин',cls:'Воин',desc:'Бывший стражник королевской гвардии, изгнанный за невыполнение приказа',appearance:'Высокий, со шрамом на щеке, в потрёпанных доспехах',abilities:'Фехтование, тактика, выживание в дикой природе',equipment:'Длинный меч, кольчуга, дорожный мешок',traits:'Верен слову, не терпит несправедливости, боится предать снова',inventory:[]}],
+   desc:'Королевство Валдрас умирает. Некромант Морак овладел Кровавой Литанией — ритуалом, что удерживает мёртвых в мире живых: они помнят свои жизни и потому особенно опасны. Церковь Света слала охотников десятками — вернулись единицы, и те поседевшие. Деревни пустеют, кладбища пустеют ещё быстрее. Говорят, в сердце Могильника бьётся чёрное сердце, и пока оно бьётся — мёртвые не лягут.',
+   worldStart:'Вы приходите в себя среди трупов на поле у деревни Горький Брод — не помня, как здесь оказались. Алый свет пульсирует в тумане за деревней, в такт чьему-то сердцу. Рядом стонет раненый — седая женщина в облачении жрицы пытается подняться, опираясь на светящийся посох.',
+   npcs:'Морак Бледный — некромант, держит Кровавую Литанию, прячется в склепе под церковью. Жрица Алва — выжившая охотница, знает обряд упокоения, но ранена. Дух стражника Кеара — помнит тайный ход в склеп, торгуется за упокоение своей души. Староста Виг — прячет жителей в амбаре, не доверяет чужакам.',
+   chars:[{name:'Арвин',cls:'Воин',desc:'Бывший стражник королевской гвардии, изгнанный за то, что отказался казнить невиновных. Ищет искупления.',appearance:'Высокий, шрам через щёку, потрёпанные доспехи с содранным гербом',armor:'medium',stats:{STR:15,DEX:13,CON:14,INT:10,WIS:12,CHA:8},
+     skills:[{name:'Фехтование',desc:'Мастерское владение мечом: можно делать рискованные приёмы, парировать, обезоруживать'},{name:'Боевой опыт',desc:'Чутьё на засады и опасность — замечает то, что выдаёт врага заранее'},{name:'Выживание',desc:'Ориентируется в дикой местности, находит еду и укрытие, читает следы'}],
+     charTraits:[{name:'Верен слову',desc:'Дав обещание, не отступит — даже во вред себе'},{name:'Не терпит несправедливости',desc:'Вступится за слабого, даже против превосходящих сил'},{name:'Боится предать снова',desc:'Прошлое давит: в моменты выбора колеблется, когда на кону чужие жизни'}],
+     items:[{name:'Длинный меч',icon:'⚔',desc:'Надёжный гвардейский клинок, чуть зазубрен в боях'},{name:'Кольчуга',icon:'🛡',desc:'Средняя броня, видела лучшие дни, но держит удар'},{name:'Походный мешок',icon:'🎒',desc:'Трут, фляга, вяленое мясо на три дня, моток верёвки'}]}],
    narratorStyle:'gm',mode:'game'},
+
   {id:'dnd_forgotten',name:'Забытые Королевства',system:'dnd',icon:'🏰',genre:['Высокое фэнтези','Мифология'],
-   desc:'Классический сеттинг D&D — Forgotten Realms. Фаэрун — мир мечей и магии, богов и чудовищ. Город Baldur\'s Gate стоит на грани войны. Харпер Эльминстер ищет новых агентов. Культ Бездны готовит ритуал.',
-   worldStart:'Вы в таверне «Растекающийся щит» в Baldur\'s Gate. К вам подходит незнакомец в плаще и кладёт на стол запечатанный конверт со знаком Харперов.',
-   npcs:'Эльминстер — мудрый маг и Харпер. Бандиты культа Бездны. Городская стража. Торговец Арно.',
-   chars:[{name:'Адрен',cls:'Следопыт',desc:'Полуэльф из Цитадели Стрел, ищет пропавшего брата',appearance:'Стройный, острые уши, зелёные глаза, лёгкий кожаный доспех',abilities:'Следопытство, стрельба из лука, владение двумя клинками, природная магия',equipment:'Длинный лук, два коротких меча, кожаный доспех, сигнальный рог',traits:'Наблюдателен, осторожен, не доверяет людям',inventory:[]}],
+   desc:'Фаэрун — классический мир мечей и магии. Врата Балдура балансируют на грани: культ Драконицы Бездны вербует отчаявшихся, обещая спасение в конце мира, что сами же и приближают. Арфисты — тайное общество защитников — теряют агентов одного за другим. В тавернах шепчут о звезде, что упала на востоке, и о том, кто посмеет к ней пойти.',
+   worldStart:'Таверна «Расплёсканный щит» гудит от голосов. К вашему столу подходит человек в дорожном плаще, кладёт запечатанный конверт со знаком арфы и лютни — печатью Арфистов — и тихо говорит: «Эльминстер сказал, ты не откажешь. Открой, когда останешься один». И растворяется в толпе.',
+   npcs:'Эльминстер — древний маг-арфист, говорит загадками, но всегда по делу. Леди Альда — связная Арфистов в городе, проверяет новичков. Жрец культа Бездны под личиной торговца — вербует и следит. Капитан стражи Зорн — подкуплен культом, но сам того не знает.',
+   chars:[{name:'Адрен',cls:'Следопыт',desc:'Полуэльф из Цитадели Стрел. Брат пропал, отправившись к упавшей звезде. Идёт по его следу.',appearance:'Стройный, острые уши, зелёные глаза, лёгкий кожаный доспех с эльфийским узором',armor:'light',stats:{STR:12,DEX:15,CON:13,INT:10,WIS:14,CHA:8},
+     skills:[{name:'Стрельба из лука',desc:'Бьёт без промаха на расстоянии, может целить в уязвимые места'},{name:'Следопытство',desc:'Читает следы, определяет давность и количество прошедших, не теряется в глуши'},{name:'Бой двумя клинками',desc:'В ближнем бою сражается парой коротких мечей, быстрые серии ударов'},{name:'Природная магия',desc:'Слабые друидские чары: говорит с животными, чует магию, заживляет лёгкие раны'}],
+     charTraits:[{name:'Наблюдателен',desc:'Замечает детали, что упускают другие — фальшь, скрытую дверь, чужую ложь'},{name:'Осторожен',desc:'Предпочитает разведку лобовой атаке, готовит пути отхода'},{name:'Не доверяет людям',desc:'Эльфийская кровь и горький опыт: к людям относится с холодком'}],
+     items:[{name:'Длинный лук',icon:'🏹',desc:'Эльфийской работы, дальнобойный, колчан на 20 стрел'},{name:'Два коротких меча',icon:'⚔',desc:'Парные клинки для ближнего боя'},{name:'Кожаный доспех',icon:'🛡',desc:'Лёгкая броня, не стесняет движений'},{name:'Сигнальный рог',icon:'📯',desc:'Зов слышен за лигу — на крайний случай'}]}],
    narratorStyle:'gm',mode:'game'},
+
   {id:'witcher',name:'Мир Ведьмака',system:'free',icon:'⚔',genre:['Тёмное фэнтези'],
-   desc:'Континент — мир жестокий и несправедливый. Люди вытесняют старшие расы, чудовища нападают на деревни. Ведьмаки — мутанты-охотники за чудовищами — отвергнуты обществом, которое они защищают. Нильфгаард с юга давит своей мощью.',
-   worldStart:'Вы въезжаете в деревню Брокилон. Жители испуганы — ночью что-то пожрало трёх овец. Деревенский старейшина встречает вас у ворот с кошелём, набитым монетами.',
-   npcs:'Старейшина Фьорн — скупой, хочет дешёвого решения. Ведьма Лешка — знает о чудовищах. Стражник Петровиц — враждебен к ведьмакам.',
-   chars:[{name:'Герой',cls:'Ведьмак',desc:'Мутант-охотник за чудовищами, прошедший Испытание Трав',appearance:'Белые волосы, желтоватые кошачьи глаза, шрамы по всему телу',abilities:'Ведьмачьи знаки (Аард, Игни, Квен), алхимия, два меча — сталь и серебро',equipment:'Стальной меч, серебряный меч, доспех ведьмака, набор для алхимии',traits:'Циник, но с кодексом чести. Деньги важны, но дети — неприкосновенны.',inventory:[]}],
+   desc:'Континент жесток и несправедлив. Люди вытесняют старшие расы, костры пылают для «нелюдей», а чудовища всё равно жрут скот и детей по ночам. Ведьмаки — мутанты-охотники, отвергнутые теми, кого защищают. За работу платят скупо и плюют вслед. Война с Нильфгаардом катится с юга, и в её тени монстры плодятся быстрее, чем ведьмаки успевают их класть.',
+   worldStart:'Деревня Брокилонский Брод встречает вас грязью и косыми взглядами. Ночью кто-то задрал трёх овец и батрака — то, что осталось, лежит под рогожей. Староста мнётся у ворот с тощим кошелём: «Ведьмак, говорят? Разберись с тварью. Только дёшево — мы люди небогатые».',
+   npcs:'Староста Фьорн — скуп, торгуется за каждый грош, что-то недоговаривает о пропавших раньше. Знахарка Лешка — знает повадки тварей и местные легенды, но просит услугу взамен. Стражник Петрок — ненавидит ведьмаков, мешает из принципа. Вдова батрака — видела ночью то, о чём боится сказать при старосте.',
+   chars:[{name:'Геральт',cls:'Ведьмак',desc:'Мутант школы Волка, прошедший Испытание Травами. Циник с кодексом: за деньги убивает чудовищ, но детей не трогает и невиновных не сдаёт.',appearance:'Седые волосы, кошачьи жёлтые глаза, паутина шрамов, два меча за спиной',armor:'light',stats:{STR:14,DEX:15,CON:14,INT:12,WIS:13,CHA:10},
+     skills:[{name:'Ведьмачьи знаки',desc:'Аард (телекинетический толчок), Игни (струя огня), Квен (защитный щит), Аксий (внушение), Ирден (магическая ловушка)'},{name:'Алхимия',desc:'Варит эликсиры и масла против конкретных тварей, бомбы; знает яды и противоядия'},{name:'Два меча',desc:'Стальной — против людей и зверей, серебряный — против чудовищ. Танцующий стиль боя'},{name:'Ведьмачье чутьё',desc:'Обострённые чувства: видит следы, чует кровь и магию, идёт по запаху'}],
+     charTraits:[{name:'Циничный профессионал',desc:'Не строит иллюзий о людях, но работу делает на совесть'},{name:'Кодекс ведьмака',desc:'Деньги важны, но есть черта: дети и невиновные — неприкосновенны'},{name:'Нейтралитет',desc:'Старается не лезть в политику и чужие войны — выходит редко'}],
+     items:[{name:'Стальной меч',icon:'⚔',desc:'Против людей, зверей и нежити из плоти'},{name:'Серебряный меч',icon:'🗡',desc:'Против чудовищ — упырей, утопцев, оборотней'},{name:'Доспех ведьмака',icon:'🛡',desc:'Лёгкая броня усиленной кожи, не сковывает в бою'},{name:'Набор алхимика',icon:'⚗',desc:'Колбы, ингредиенты, три готовых эликсира и две бомбы'}]}],
    narratorStyle:'cold',mode:'game'},
+
   {id:'taiga',name:'Мёртвая Тайга',system:'survival',icon:'🌲',genre:['Постапок'],
-   desc:'Ваш самолёт рухнул в сибирской тайге в разгар зимы. До ближайшего посёлка триста километров. Минус тридцать ночью. Из живых — только вы. Из припасов — то, что удалось вытащить из горящего фюзеляжа. Волки уже знают, что вы здесь.',
-   worldStart:'Снег скрипит под ногами. Обломки дымятся за спиной. У вас час до заката, рюкзак с горсткой вещей и нож. Холод уже пробирается под куртку.',
-   npcs:'Старый охотник Игнат — живёт в зимовье где-то на востоке. Стая волков — следует по пятам. Рация — изредка ловит обрывки переговоров.',
-   chars:[{name:'Выживший',cls:'Пилот',desc:'Пилот малой авиации. Летал над тайгой сотни раз, но впервые — в ней.',appearance:'Лётная куртка, обмороженные щёки, упрямый взгляд',abilities:'Ориентирование, ремонт техники, первая помощь',equipment:'Нож, зажигалка, фляга, аптечка, сигнальная ракета ×2',traits:'Не сдаётся. Считает припасы. Говорит сам с собой, чтобы не сойти с ума.',inventory:[]}],
+   desc:'Ваш самолёт рухнул в сибирской тайге в разгар зимы. До ближайшего жилья — сотни километров глухого леса. Ночью минус тридцать, днём чуть теплее. Связь молчит, поисковики если и ищут, то не здесь. Из живых после крушения — только вы. Из припасов — то, что успели выхватить из горящего фюзеляжа. А ещё в этом лесу вы не одни: волки уже взяли след, и они терпеливы.',
+   worldStart:'Снег скрипит под ногами, обломки фюзеляжа дымятся за спиной. Час до заката. На вас лётная куртка, в руках — нож и наполовину собранный рюкзак. Холод уже находит щели в одежде, а из глубины леса доносится протяжный вой — и ему отвечают с другой стороны.',
+   npcs:'Старый охотник Игнат — живёт в зимовье где-то на востоке, если до него дойти; нелюдим, но не бросит в беде. Волчья стая — идёт по следу, проверяет вас на слабость. Эфир рации — изредка ловит обрывки чужих переговоров, источник неясен. Замёрзшая заимка — кто-то был здесь до вас и не ушёл.',
+   chars:[{name:'Сергей',cls:'Пилот',desc:'Пилот малой авиации, налетал тысячи часов над тайгой — но впервые оказался внутри неё. Дома ждёт дочь.',appearance:'Лётная куртка на меху, обмороженные щёки, твёрдый взгляд человека, привыкшего решать',stats:{STR:12,DEX:11,CON:13,INT:13,WIS:12,CHA:10},
+     skills:[{name:'Ориентирование',desc:'Читает местность по солнцу, мху и звёздам, не ходит кругами'},{name:'Ремонт техники',desc:'Чинит механизмы из подручного, может оживить рацию или мотор'},{name:'Первая помощь',desc:'Обработает рану, остановит кровь, распознает обморожение и переохлаждение'},{name:'Холодная голова',desc:'Не паникует в кризис, принимает решения быстро и трезво'}],
+     charTraits:[{name:'Не сдаётся',desc:'Чем хуже ситуация, тем упрямее цепляется за жизнь'},{name:'Считает ресурсы',desc:'Рационален до мелочей: бережёт каждую спичку и каждую калорию'},{name:'Говорит сам с собой',desc:'Чтобы не сойти с ума в одиночестве, проговаривает план вслух'}],
+     items:[{name:'Охотничий нож',icon:'🔪',desc:'Прочный, незаменимый: разделать дичь, настрогать щепу, защититься'},{name:'Зажигалка',icon:'🔥',desc:'Газа примерно на десяток розжигов — на вес золота'},{name:'Аптечка',icon:'🩹',desc:'Бинт, жгут, обезболивающее, антисептик'},{name:'Сигнальная ракета',icon:'🧨',desc:'Две штуки. Один выстрел — один шанс быть замеченным'},{name:'Фляга',icon:'🍶',desc:'Пустая. Воду придётся топить из снега'}]}],
    narratorStyle:'cold',mode:'game'},
+
   {id:'noir',name:'Дело о Полуночи',system:'detective',icon:'🔍',genre:['Нуар'],
-   desc:'Город, который никогда не признаётся в своих грехах. Дочь судьи найдена мёртвой в номере отеля «Полночь». Полиция закрыла дело за сутки — самоубийство. Её мать не верит и платит вам втрое. У всех свидетелей алиби. У всех алиби — трещины.',
-   worldStart:'Дождь барабанит по вывеске вашей конторы. Женщина в чёрном кладёт на стол конверт с деньгами и фотографию дочери: «Найдите того, кто это сделал».',
-   npcs:'Судья Гаррисон — отец погибшей, слишком спокоен. Портье Лу — видел всё, говорит мало. Джаз-певица Вера — была с погибшей в ту ночь. Детектив Коул — закрыл дело, торопился.',
-   chars:[{name:'Частный детектив',cls:'Сыщик',desc:'Бывший полицейский, ушёл после того как закрыли дело, которое нельзя было закрывать.',appearance:'Помятый плащ, трёхдневная щетина, глаза, которые всё замечают',abilities:'Дедукция, допрос, слежка, стрельба',equipment:'Револьвер, блокнот, фотоаппарат, фляжка',traits:'Не берёт грязных денег. Доводит дела до конца. Не доверяет полиции.',inventory:[]}],
+   desc:'Город, что никогда не признаётся в своих грехах. Дочь судьи Гаррисона найдена мёртвой в номере отеля «Полночь» — полиция за сутки закрыла дело как самоубийство и явно торопилась. Мать погибшей не верит ни единому слову и платит вам втрое против обычного. У каждого свидетеля железное алиби. Но алиби — как лёд по весне: надавишь в нужном месте, и пойдут трещины.',
+   worldStart:'Дождь барабанит по стеклу вашей конторы третий час кряду. Женщина в чёрном кладёт на стол толстый конверт и фотографию молодой девушки с грустными глазами: «Мою дочь убили, детектив. Полиции я не верю — они слишком быстро всё закрыли. Найдите того, кто это сделал. Деньги не вопрос».',
+   npcs:'Судья Гаррисон — отец погибшей, неестественно спокоен для убитого горем; что-то скрывает. Портье Лу — видел в ту ночь всех входящих, но рот открывает за деньги или из страха. Певица Вера — была с погибшей в баре отеля незадолго до смерти, нервничает. Детектив Коул — закрыл дело, торопился, на вопросы реагирует агрессивно.',
+   chars:[{name:'Джек Морроу',cls:'Частный детектив',desc:'Бывший коп, ушёл из полиции, когда заставили закрыть дело, которое закрывать было нельзя. С тех пор работает на себя и не берёт грязных денег.',appearance:'Помятый плащ, трёхдневная щетина, усталые серые глаза, что подмечают каждую мелочь',stats:{STR:11,DEX:12,CON:11,INT:15,WIS:14,CHA:13},
+     skills:[{name:'Дедукция',desc:'Складывает разрозненные улики в картину, замечает несостыковки в показаниях'},{name:'Допрос',desc:'Чувствует ложь, давит на болевые точки, развязывает языки'},{name:'Слежка',desc:'Ходит незаметно, читает по поведению, не теряет объект в толпе'},{name:'Меткий стрелок',desc:'С револьвером на «ты», но предпочитает решать дела головой'}],
+     charTraits:[{name:'Не берёт грязных денег',desc:'Принципы дороже гонорара — взятку не возьмёт даже в тупике'},{name:'Доводит до конца',desc:'Вцепившись в дело, не бросит, пока не дойдёт до правды'},{name:'Не верит полиции',desc:'Знает систему изнутри и знает, как легко она прогибается'}],
+     items:[{name:'Револьвер .38',icon:'🔫',desc:'Старый служебный, шесть патронов, на крайний случай'},{name:'Блокнот',icon:'📓',desc:'Записи, наброски схем, имена и противоречия'},{name:'Фотоаппарат',icon:'📷',desc:'Карманный, для улик и слежки'},{name:'Фляжка',icon:'🥃',desc:'Виски. Развязывает чужие языки и греет в дождь'}]}],
    narratorStyle:'cold',mode:'game'},
+
   {id:'cyberpunk',name:'Неоновый Город',system:'free',icon:'🌆',genre:['Киберпанк'],
-   desc:'Нео-Шанхай, 2087. Мегакорпорации контролируют всё. Граница между живым и машиной стёрта. Нейроинтерфейсы — обязательны для работы. В трущобах Нижнего Уровня люди без имплантов умирают молодыми. Бегущие по тени — единственный способ остаться свободным.',
-   worldStart:'Звонок в 3 часа ночи. Незашифрованный. Голос: «Хочешь 50 000 кредитов за одно дело? Встреча через час. Склад 7, Нижний Уровень. Приди один».',
-   npcs:'Таинственный клиент — платит хорошо, но что-то скрывает. Инфоброкер Сяо — знает всё за цену. Корпоративный агент — следит.',
-   chars:[{name:'Ноль',cls:'Ранер',desc:'Бегущий по тени. Специалист по проникновению и взлому систем.',appearance:'Тёмная куртка, светящиеся татуировки, нейроразъём за ухом',abilities:'Взлом систем, паркур, стрельба, социальная инженерия',equipment:'Пистолет-автомат, взломщик ICE, синтетический стимулятор ×3',traits:'Не оставляет следов. Не предаёт тех, кто заплатил.',inventory:[]}],
+   desc:'Нео-Шанхай, 2087. Мегакорпорации владеют всем — водой, воздухом, твоими воспоминаниями, если задолжал. Нейроимпланты обязательны для работы, а в трущобах Нижнего Уровня люди без аугментаций мрут молодыми под вечным кислотным дождём. Бегущие по тени — хакеры, курьеры, призраки сети — единственные, кто ещё свободен, потому что их официально не существует.',
+   worldStart:'Звонок в три часа ночи, незашифрованный — уже наглость. Искажённый голос в импланте: «Полста тысяч кредитов за одну работу. Без вопросов. Склад 7, Нижний Уровень, через час. Приходи один — и без хвоста, я проверю». Связь обрывается. За окном неон отражается в лужах, и где-то воет корпоративный дрон.',
+   npcs:'Заказчик с искажённым голосом — платит щедро, личность скрыта, мотивы темны. Инфоброкер Сяо — знает всё и всех, продаёт по двойному тарифу, верность — до следующего предложения. Корпоративный агент «Эшер» — холодный профессионал, идёт по вашему следу. Уличный док Мэй — латает тело и импланты в подсобке лапшичной, без вопросов.',
+   chars:[{name:'Ноль',cls:'Бегущий по тени',desc:'Спец по проникновению — и в системы, и в здания. Прошлое стёрто (может, добровольно), имени настоящего не помнит даже сам.',appearance:'Тёмная куртка с капюшоном, светящиеся биолюм-татуировки, нейроразъём за ухом, глаза с имплантами',stats:{STR:11,DEX:15,CON:12,INT:14,WIS:12,CHA:11},
+     skills:[{name:'Взлом систем',desc:'Проходит сквозь корпоративный лёд (ICE), вскрывает замки, перехватывает камеры и дронов'},{name:'Паркур',desc:'Двигается по вертикалям города, уходит от погони по крышам и вентиляции'},{name:'Социальная инженерия',desc:'Выдаёт себя за другого, разводит охрану, добывает доступ без единого выстрела'},{name:'Стрельба',desc:'Владеет пистолетом-пулемётом, но предпочитает уйти незамеченным'}],
+     charTraits:[{name:'Не оставляет следов',desc:'Профессиональная паранойя: чистит логи, меняет маршруты, не светит лицо'},{name:'Держит слово',desc:'Кто заплатил — того не сдаёт, репутация дороже разовой наживы'},{name:'Призрак системы',desc:'Официально не существует — ни досье, ни импланта-маяка, ни прошлого'}],
+     items:[{name:'Пистолет-пулемёт',icon:'🔫',desc:'Компактный, глушитель, два магазина'},{name:'Дека-взломщик',icon:'💻',desc:'Кастомная, для пробивания корпоративного ICE'},{name:'Стимуляторы',icon:'💉',desc:'Три дозы синтетика — ускоряют реакцию, но бьют по телу'},{name:'Оптический камуфляж',icon:'🌫',desc:'Одноразовая накидка: десять секунд почти полной невидимости'}]}],
    narratorStyle:'classic',mode:'game'},
 ];
 
@@ -1169,6 +1194,7 @@ let customThemes=JSON.parse(localStorage.getItem('aq_custom_themes')||'[]');
 let customNarrators=JSON.parse(localStorage.getItem('aq_narrators')||'[]');
 let customSystems=JSON.parse(localStorage.getItem('aq_systems')||'[]');
 let partyMode='single';
+let activeParty=[0]; // индексы героев, выполняющих действие (можно выбрать произвольный набор)
 let inventory={}; // {charName: [{icon,name,desc}]}
 let charStats={}; // {charName: {abilities,equipment,traits}} — live during game
 let blockVariants={};
@@ -1558,11 +1584,81 @@ G.chars.forEach(c=>{
 function enterGame(isNew){showPage('game-page');
   // Onboarding hint for first-timers
   const p=getProgress();
-  if((p.games||0)<=1&&isNew){setTimeout(()=>{notif('💡 Пишите действия внизу. Наведите на текст нарратора — появятся кнопки «Изменить» и «Другой ответ»','info');},3000);}el('g-wn').textContent=G.worldName;el('g-wt').textContent=G.genres.join(' · ')||G.mode;el('hcb').classList.toggle('hidden',!G.hardcore);el('game-uname').textContent=user?.username||'';const provLabel=G.useOwnKey&&user?.own_api_key?(PROVIDERS_INFO[user.own_provider]?.name||'Свой ключ'):'Встроенная нейросеть';el('g-prov').textContent='🤖 '+provLabel+(G.rules==='dnd'?' · ⚔ D&D':'');updateGameBal();if(prices)buildPkgMini('pkg-grid-game');partyMode='single';blockVariants={};renderGChars();renderJournal();renderQA();switchRightTab('journal');// Notes restore
+  if((p.games||0)<=1&&isNew){setTimeout(()=>{notif('💡 Пишите действия внизу. Наведите на текст нарратора — появятся кнопки «Изменить» и «Другой ответ»','info');},3000);}el('g-wn').textContent=G.worldName;el('g-wt').textContent=G.genres.join(' · ')||G.mode;el('hcb').classList.toggle('hidden',!G.hardcore);el('game-uname').textContent=user?.username||'';const provLabel=G.useOwnKey&&user?.own_api_key?(PROVIDERS_INFO[user.own_provider]?.name||'Свой ключ'):'Встроенная нейросеть';el('g-prov').textContent='🤖 '+provLabel+(G.rules==='dnd'?' · ⚔ D&D':'');updateGameBal();if(prices)buildPkgMini('pkg-grid-game');partyMode='single';activeParty=[0];blockVariants={};renderGChars();renderJournal();renderQA();switchRightTab('journal');// Notes restore
 const savedNotes=localStorage.getItem('aq_notes_'+G.slotId)||'';el('g-notes').value=savedNotes;el('g-notes').oninput=()=>localStorage.setItem('aq_notes_'+G.slotId,el('g-notes').value);const charName=G.chars[G.activeChar]?.name;el('pi').placeholder=charName?`Что делает ${charName}?`:'Что происходит?';const area=el('story');if(isNew){area.innerHTML='<div class="system-msg">История начинается...</div>';const msg=G.worldStart||`Начни историю в мире "${G.worldName}". ${G.chars.length?'Главный герой: '+G.chars[G.activeChar]?.name+'. '+G.chars[G.activeChar]?.desc:''}`;sendAI(msg,true);}else{area.innerHTML='';history.forEach(m=>{if(m.role==='user'&&!m._sys)addBlock(m.content,true);else if(m.role==='assistant')addBlock(m.content,false);});}}
 
-function renderGChars(){const e=el('g-chars');if(!e)return;e.innerHTML='';if(!G.chars.length){e.innerHTML='<p style="padding:8px;font-size:12px;color:var(--text3);font-style:italic">Нет персонажей</p>';return;}G.chars.forEach((c,i)=>{const isActive=i===G.activeChar&&partyMode==='single';const d=document.createElement('div');d.className='char-card'+(isActive?' active':'');const cs=charStats[c.name]||{};d.innerHTML=`<div class="char-card-name">${isActive?'<span class="char-active-dot"></span>':''} ${esc(c.name)}${cs.cls?` <span style="font-size:10px;color:var(--text3)">${esc(cs.cls)}</span>`:''}</div><div class="char-card-sub">${cs.abilities?esc(cs.abilities.slice(0,45)):'—'}</div>`;d.onclick=()=>{G.activeChar=i;partyMode='single';renderGChars();renderCharPanel();el('pi').placeholder=`Что делает ${c.name}?`;notif('Активен: '+c.name);};e.appendChild(d);});if(G.chars.length>=2){const allBtn=document.createElement('button');allBtn.className='char-all-btn'+(partyMode==='all'?' active':'');allBtn.innerHTML='⚔ Действие всей группы';allBtn.onclick=()=>{partyMode='all';renderGChars();el('pi').placeholder='Что делает группа?';notif('Вся группа');};e.appendChild(allBtn);}}
+function renderGChars(){
+  var e=el('g-chars');if(!e)return;e.innerHTML='';
+  if(!G.chars.length){e.innerHTML='<p style="padding:8px;font-size:12px;color:var(--text3);font-style:italic">Нет персонажей</p>';return;}
+  // Нормализация выбора
+  if(!Array.isArray(activeParty)||!activeParty.length)activeParty=[G.activeChar||0];
+  activeParty=activeParty.filter(function(i){return i<G.chars.length;});
+  if(!activeParty.length)activeParty=[0];
+  G.activeChar=activeParty[0];
 
+  var multi=G.chars.length>=2;
+  G.chars.forEach(function(c,i){
+    var on=activeParty.indexOf(i)>=0;
+    var d=document.createElement('div');
+    d.className='char-card'+(on?' active':'');
+    var cs=charStats[c.name]||{};
+    var sub=(cs.skills&&cs.skills.length)?cs.skills.map(function(s){return s.name;}).slice(0,3).join(', '):(cs.cls||'—');
+    d.innerHTML='<div class="char-card-name">'
+      +(multi?'<span class="char-check'+(on?' on':'')+'">'+(on?'✓':'')+'</span> ':(on?'<span class="char-active-dot"></span> ':''))
+      +esc(c.name)+(cs.cls?' <span style="font-size:10px;color:var(--text3)">'+esc(cs.cls)+'</span>':'')
+      +'</div><div class="char-card-sub">'+esc(sub.slice(0,45))+'</div>';
+    d.onclick=function(){
+      if(multi){
+        // Переключаем участие героя в наборе
+        var pos=activeParty.indexOf(i);
+        if(pos>=0){ if(activeParty.length>1)activeParty.splice(pos,1); }
+        else activeParty.push(i);
+        activeParty.sort(function(a,b){return a-b;});
+      } else {
+        activeParty=[i];
+      }
+      G.activeChar=activeParty[0];
+      partyMode=activeParty.length>1?'multi':'single';
+      renderGChars(); renderCharPanel();
+      updatePartyPlaceholder();
+    };
+    e.appendChild(d);
+  });
+
+  if(multi){
+    var row=document.createElement('div');
+    row.style.cssText='display:flex;gap:5px;padding:6px;flex-wrap:wrap';
+    // Все
+    var allBtn=document.createElement('button');
+    allBtn.className='char-all-btn'+(activeParty.length===G.chars.length?' active':'');
+    allBtn.style.flex='1';
+    allBtn.innerHTML='⚔ Все';
+    allBtn.onclick=function(){activeParty=G.chars.map(function(_,i){return i;});partyMode='multi';renderGChars();renderCharPanel();updatePartyPlaceholder();notif('Действуют все');};
+    row.appendChild(allBtn);
+    // Только активный (сброс к одному)
+    var oneBtn=document.createElement('button');
+    oneBtn.className='char-all-btn'+(activeParty.length===1?' active':'');
+    oneBtn.style.flex='1';
+    oneBtn.innerHTML='👤 Один';
+    oneBtn.onclick=function(){activeParty=[G.activeChar||0];partyMode='single';renderGChars();renderCharPanel();updatePartyPlaceholder();};
+    row.appendChild(oneBtn);
+    e.appendChild(row);
+    // Подсказка
+    var hint=document.createElement('div');
+    hint.style.cssText='padding:0 8px 6px;font-size:10px;color:var(--text3);line-height:1.4';
+    hint.textContent=activeParty.length>1?('Действуют: '+activeParty.map(function(i){return G.chars[i].name;}).join(', ')):'Нажми на героев, чтобы добавить их к действию';
+    e.appendChild(hint);
+  }
+}
+function updatePartyPlaceholder(){
+  var pi=el('pi');if(!pi)return;
+  if(activeParty.length>1){
+    pi.placeholder='Что делают: '+activeParty.map(function(i){return G.chars[i].name;}).join(', ')+'?';
+  } else {
+    var nm=G.chars[activeParty[0]]?G.chars[activeParty[0]].name:'герой';
+    pi.placeholder='Что делает '+nm+'?';
+  }
+}
 function renderCharPanel(){
   var c=el('char-panel-body'); if(!c)return;
   var char=G.chars[G.activeChar];
@@ -1627,7 +1723,7 @@ function renderCharPanel(){
       html+='<div style="font-size:10px;color:var(--text3);margin-left:auto">XP: <b style="color:var(--text2)">'+xpCur+'</b> / '+xpNext+'</div>';
       html+='</div>';
     }
-    // HP — кнопки +/− и число (без нативных стрелок ввода)
+    // HP — в бою меняется кнопками только при включённом редактировании; полоска видна всегда
     if(mech.hp!==false&&cs.hp){
       var hpMax=parseInt(cs.hp)||10;
       var hpCur=parseInt(cs.hpCur!=null?cs.hpCur:cs.hp)||hpMax;
@@ -1638,9 +1734,13 @@ function renderCharPanel(){
       html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">';
       html+='<span style="font-size:9px;font-weight:600;color:var(--text3);text-transform:uppercase">HP</span>';
       html+='<div style="display:flex;align-items:center;gap:4px">';
-      html+='<button class="stat-pm" data-cn="'+esc(char.name)+'" data-d="-1" data-max="'+hpMax+'" onclick="bumpHP(this.dataset.cn,parseInt(this.dataset.d),parseInt(this.dataset.max))">&minus;</button>';
-      html+='<span style="font-size:14px;font-weight:700;color:'+col+';min-width:30px;text-align:center">'+hpCur+'</span>';
-      html+='<button class="stat-pm" data-cn="'+esc(char.name)+'" data-d="1" data-max="'+hpMax+'" onclick="bumpHP(this.dataset.cn,parseInt(this.dataset.d),parseInt(this.dataset.max))">+</button>';
+      if(canEdit){
+        html+='<button class="stat-pm" data-cn="'+esc(char.name)+'" data-d="-1" data-max="'+hpMax+'" onclick="bumpHP(this.dataset.cn,parseInt(this.dataset.d),parseInt(this.dataset.max))">&minus;</button>';
+        html+='<span style="font-size:14px;font-weight:700;color:'+col+';min-width:28px;text-align:center">'+hpCur+'</span>';
+        html+='<button class="stat-pm" data-cn="'+esc(char.name)+'" data-d="1" data-max="'+hpMax+'" onclick="bumpHP(this.dataset.cn,parseInt(this.dataset.d),parseInt(this.dataset.max))">+</button>';
+      } else {
+        html+='<span style="font-size:14px;font-weight:700;color:'+col+'">'+hpCur+'</span>';
+      }
       html+='<span style="font-size:11px;color:var(--text3)">/ '+hpMax+'</span>';
       html+='</div></div>';
       html+='<div style="height:5px;background:var(--bg3);border-radius:3px;overflow:hidden">';
@@ -1694,9 +1794,8 @@ function renderCharPanel(){
     html+='<div class="char-stat-group"><div class="char-stat-label">💪 Способности</div>';
     skills.forEach(function(sk){
       html+='<div class="entity-card">';
-      html+='<div style="flex:1"><div class="entity-name">'+esc(sk.name)+'</div>';
+      html+='<div class="entity-name">'+esc(sk.name)+'</div>';
       if(sk.desc)html+='<div class="entity-desc">'+esc(sk.desc)+'</div>';
-      html+='</div>';
       html+='<button class="entity-use" data-use="'+esc(sk.name)+'" onclick="useAbility(this.dataset.use)">Применить</button>';
       html+='</div>';
     });
@@ -1709,9 +1808,8 @@ function renderCharPanel(){
     html+='<div class="char-stat-group"><div class="char-stat-label">🎭 Черты</div>';
     traits.forEach(function(tr){
       html+='<div class="entity-card">';
-      html+='<div style="flex:1"><div class="entity-name">'+esc(tr.name)+'</div>';
+      html+='<div class="entity-name">'+esc(tr.name)+'</div>';
       if(tr.desc)html+='<div class="entity-desc">'+esc(tr.desc)+'</div>';
-      html+='</div>';
       html+='<button class="entity-use" data-use="'+esc(tr.name)+'" onclick="useTrait(this.dataset.use)">Задействовать</button>';
       html+='</div>';
     });
@@ -1835,7 +1933,8 @@ function buildSys(){
   var mD={game:'Приключение: действия имеют последствия.',story:'Совместная история.',chat:'Диалоги с NPC.',sim:'Симуляция мира.'};
   var nD={classic:'Литературный, богатый язык.',gm:'Мастер игры, с юмором.',cold:'Сухо, по делу.',poet:'Поэтично.'};
   var dD={1:'1-2 предложения.',2:'2-3 предложения.',3:'3-5 предложений.',4:'1-2 абзаца.',5:'2-4 абзаца.'};
-  var partyNote=(partyMode==='all'&&G.chars.length>1)?' Все герои действуют вместе.':'';
+  var actingNames=(activeParty||[]).map(function(i){return G.chars[i]?G.chars[i].name:'';}).filter(Boolean);
+  var partyNote=(actingNames.length>1)?(' Сейчас действуют вместе: '+actingNames.join(', ')+'. Опиши действия и исход для каждого из них.'):'';
 
   // Персонажи: полное описание шлём ТОЛЬКО когда статы реально нужны нарратору.
   // В обычном режиме — только имена + активный, остальное модель помнит из истории.
@@ -1844,10 +1943,10 @@ function buildSys(){
     chars=G.chars.map(function(c,i){
       var cs=charStats[c.name]||{};var st=cs.stats||{};
       var mods=STAT_ORDER.map(function(s){var v=parseInt(st[s])||10;var m=abilityMod(v);return STAT_RU[s].slice(0,3)+(m>=0?'+':'')+m;}).join(',');
-      return (i===G.activeChar?'▸':'')+c.name+(cs.cls?'/'+cs.cls:'')+' ['+mods+']'+((G.dndMech||{}).hp!==false&&cs.hp?' HP'+(cs.hpCur||cs.hp)+'/'+cs.hp:'')+((G.dndMech||{}).ac!==false&&cs.ac?' КБ'+cs.ac:'');
+      return ((activeParty||[]).indexOf(i)>=0?'▸':'')+c.name+(cs.cls?'/'+cs.cls:'')+' ['+mods+']'+((G.dndMech||{}).hp!==false&&cs.hp?' HP'+(cs.hpCur||cs.hp)+'/'+cs.hp:'')+((G.dndMech||{}).ac!==false&&cs.ac?' КБ'+cs.ac:'');
     }).join(' | ');
   } else {
-    chars=G.chars.length?G.chars.map(function(c,i){return (i===G.activeChar?'▸':'')+c.name+(charStats[c.name]&&charStats[c.name].cls?'/'+charStats[c.name].cls:'');}).join(', '):'нет героя';
+    chars=G.chars.length?G.chars.map(function(c,i){return ((activeParty||[]).indexOf(i)>=0?'▸':'')+c.name+(charStats[c.name]&&charStats[c.name].cls?'/'+charStats[c.name].cls:'');}).join(', '):'нет героя';
   }
 
   var narratorInstr=nD[G.narratorStyle]||nD.classic;
@@ -1881,7 +1980,7 @@ function buildSys(){
     +(rulesInstr?'\n'+rulesInstr:'')
     +(G.hardcore?' Хардкор: напряжение максимальное.':'')
     +(G.narratorExtra?'\n'+G.narratorExtra.slice(0,150):'')
-    +'\nКоманды: {"note":"факт"} в журнал; {"item":"название","icon":"эмодзи","char":"имя","desc":"описание: что это, свойства, как использовать"} когда герой находит/получает предмет — обязательно с понятным описанием. [правка: текст] — изменение без хода.'
+    +'\nКоманды: {"note":"факт"} в журнал; {"item":"название","icon":"эмодзи","char":"имя","desc":"что это и свойства"} когда герой находит/получает предмет. Когда предмет израсходован, сломан или отдан — убери его: {"remove_item":"название","char":"имя"}. [правка: текст] — изменение без хода.'
     +(summaryCache?'\nПРЕДЫСТОРИЯ: '+summaryCache.slice(0,700):'');
   return p;
 }
@@ -1891,7 +1990,10 @@ function buildMsgs(msg,isSys){
   return history.slice(-10);
 }
 
-async function sendAI(msg,isSystem=false){if(thinking)return;if(!G.useOwnKey&&user&&!user.own_api_key&&parseInt(user.tokens_balance)<500){addError('Недостаточно токенов',`У вас ${parseInt(user.tokens_balance||0)} токенов, нужно минимум 500.`,'Нажмите 💎 в верхней панели, или добавьте API ключ в Настройках.');return;}if(G.useOwnKey&&!user?.own_api_key){addError('Ключ не настроен','Свой ключ не добавлен.','Настройки → Мои нейросети.');return;}thinking=true;el('send-btn').disabled=true;if(!isSystem){const actor=partyMode==='all'?'Группа':(G.chars[G.activeChar]?.name||'Путник');addBlock(msg,true,null,actor);history.push({role:'user',content:partyMode==='all'&&G.chars.length>1?`[Группа]: ${msg}`:`[${G.chars[G.activeChar]?.name||'Путник'}]: ${msg}`});}showThink();try{const resp=await apiFetch('/api/ai/chat',{method:'POST',body:JSON.stringify({system:buildSys(),messages:buildMsgs(msg,isSystem),max_tokens:700,model:G.gameModel||undefined})});hideThink();if(resp.error){addError('Ошибка нейросети',resp.message||resp.error,resp.action||'Попробуйте ещё раз.');thinking=false;el('send-btn').disabled=false;return;}const reply=resp.content?.map(c=>c.text||'').join('')||'...';const blockId=addBlock(reply,false);blockVariants[blockId]={v0:reply,versions:[reply],current:0};if(isSystem)history.push({role:'user',content:msg,_sys:true});history.push({role:'assistant',content:reply});if(history.length>60)history=history.slice(-60);if(resp._meta?.tokens_balance!==null&&resp._meta?.tokens_balance!==undefined&&user){user.tokens_balance=resp._meta.tokens_balance;updateGameBal();}trackMessage();await maybeSummarize();autoSave();}catch(e){hideThink();addError('Ошибка соединения','Не удалось связаться с сервером.','Проверьте интернет и попробуйте снова.');}thinking=false;el('send-btn').disabled=false;}
+async function sendAI(msg,isSystem=false){if(thinking)return;if(!G.useOwnKey&&user&&!user.own_api_key&&parseInt(user.tokens_balance)<500){addError('Недостаточно токенов',`У вас ${parseInt(user.tokens_balance||0)} токенов, нужно минимум 500.`,'Нажмите 💎 в верхней панели, или добавьте API ключ в Настройках.');return;}if(G.useOwnKey&&!user?.own_api_key){addError('Ключ не настроен','Свой ключ не добавлен.','Настройки → Мои нейросети.');return;}thinking=true;el('send-btn').disabled=true;if(!isSystem){var actorNames=activeParty.map(function(i){return G.chars[i]?G.chars[i].name:'';}).filter(Boolean);
+    var actor=actorNames.length>1?actorNames.join(', '):(actorNames[0]||'Путник');
+    addBlock(msg,true,null,actor);
+    history.push({role:'user',content:'['+actor+']: '+msg});}showThink();try{const resp=await apiFetch('/api/ai/chat',{method:'POST',body:JSON.stringify({system:buildSys(),messages:buildMsgs(msg,isSystem),max_tokens:700,model:G.gameModel||undefined})});hideThink();if(resp.error){addError('Ошибка нейросети',resp.message||resp.error,resp.action||'Попробуйте ещё раз.');thinking=false;el('send-btn').disabled=false;return;}const reply=resp.content?.map(c=>c.text||'').join('')||'...';const blockId=addBlock(reply,false);blockVariants[blockId]={v0:reply,versions:[reply],current:0};if(isSystem)history.push({role:'user',content:msg,_sys:true});history.push({role:'assistant',content:reply});if(history.length>60)history=history.slice(-60);if(resp._meta?.tokens_balance!==null&&resp._meta?.tokens_balance!==undefined&&user){user.tokens_balance=resp._meta.tokens_balance;updateGameBal();}trackMessage();await maybeSummarize();autoSave();}catch(e){hideThink();addError('Ошибка соединения','Не удалось связаться с сервером.','Проверьте интернет и попробуйте снова.');}thinking=false;el('send-btn').disabled=false;}
 
 // ── STORY BLOCKS ──────────────────────────────────
 function addBlock(text,isPlayer,blockId,actorOverride){const area=el('story');const wrap=document.createElement('div');wrap.className='story-block';const id=blockId||('blk_'+Date.now()+'_'+Math.random().toString(36).slice(2,6));wrap.dataset.id=id;
@@ -1907,7 +2009,7 @@ if(isPlayer){const actor=actorOverride||(G.chars[G.activeChar]?.name||'Путн�
   ${G.hardcore?'':'<div class="player-controls"><button class="nc-btn" onclick="startInlineEdit(\''+id+'\',true)">✏ Изменить</button></div>'}
 </div>`;}
 else{// Parse JSON metadata from reply
-let clean=text.replace(/\{"note":[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.note){journal.unshift(o.note.slice(0,120));if(journal.length>30)journal.pop();renderJournal();}}catch(e){}return '';}).replace(/\{"item":[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.item){const charName=o.char||(G.chars[G.activeChar]?.name||'Герой');if(!inventory[charName])inventory[charName]=[];if(!inventory[charName].find(i=>i.name===o.item))inventory[charName].push({name:o.item,icon:o.icon||'📦',desc:o.desc||''});if(rightTab==='inv')renderInvPanel();}}catch(e){}return '';}).replace(/\{"survival":[^}]+\}\}/g,m=>{try{const o=JSON.parse(m);if(o.survival&&o.survival.char){const cn=o.survival.char;if(!charStats[cn])charStats[cn]={};['hunger','thirst','fatigue'].forEach(k=>{if(o.survival[k]!=null)charStats[cn][k]=Math.max(0,Math.min(100,parseInt(o.survival[k])));});if(rightTab==='chars')renderCharPanel();}}catch(e){}return '';}).replace(/\{"xp":[^}]+\}\}/g,m=>{try{const o=JSON.parse(m);if(o.xp&&o.xp.char){const cn=o.xp.char;if(!charStats[cn])charStats[cn]={};charStats[cn].xp=(parseInt(charStats[cn].xp)||0)+(parseInt(o.xp.amount)||0);if(rightTab==='chars')renderCharPanel();notif('+'+(o.xp.amount||0)+' XP — '+cn,'info');}}catch(e){}return '';}).trim();
+let clean=text.replace(/\{"note":[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.note){journal.unshift(o.note.slice(0,120));if(journal.length>30)journal.pop();renderJournal();}}catch(e){}return '';}).replace(/\{"item":[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.item){const charName=o.char||(G.chars[G.activeChar]?.name||'Герой');if(!inventory[charName])inventory[charName]=[];if(!inventory[charName].find(i=>i.name===o.item))inventory[charName].push({name:o.item,icon:o.icon||'📦',desc:o.desc||''});if(rightTab==='inv')renderInvPanel();}}catch(e){}return '';}).replace(/\{"remove_item":[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.remove_item){const cn=o.char||(G.chars[G.activeChar]?.name||'Герой');if(inventory[cn]){const before=inventory[cn].length;inventory[cn]=inventory[cn].filter(it=>it.name.toLowerCase()!==String(o.remove_item).toLowerCase());if(inventory[cn].length<before){if(rightTab==='inv')renderInvPanel();notif('Предмет израсходован: '+o.remove_item,'info');}}}}catch(e){}return '';}).replace(/\{"survival":[^}]+\}\}/g,m=>{try{const o=JSON.parse(m);if(o.survival&&o.survival.char){const cn=o.survival.char;if(!charStats[cn])charStats[cn]={};['hunger','thirst','fatigue'].forEach(k=>{if(o.survival[k]!=null)charStats[cn][k]=Math.max(0,Math.min(100,parseInt(o.survival[k])));});if(rightTab==='chars')renderCharPanel();}}catch(e){}return '';}).replace(/\{"xp":[^}]+\}\}/g,m=>{try{const o=JSON.parse(m);if(o.xp&&o.xp.char){const cn=o.xp.char;if(!charStats[cn])charStats[cn]={};charStats[cn].xp=(parseInt(charStats[cn].xp)||0)+(parseInt(o.xp.amount)||0);if(rightTab==='chars')renderCharPanel();notif('+'+(o.xp.amount||0)+' XP — '+cn,'info');}}catch(e){}return '';}).trim();
 // D&D dice check
 let diceBlock='';
 clean=clean.replace(/\{"dice":true[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.dice&&isOn("dice")){diceBlock=makeDiceBlock(o.dc,o.skill,o.hideDC===true);}}catch(e){}return '';}).trim();
@@ -2010,7 +2112,7 @@ async function manSave(){if(G.hardcore){// Hardcore autosaves to slot 0 only, ma
 notif('Хардкор: сохранено в слот 1','info');await autoSave();return;}if(G.slotId===null){const sv=await apiFetch('/api/saves');const used=new Set((sv.saves||[]).map(s=>s.slot));for(let i=0;i<10;i++){if(!used.has(i)){G.slotId=i;break;}}if(G.slotId===null)G.slotId=0;}const data={...G,_history:history.slice(-24),_journal:journal.slice(0,25),_summary:summaryCache,_inventory:inventory,_charStats:charStats};await apiFetch('/api/saves/'+G.slotId,{method:'POST',body:JSON.stringify({data,name:G.worldName})});notif('✓ Сохранено (Слот '+(G.slotId+1)+')');}
 
 // ── INPUT ─────────────────────────────────────────
-async function doSend(){const pi=el('pi');const t=pi.value.trim();if(!t||thinking)return;if(t.toLowerCase().startsWith('[смена:')){const nm=t.slice(7).replace(']','').trim();const idx=G.chars.findIndex(c=>c.name.toLowerCase().includes(nm.toLowerCase()));if(idx>=0){G.activeChar=idx;partyMode='single';renderGChars();notif('Активен: '+G.chars[idx].name);}else notif('Персонаж "'+nm+'" не найден','err');pi.value='';return;}pi.value='';pi.style.height='auto';await sendAI(t);}
+async function doSend(){const pi=el('pi');const t=pi.value.trim();if(!t||thinking)return;if(t.toLowerCase().startsWith('[смена:')){const nm=t.slice(7).replace(']','').trim();const idx=G.chars.findIndex(c=>c.name.toLowerCase().includes(nm.toLowerCase()));if(idx>=0){G.activeChar=idx;activeParty=[idx];partyMode='single';renderGChars();notif('Активен: '+G.chars[idx].name);}else notif('Персонаж "'+nm+'" не найден','err');pi.value='';return;}pi.value='';pi.style.height='auto';await sendAI(t);}
 function hk(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();doSend();}const t=e.target;t.style.height='auto';t.style.height=Math.min(t.scrollHeight,110)+'px';}
 function setSM(m){sendMode=m;el('sm-fill').classList.toggle('on',m==='fill');el('sm-send').classList.toggle('on',m==='send');}
 
