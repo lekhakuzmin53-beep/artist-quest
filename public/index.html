@@ -383,8 +383,8 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
 /* Notif slide up */
 
 /* ─── ACHIEVEMENT POPUP ─── */
-.ach-popup{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-20px);z-index:99998;background:var(--bg2);border:1px solid var(--ac);border-radius:10px;padding:14px 22px;display:flex;align-items:center;gap:14px;box-shadow:0 8px 40px rgba(0,0,0,.7),0 0 24px rgba(212,168,48,.25);opacity:0;transition:all .4s cubic-bezier(.2,.9,.3,1.2);pointer-events:none;min-width:280px}
-.ach-popup.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.ach-popup{position:fixed;top:56px;right:16px;transform:translateX(20px);z-index:99998;background:var(--bg2);border:1px solid var(--ac);border-radius:10px;padding:12px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 30px rgba(0,0,0,.6);opacity:0;transition:all .4s cubic-bezier(.2,.9,.3,1.2);pointer-events:none;max-width:300px}
+.ach-popup.show{opacity:1;transform:translateX(0)}
 .ach-popup-icon{font-size:34px;flex-shrink:0;animation:achPulse 1s ease infinite alternate}
 @keyframes achPulse{from{transform:scale(1)}to{transform:scale(1.12)}}
 .ach-popup-label{font-size:10px;font-weight:600;color:var(--ac);letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
@@ -479,13 +479,13 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
 /* Notif */
 
 /* ─── ACHIEVEMENT POPUP ─── */
-.ach-popup{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-20px);z-index:99998;background:var(--bg2);border:1px solid var(--ac);border-radius:10px;padding:14px 22px;display:flex;align-items:center;gap:14px;box-shadow:0 8px 40px rgba(0,0,0,.7),0 0 24px rgba(212,168,48,.25);opacity:0;transition:all .4s cubic-bezier(.2,.9,.3,1.2);pointer-events:none;min-width:280px}
-.ach-popup.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.ach-popup-icon{font-size:34px;flex-shrink:0;animation:achPulse 1s ease infinite alternate}
-@keyframes achPulse{from{transform:scale(1)}to{transform:scale(1.12)}}
-.ach-popup-label{font-size:10px;font-weight:600;color:var(--ac);letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
-.ach-popup-name{font-family:'Cinzel',serif;font-size:15px;font-weight:600;color:var(--text)}
-.ach-popup-desc{font-size:11px;color:var(--text3);margin-top:1px}
+
+
+
+to{transform:scale(1.12)}}
+
+
+
 
 #notif{transition:opacity .3s ease}
 
@@ -549,6 +549,7 @@ body.no-hints .hint-ic{display:none}
 .im-btn:hover{border-color:var(--ac2);color:var(--text2)}
 .im-btn.on{background:var(--bg3);border-color:var(--ac);color:var(--ac)}
 .im-btn:active{transform:scale(.97)}
+.im-hint{font-size:11px;color:var(--text3);padding:0 2px 6px;line-height:1.4;min-height:14px}
 /* ─── STAT BUTTONS (единый стиль, реагирует на тему) ─── */
 .stat-pm{width:22px;height:22px;border-radius:5px;border:.5px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;font-size:13px;font-weight:600;line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:0;transition:all .12s;flex-shrink:0}
 .stat-pm:hover{border-color:var(--ac);color:var(--ac);background:var(--bg3)}
@@ -561,13 +562,13 @@ body.no-hints .hint-ic{display:none}
 /* ─── TOAST ─── */
 
 /* ─── ACHIEVEMENT POPUP ─── */
-.ach-popup{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-20px);z-index:99998;background:var(--bg2);border:1px solid var(--ac);border-radius:10px;padding:14px 22px;display:flex;align-items:center;gap:14px;box-shadow:0 8px 40px rgba(0,0,0,.7),0 0 24px rgba(212,168,48,.25);opacity:0;transition:all .4s cubic-bezier(.2,.9,.3,1.2);pointer-events:none;min-width:280px}
-.ach-popup.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.ach-popup-icon{font-size:34px;flex-shrink:0;animation:achPulse 1s ease infinite alternate}
-@keyframes achPulse{from{transform:scale(1)}to{transform:scale(1.12)}}
-.ach-popup-label{font-size:10px;font-weight:600;color:var(--ac);letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
-.ach-popup-name{font-family:'Cinzel',serif;font-size:15px;font-weight:600;color:var(--text)}
-.ach-popup-desc{font-size:11px;color:var(--text3);margin-top:1px}
+
+
+
+to{transform:scale(1.12)}}
+
+
+
 
 #notif{position:fixed;bottom:18px;right:18px;z-index:99999;padding:10px 18px;border-radius:var(--rad);font-size:13px;font-weight:500;pointer-events:none;opacity:0;transition:opacity .3s;background:var(--bg2);border:.5px solid var(--ac);box-shadow:0 5px 18px rgba(0,0,0,.6)}
 </style>
@@ -626,7 +627,10 @@ body.no-hints .hint-ic{display:none}
 <div id="settings-page" class="page">
   <div class="topbar">
     <div class="topbar-logo" onclick="showMenu()">Artist Quest</div>
-    <div class="topbar-group"><button class="tb-btn" onclick="showMenu()">← Назад в меню</button></div>
+    <div class="topbar-group">
+      <button class="tb-btn" id="back-to-game-btn" onclick="backToGame()" style="display:none">← Вернуться в игру</button>
+      <button class="tb-btn" onclick="showMenu()">← В меню</button>
+    </div>
   </div>
   <div class="settings-body">
 
@@ -874,10 +878,10 @@ body.no-hints .hint-ic{display:none}
         <div class="form-group">
           <label class="field-label">Стиль нарратора</label>
           <div class="grid2" id="narrator-grid">
-            <div class="mc sel" onclick="selMC(this,'narratorStyle')" data-v="classic"><div class="mc-title">Литературный</div><div class="mc-desc">Богатый язык, атмосфера</div></div>
-            <div class="mc" onclick="selMC(this,'narratorStyle')" data-v="gm"><div class="mc-title">Мастер игры</div><div class="mc-desc">С юмором и подсказками</div></div>
-            <div class="mc" onclick="selMC(this,'narratorStyle')" data-v="cold"><div class="mc-title">Хроникёр</div><div class="mc-desc">Сухо, по делу</div></div>
-            <div class="mc" onclick="selMC(this,'narratorStyle')" data-v="poet"><div class="mc-title">Поэт</div><div class="mc-desc">Образно и метафорично</div></div>
+            <div class="mc sel" onclick="selMC(this,'narratorStyle')" data-v="classic"><div class="mc-title">Литературный <span class="hint-ic" data-tip="Богатый, образный язык как в хорошем романе. Подробные описания, атмосфера, внимание к деталям. Нейросеть пишет красиво и погружает в мир.">?</span></div><div class="mc-desc">Богатый язык, атмосфера</div></div>
+            <div class="mc" onclick="selMC(this,'narratorStyle')" data-v="gm"><div class="mc-title">Мастер игры <span class="hint-ic" data-tip="Ведущий настольной игры: общается с тобой напрямую, добавляет юмор, иногда подсказывает варианты действий. Живая, игровая подача с лёгким налётом иронии.">?</span></div><div class="mc-desc">С юмором и подсказками</div></div>
+            <div class="mc" onclick="selMC(this,'narratorStyle')" data-v="cold"><div class="mc-title">Хроникёр <span class="hint-ic" data-tip="Сухой, сдержанный стиль без лишних украшений. Чёткие факты, минимум эмоций. Подходит для напряжённых, реалистичных историй — детектив, выживание, нуар.">?</span></div><div class="mc-desc">Сухо, по делу</div></div>
+            <div class="mc" onclick="selMC(this,'narratorStyle')" data-v="poet"><div class="mc-title">Поэт <span class="hint-ic" data-tip="Образный, метафоричный язык с поэтическими оборотами. Каждая сцена как стихотворение в прозе. Для лиричных, мечтательных и сюрреалистичных историй.">?</span></div><div class="mc-desc">Образно и метафорично</div></div>
           </div>
           <!-- Custom user narrators appended here -->
           <div id="custom-narrator-pick" style="margin-top:8px;display:flex;flex-direction:column;gap:6px"></div>
@@ -1003,7 +1007,7 @@ body.no-hints .hint-ic{display:none}
         <div class="tb-user" id="game-user-btn" onclick="toggleDD('game-dd','game-user-btn')"><span id="game-uname">—</span> ▾</div>
         <div class="dd-menu" id="game-dd">
           <button class="dd-item" onclick="closeDD();showGameSettings()">🌍 Настройки мира</button>
-          <button class="dd-item" onclick="closeDD();showPage('settings-page');loadSettingsData()">⚙ Настройки</button>
+          <button class="dd-item" onclick="closeDD();openSettingsFromGame()">⚙ Настройки</button>
           <div class="dd-sep"></div>
           <button class="dd-item" onclick="closeDD();showPage('create-page');initCreatePage()">⚔ Новое приключение</button>
           <button class="dd-item" onclick="closeDD();openSaves()">📖 Загрузить игру</button>
@@ -1041,10 +1045,11 @@ body.no-hints .hint-ic{display:none}
           </div>
         </div>
         <div class="input-mode-row" id="input-mode-row">
-          <button class="im-btn on" id="im-action" data-mode="action" onclick="setInputMode('action')" title="Действие выбранных героев">🎭 Герой</button>
-          <button class="im-btn" id="im-world" data-mode="world" onclick="setInputMode('world')" title="Описать действие окружения или события, без привязки к герою">🌍 Окружение</button>
-          <button class="im-btn" id="im-direct" data-mode="direct" onclick="setInputMode('direct')" title="Скрытая инструкция нейросети: задать тон, ввести событие, направить сюжет">🎬 Режиссёр</button>
+          <button class="im-btn on" id="im-action" data-mode="action" onclick="setInputMode('action')">🎭 Герой</button>
+          <button class="im-btn" id="im-world" data-mode="world" onclick="setInputMode('world')">🌍 Окружение</button>
+          <button class="im-btn" id="im-direct" data-mode="direct" onclick="setInputMode('direct')">🎬 Режиссёр</button>
         </div>
+        <div class="im-hint" id="im-hint">🎭 Действуете от лица выбранных героев</div>
         <div class="input-row">
           <textarea id="pi" placeholder="Что делает персонаж?" rows="1" onkeydown="hk(event)"></textarea>
           <button class="send-btn" id="send-btn" onclick="doSend()">Вперёд ↗</button>
@@ -1133,10 +1138,15 @@ body.no-hints .hint-ic{display:none}
       <div style="border-top:.5px solid var(--border);padding-top:14px;margin-top:4px">
         <div style="display:flex;align-items:center;gap:12px">
           <div style="flex:1">
-            <div style="font-size:13px;font-weight:500;color:var(--text)">Редактирование характеристик</div>
-            <div style="font-size:12px;color:var(--text3);margin-top:2px">Разрешить менять характеристики, HP и КБ героев прямо в чарнике (кнопками +/−)</div>
+            <div style="font-size:13px;font-weight:500;color:var(--text)">Режим редактирования</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:2px">Менять характеристики, HP, КБ, способности, черты и предметы прямо во время игры</div>
           </div>
           <label class="switch"><input type="checkbox" id="gs-stats-edit" onchange="G.statsEditable=this.checked"/><span class="switch-track"><span class="switch-thumb"></span></span></label>
+        </div>
+        <div id="gs-mech-block" style="margin-top:14px">
+          <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:8px">Механики мира</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:10px">Включи или выключи механики прямо во время игры. Изменения применятся со следующего хода.</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px" id="gs-mech-tags"></div>
         </div>
       </div>
     </div>
@@ -1271,6 +1281,17 @@ let aiChoice='server'; // 'server'|'own'
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function fmt(t){return esc(t).replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/\*([^*]+)\*/g,'<em>$1</em>').replace(/\n\n/g,'</p><p style="margin-top:.5em">').replace(/\n/g,'<br>')}
 function el(id){return document.getElementById(id)}
+function backToGame(){
+  if(G&&G.slotId){showPage('game-page');}
+  else{showMenu();}
+}
+function openSettingsFromGame(){
+  // Автосохранение перед уходом в настройки + показ кнопки возврата
+  if(G&&G.slotId){autoSave();}
+  var btn=el('back-to-game-btn');
+  if(btn)btn.style.display=(G&&G.slotId)?'':'none';
+  showPage('settings-page');loadSettingsData();
+}
 function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));const pg=el(id);if(pg){pg.classList.add('active');}}
 function om(id){el(id).classList.add('open')}
 function cm(id){el(id).classList.remove('open')}
@@ -1389,7 +1410,42 @@ function selectPreset(id){selectedPreset=id;document.querySelectorAll('.preset-c
 el('wn').value=p.worldName;el('wd').value=p.desc;el('ws').value=p.worldStart;el('np').value=p.npcs||'';document.querySelectorAll('#genre-tags .tag').forEach(t=>t.classList.toggle('on',p.genre.includes(t.textContent.trim())));setupChars=JSON.parse(JSON.stringify(p.chars||[]));renderSetupChars();// Set system
 MC_GROUPS.rules=null;const rscard=document.querySelector(`[onclick*="selMC(this,'rules')"][data-v="${p.system}"]`);if(rscard)selMC(rscard,'rules');// Set narrator
 MC_GROUPS.narratorStyle=null;const nscard=document.querySelector(`[onclick*="selMC(this,'narratorStyle')"][data-v="${p.narratorStyle}"]`);if(nscard)selMC(nscard,'narratorStyle');notif('Сценарий «'+p.name+'» загружен!');}}else{el('wn').value='';el('wd').value='';el('ws').value='';el('np').value='';document.querySelectorAll('#genre-tags .tag').forEach(t=>t.classList.remove('on'));setupChars=[];renderSetupChars();notif('Пустой мир — заполните сами');}}
-async function generateWorldAI(){if(!user?.own_api_key&&parseInt(user?.tokens_balance||0)<200){notif('Недостаточно токенов для генерации','err');return;}notif('Генерирую мир...','info');const btn=document.querySelector('[onclick="generateWorldAI()"]');btn.disabled=true;try{const resp=await apiFetch('/api/ai/chat',{method:'POST',body:JSON.stringify({system:'Ты генератор миров для RPG. Ответь ТОЛЬКО в JSON без markdown: {"worldName":"...","desc":"...подробное описание 200+ слов...","worldStart":"...начальная сцена...","genres":["..."],"npcs":"...важные персонажи...","charName":"...","charClass":"...","charDesc":"...","charAbilities":"...","charEquipment":"...","charTraits":"..."}',messages:[{role:'user',content:'Сгенерируй уникальный оригинальный мир для RPG-приключения. Не используй стандартные фэнтези клише.'}],max_tokens:1200})});const text=resp.content?.map(c=>c.text||'').join('')||'';try{const clean=text.replace(/```json|```/g,'').trim();const d=JSON.parse(clean);el('wn').value=d.worldName||'';el('wd').value=d.desc||'';el('ws').value=d.worldStart||'';el('np').value=d.npcs||'';if(d.genres)document.querySelectorAll('#genre-tags .tag').forEach(t=>t.classList.toggle('on',d.genres.includes(t.textContent.trim())));if(d.charName){setupChars=[{name:d.charName,cls:d.charClass||'',desc:d.charDesc||'',appearance:'',abilities:d.charAbilities||'',equipment:d.charEquipment||'',traits:d.charTraits||'',inventory:[]}];renderSetupChars();}notif('Мир сгенерирован!');}catch(e){notif('Ошибка парсинга — попробуйте снова','err');}}catch(e){notif('Ошибка генерации','err');}btn.disabled=false;}
+async function generateWorldAI(){
+  if(!user?.own_api_key&&parseInt(user?.tokens_balance||0)<200){notif('Недостаточно токенов для генерации','err');return;}
+  notif('Генерирую мир...','info');
+  var btn=document.querySelector('[onclick="generateWorldAI()"]');
+  if(btn)btn.disabled=true;
+  try{
+    const resp=await apiFetch('/api/ai/chat',{method:'POST',body:JSON.stringify({
+      system:'Генератор миров для RPG. Верни ТОЛЬКО валидный JSON, без markdown, без пояснений. Структура: {"worldName":"название","desc":"описание 80-120 слов","worldStart":"стартовая сцена 2-3 предложения","genres":["жанр1","жанр2"],"npcs":"2-3 ключевых NPC через точку","charName":"имя","charClass":"класс","charDesc":"краткая предыстория"}. Будь оригинален, избегай клише.',
+      messages:[{role:'user',content:'Создай уникальный мир для приключения.'}],
+      max_tokens:600,
+      model:'claude-haiku-4-5-20251001'
+    })});
+    const text=resp.content?.map(c=>c.text||'').join('')||'';
+    if(resp.error){notif('Ошибка генерации: '+(resp.message||resp.error),'err');if(btn)btn.disabled=false;return;}
+    // Надёжный парсинг: вырезаем JSON между первой { и последней }
+    var d=null;
+    try{
+      var s=text.indexOf('{'), e=text.lastIndexOf('}');
+      if(s>=0&&e>s){ d=JSON.parse(text.slice(s,e+1)); }
+    }catch(err){ d=null; }
+    if(!d){notif('Не удалось разобрать ответ, попробуйте ещё раз','err');if(btn)btn.disabled=false;return;}
+    el('wn').value=d.worldName||'';
+    el('wd').value=d.desc||'';
+    el('ws').value=d.worldStart||'';
+    el('np').value=d.npcs||'';
+    if(Array.isArray(d.genres))document.querySelectorAll('#genre-tags .tag').forEach(function(t){t.classList.toggle('on',d.genres.indexOf(t.textContent.trim())>=0);});
+    if(d.charName){
+      setupChars=[{name:d.charName,cls:d.charClass||'',desc:d.charDesc||'',appearance:'',skills:[],charTraits:[],items:[],inventory:[]}];
+      renderSetupChars();
+    }
+    notif('Мир сгенерирован!','ok');
+  }catch(e){
+    notif('Ошибка соединения','err');
+  }
+  if(btn)btn.disabled=false;
+}
 function buildNarratorPick(){const c=el('custom-narrator-pick');if(!c)return;c.innerHTML='';customNarrators.forEach(n=>{const d=document.createElement('div');d.className='mc';d.setAttribute('onclick',`selMC(this,'narratorStyle')`);d.dataset.v='custom_'+n.id;d.innerHTML=`<div class="mc-title">✦ ${esc(n.name)}</div><div class="mc-desc">${esc(n.desc.slice(0,60))}...</div>`;c.appendChild(d);});}
 function buildRulesPick(){const c=el('custom-rules-systems');if(!c)return;c.innerHTML='';customSystems.forEach(s=>{const d=document.createElement('div');d.className='mc';d.setAttribute('onclick',`selMC(this,'rules')`);d.dataset.v='custom_'+s.id;d.innerHTML=`<div class="mc-title">✦ ${esc(s.name)}</div><div class="mc-desc">${esc(s.desc.slice(0,60))}...</div>`;c.appendChild(d);});}
 function selAI(card,choice){aiChoice=choice;document.querySelectorAll('.ai-card').forEach(c=>c.classList.remove('sel'));card.classList.add('sel');el('ai-own-warn').style.display=(choice==='own'&&!user?.own_api_key)?'block':'none';el('ai-own-model-wrap').style.display=(choice==='own'&&user?.own_api_key)?'block':'none';el('server-tier-wrap').style.display=choice==='server'?'block':'none';}
@@ -1602,7 +1658,7 @@ function collectSetup(){G.worldName=el('wn').value.trim()||'Безымянный
   const tierVal=document.querySelector(`[onclick*="selMC(this,'serverTier')"].sel`)?.dataset.v||'haiku';
   G.serverTier=tierVal; // 'haiku' | 'sonnet'
   if(!G.useOwnKey){G.gameModel=tierVal==='sonnet'?'claude-sonnet-4-20250514':'claude-haiku-4-5-20251001';}}
-function startGame(){collectSetup();showPage('game-page');history=[];journal=[];summaryCache='';inventory={};charStats={};blockVariants={};trackGameStart();// Init charStats from setup
+function startGame(){collectSetup();showPage('game-page');history=[];journal=[];summaryCache='';inventory={};charStats={};blockVariants={};trackGameStart();G.slotId=null;// Init charStats from setup
 G.chars.forEach(c=>{
     ensureEntityArrays(c);
     var ds={STR:10,DEX:10,CON:10,INT:10,WIS:10,CHA:10};
@@ -1626,7 +1682,7 @@ G.chars.forEach(c=>{
     };
     inventory[c.name]=JSON.parse(JSON.stringify(c.items||[]));
   });
-  enterGame(true);}
+  enterGame(true);setTimeout(function(){autoSave();},500);}
 
 // ══ GAME ENGINE ══════════════════════════════════
 function beginStory(){
@@ -1756,6 +1812,10 @@ function renderCharPanel(){
       Object.keys(METER_DEFS).forEach(function(mk){if(csys.mech[mk])activeMeters.push(mk);});
     }
   }
+  // Механики добавленные в настройках мира (extraMech) — для любого режима
+  if(G.extraMech){
+    Object.keys(METER_DEFS).forEach(function(mk){if(G.extraMech[mk]===true&&activeMeters.indexOf(mk)<0)activeMeters.push(mk);});
+  }
   if(activeMeters.length){
     activeMeters.forEach(function(key){
       var def=METER_DEFS[key];if(!def)return;
@@ -1872,33 +1932,43 @@ function renderCharPanel(){
 
   // Способности — структурированные, с кнопкой Использовать
   var skills=cs.skills||[];
-  // Кнопки "Применить" нужны там, где механики важны (D&D/кастом с кубиками). В чистом повествовании — просто список.
   var showUseButtons=(G.rules==='dnd')||(G.rules==='custom'&&(function(){var cs2=customSystems.find(function(s){return s.id===G.rulesCustomId;});return cs2&&cs2.mech&&cs2.mech.dice;})());
-  if(skills.length){
-    html+='<div class="char-stat-group"><div class="char-stat-label">💪 Способности</div>';
-    skills.forEach(function(sk){
-      html+='<div class="entity-card">';
+  // Способности
+  html+='<div class="char-stat-group"><div class="char-stat-label">💪 Способности</div>';
+  skills.forEach(function(sk,si){
+    html+='<div class="entity-card">';
+    if(canEdit){
+      html+='<input class="input" value="'+esc(sk.name)+'" placeholder="Название" style="min-height:28px;font-size:12px;padding:3px 7px;margin-bottom:3px" data-cn="'+esc(char.name)+'" data-k="skills" data-i="'+si+'" data-f="name" oninput="editCharEntity(this)"/>';
+      html+='<input class="input" value="'+esc(sk.desc||'')+'" placeholder="Описание" style="min-height:26px;font-size:11px;padding:3px 7px;color:var(--text3)" data-cn="'+esc(char.name)+'" data-k="skills" data-i="'+si+'" data-f="desc" oninput="editCharEntity(this)"/>';
+      html+='<button class="inv-del-btn" style="align-self:flex-end;margin-top:2px" data-cn="'+esc(char.name)+'" data-k="skills" data-i="'+si+'" onclick="removeCharEntity(this.dataset.cn,this.dataset.k,parseInt(this.dataset.i))">✕ удалить</button>';
+    } else {
       html+='<div class="entity-name">'+esc(sk.name)+'</div>';
       if(sk.desc)html+='<div class="entity-desc">'+esc(sk.desc)+'</div>';
       if(showUseButtons)html+='<button class="entity-use" data-use="'+esc(sk.name)+'" onclick="useAbility(this.dataset.use)">Применить</button>';
-      html+='</div>';
-    });
+    }
     html+='</div>';
-  }
+  });
+  if(canEdit)html+='<button class="btn btn-sm" style="margin-top:4px" data-cn="'+esc(char.name)+'" data-k="skills" onclick="addCharEntity(this.dataset.cn,this.dataset.k)">+ Способность</button>';
+  html+='</div>';
   if(cs.appearance)html+='<div class="char-stat-group"><div class="char-stat-label">Внешность</div><div class="char-stat-val">'+esc(cs.appearance)+'</div></div>';
   // Черты — структурированные
   var traits=cs.charTraits||[];
-  if(traits.length){
-    html+='<div class="char-stat-group"><div class="char-stat-label">🎭 Черты</div>';
-    traits.forEach(function(tr){
-      html+='<div class="entity-card">';
+  html+='<div class="char-stat-group"><div class="char-stat-label">🎭 Черты</div>';
+  traits.forEach(function(tr,ti){
+    html+='<div class="entity-card">';
+    if(canEdit){
+      html+='<input class="input" value="'+esc(tr.name)+'" placeholder="Название" style="min-height:28px;font-size:12px;padding:3px 7px;margin-bottom:3px" data-cn="'+esc(char.name)+'" data-k="charTraits" data-i="'+ti+'" data-f="name" oninput="editCharEntity(this)"/>';
+      html+='<input class="input" value="'+esc(tr.desc||'')+'" placeholder="Описание" style="min-height:26px;font-size:11px;padding:3px 7px;color:var(--text3)" data-cn="'+esc(char.name)+'" data-k="charTraits" data-i="'+ti+'" data-f="desc" oninput="editCharEntity(this)"/>';
+      html+='<button class="inv-del-btn" style="align-self:flex-end;margin-top:2px" data-cn="'+esc(char.name)+'" data-k="charTraits" data-i="'+ti+'" onclick="removeCharEntity(this.dataset.cn,this.dataset.k,parseInt(this.dataset.i))">✕ удалить</button>';
+    } else {
       html+='<div class="entity-name">'+esc(tr.name)+'</div>';
       if(tr.desc)html+='<div class="entity-desc">'+esc(tr.desc)+'</div>';
       if(showUseButtons)html+='<button class="entity-use" data-use="'+esc(tr.name)+'" onclick="useTrait(this.dataset.use)">Задействовать</button>';
-      html+='</div>';
-    });
+    }
     html+='</div>';
-  }
+  });
+  if(canEdit)html+='<button class="btn btn-sm" style="margin-top:4px" data-cn="'+esc(char.name)+'" data-k="charTraits" onclick="addCharEntity(this.dataset.cn,this.dataset.k)">+ Черта</button>';
+  html+='</div>';
   if(char.desc)html+='<div class="char-stat-group"><div class="char-stat-label">История</div><div class="char-stat-val">'+esc(char.desc)+'</div></div>';
   html+='</div>';
   c.innerHTML=html;
@@ -1927,6 +1997,23 @@ function bumpMeta(cn,key,d,lo,hi){
   if(!charStats[cn])charStats[cn]={};
   var cur=parseInt(charStats[cn][key])||lo;
   charStats[cn][key]=Math.max(lo,Math.min(hi,cur+d));
+  renderCharPanel(); autoSave();
+}
+function editCharEntity(inp){
+  var cn=inp.dataset.cn, k=inp.dataset.k, i=parseInt(inp.dataset.i), f=inp.dataset.f;
+  if(!charStats[cn]||!charStats[cn][k]||!charStats[cn][k][i])return;
+  charStats[cn][k][i][f]=inp.value;
+  autoSave();
+}
+function addCharEntity(cn,k){
+  if(!charStats[cn])return;
+  if(!Array.isArray(charStats[cn][k]))charStats[cn][k]=[];
+  charStats[cn][k].push({name:'',desc:''});
+  renderCharPanel(); autoSave();
+}
+function removeCharEntity(cn,k,i){
+  if(!charStats[cn]||!charStats[cn][k])return;
+  charStats[cn][k].splice(i,1);
   renderCharPanel(); autoSave();
 }
 function bumpStat(cn,st,d){
@@ -1980,19 +2067,21 @@ function renderInvPanel(){
       html+='<div style="flex:1"><div class="inv-item-name">'+esc(item.name)+'</div>';
       if(item.desc)html+='<div class="inv-item-desc">'+esc(item.desc)+'</div>';
       html+='</div>';
-      html+='<button class="inv-del-btn" data-cn="'+esc(char.name)+'" data-i="'+i+'" onclick="removeInvItem(this.dataset.cn,parseInt(this.dataset.i))" title="Удалить">✕</button>';
+      if(G.statsEditable)html+='<button class="inv-del-btn" data-cn="'+esc(char.name)+'" data-i="'+i+'" onclick="removeInvItem(this.dataset.cn,parseInt(this.dataset.i))" title="Удалить">✕</button>';
       html+='</div>';
       html+='<button class="inv-use-btn" data-use="'+esc(item.name)+'" onclick="useItem(this.dataset.use)">Использовать</button>';
       html+='</div>';
     });
   }
-  // Добавление вручную (с описанием)
+  // Добавление вручную — только в режиме редактирования
+  if(G.statsEditable){
   html+='<div style="margin-top:8px;padding:8px;background:var(--bg3);border-radius:var(--rad);border:.5px dashed var(--border2)">';
   html+='<input id="inv-add-name" class="input" placeholder="Название предмета" style="font-size:12px;min-height:30px;padding:5px 8px;margin-bottom:5px" data-cn="'+esc(char.name)+'"/>';
   html+='<input id="inv-add-desc" class="input" placeholder="Описание (необязательно)" style="font-size:12px;min-height:28px;padding:5px 8px;margin-bottom:5px;color:var(--text3)"/>';
   html+='<button class="btn btn-sm full" data-cn="'+esc(char.name)+'" onclick="addInvItem(this.dataset.cn)">+ Добавить предмет</button>';
   html+='</div>';
-  if(!items.length)html='<div class="inv-empty">Пусто. Добавь предмет ниже или найди в игре.</div>'+html;
+  }
+  if(!items.length)html='<div class="inv-empty">Пусто.'+(G.statsEditable?' Добавь предмет ниже или найди в игре.':' Предметы появятся по ходу игры.')+'</div>'+html;
   c.innerHTML=html;
 }
 function useAbility(name){ insertAction('Использую способность: '+name); }
@@ -2149,7 +2238,7 @@ function parseNarratorMeta(text){
   return out.trim();
 }
 function handleMetaObject(o){
-  if(o.note){journal.unshift(String(o.note).slice(0,120));if(journal.length>30)journal.pop();renderJournal();return true;}
+  if(o.note){var nt=String(o.note).slice(0,120);if(journal.indexOf(nt)<0){journal.unshift(nt);if(journal.length>30)journal.pop();renderJournal();}return true;}
   if(o.item){
     var cn=o.char||(G.chars[G.activeChar]&&G.chars[G.activeChar].name)||'Герой';
     if(!inventory[cn])inventory[cn]=[];
@@ -2320,7 +2409,37 @@ function showThink(){const a=el('story');const e=document.createElement('div');e
 function hideThink(){const e=el('th');if(e)e.remove();}
 
 // ── GAME SETTINGS ─────────────────────────────────
-function showGameSettings(){el('gs-wn').value=G.worldName;el('gs-wd').value=G.worldDesc;el('gs-ws').value=G.worldStart;el('gs-np').value=G.npcs;el('gs-ne').value=G.narratorExtra;var se=el('gs-stats-edit');if(se)se.checked=!!G.statsEditable;om('gsettings-modal');}
+function showGameSettings(){el('gs-wn').value=G.worldName;el('gs-wd').value=G.worldDesc;el('gs-ws').value=G.worldStart;el('gs-np').value=G.npcs;el('gs-ne').value=G.narratorExtra;var se=el('gs-stats-edit');if(se)se.checked=!!G.statsEditable;renderGSMechanics();om('gsettings-modal');}
+function renderGSMechanics(){
+  var c=el('gs-mech-tags');if(!c)return;
+  c.innerHTML='';
+  var mechs, store;
+  if(G.rules==='dnd'){
+    mechs=[['dice','🎲 Кубики'],['hp','❤ HP'],['stats','💪 Характеристики'],['levels','⬆ Уровни'],['ac','🛡 КБ']];
+    if(!G.dndMech)G.dndMech={};store=G.dndMech;
+  } else if(G.rules==='survival'){
+    mechs=[['hunger','🍖 Голод'],['thirst','💧 Жажда'],['fatigue','😴 Усталость'],['hp','❤ HP']];
+    if(!G.survMech)G.survMech={};store=G.survMech;
+  } else {
+    mechs=[['hp','❤ HP'],['dice','🎲 Кубики'],['stats','💪 Характеристики'],['hunger','🍖 Голод'],['thirst','💧 Жажда'],['fatigue','😴 Усталость'],['sanity','🧠 Рассудок'],['reputation','⭐ Репутация'],['mana','🔮 Мана'],['infection','🦠 Заражение'],['luck','🍀 Удача'],['heat','🔥 Розыск']];
+    if(!G.extraMech)G.extraMech={};store=G.extraMech;
+  }
+  var defaultOn=(G.rules==='dnd'||G.rules==='survival'); // в D&D/выживании механики по умолчанию вкл
+  mechs.forEach(function(m){
+    var key=m[0], label=m[1];
+    var on=(store[key]!==undefined)?(store[key]!==false):defaultOn;
+    var b=document.createElement('button');
+    b.className='tag'+(on?' on':'');
+    b.textContent=label;
+    b.dataset.k=key;
+    b.onclick=function(){
+      var cur=this.classList.contains('on');
+      store[this.dataset.k]=!cur;
+      this.classList.toggle('on');
+    };
+    c.appendChild(b);
+  });
+}
 function saveGameSettings(){G.worldName=el('gs-wn').value.trim()||G.worldName;G.worldDesc=el('gs-wd').value.trim();G.worldStart=el('gs-ws').value.trim();G.npcs=el('gs-np').value.trim();G.narratorExtra=el('gs-ne').value.trim();var se=el('gs-stats-edit');if(se)G.statsEditable=se.checked;el('g-wn').textContent=G.worldName;cm('gsettings-modal');if(rightTab==='chars')renderCharPanel();autoSave();notif('Настройки обновлены');}
 
 // ── SAVE ──────────────────────────────────────────
@@ -2345,8 +2464,22 @@ async function maybeSummarize(){
     }
   }catch(e){/* резюме не критично — продолжаем без него */}
 }
-async function autoSave(){if(G.slotId===null){if(G.hardcore){// Hardcore: always slot 0
-G.slotId=0;}else return;}const data={...G,_history:history.slice(-24),_journal:journal.slice(0,25),_summary:summaryCache,_inventory:inventory,_charStats:charStats};await apiFetch('/api/saves/'+G.slotId,{method:'POST',body:JSON.stringify({data,name:G.worldName})}).catch(()=>{});}
+async function autoSave(){
+  // Автоматически выделяем слот при первом сохранении
+  if(G.slotId===null||G.slotId===undefined){
+    if(G.hardcore){G.slotId=0;}
+    else{
+      try{
+        const sv=await apiFetch('/api/saves');
+        const used=new Set((sv.saves||[]).map(s=>s.slot));
+        for(let i=0;i<10;i++){if(!used.has(i)){G.slotId=i;break;}}
+        if(G.slotId===null||G.slotId===undefined)G.slotId=0;
+      }catch(e){G.slotId=0;}
+    }
+  }
+  const data={...G,_history:history.slice(-24),_journal:journal.slice(0,25),_summary:summaryCache,_inventory:inventory,_charStats:charStats};
+  await apiFetch('/api/saves/'+G.slotId,{method:'POST',body:JSON.stringify({data,name:G.worldName})}).catch(()=>{});
+}
 async function manSave(){if(G.hardcore){// Hardcore autosaves to slot 0 only, manual save allowed as explicit trigger
 notif('Хардкор: сохранено в слот 1','info');await autoSave();return;}if(G.slotId===null){const sv=await apiFetch('/api/saves');const used=new Set((sv.saves||[]).map(s=>s.slot));for(let i=0;i<10;i++){if(!used.has(i)){G.slotId=i;break;}}if(G.slotId===null)G.slotId=0;}const data={...G,_history:history.slice(-24),_journal:journal.slice(0,25),_summary:summaryCache,_inventory:inventory,_charStats:charStats};await apiFetch('/api/saves/'+G.slotId,{method:'POST',body:JSON.stringify({data,name:G.worldName})});notif('✓ Сохранено (Слот '+(G.slotId+1)+')');}
 
@@ -2355,10 +2488,10 @@ var inputMode='action'; // 'action' | 'world' | 'direct'
 function setInputMode(m){
   inputMode=m;
   document.querySelectorAll('.im-btn').forEach(function(b){b.classList.toggle('on',b.dataset.mode===m);});
-  var pi=el('pi');
-  if(m==='action'){updatePartyPlaceholder();}
-  else if(m==='world'){pi.placeholder='Что происходит в мире? (событие, действие NPC, окружение...)';}
-  else if(m==='direct'){pi.placeholder='Инструкция нейросети (тон, поворот сюжета, ввести персонажа...)';}
+  var pi=el('pi'); var hint=el('im-hint');
+  if(m==='action'){updatePartyPlaceholder();if(hint)hint.textContent='🎭 Действуете от лица выбранных героев — обычные действия в игре';}
+  else if(m==='world'){pi.placeholder='Что происходит в мире? (событие, действие NPC, окружение...)';if(hint)hint.textContent='🌍 Описываете событие мира без привязки к герою — погода, действия NPC, происшествия';}
+  else if(m==='direct'){pi.placeholder='Инструкция нейросети (тон, поворот сюжета, ввести персонажа...)';if(hint)hint.textContent='🎬 Скрытая команда нейросети — сменить тон, ввести персонажа, направить сюжет (не попадёт в историю)';}
   pi.focus();
 }
 async function doSend(){
