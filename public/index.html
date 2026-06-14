@@ -533,6 +533,16 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
 .entity-use:active{transform:scale(.95)}
 .char-check{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:4px;border:.5px solid var(--border3);font-size:9px;color:var(--bg);background:transparent;vertical-align:middle;transition:all .15s}
 .char-check.on{background:var(--ac);border-color:var(--ac)}
+.hint-ic{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:var(--bg3);border:.5px solid var(--border2);color:var(--text3);font-size:10px;font-weight:700;cursor:help;position:relative;vertical-align:middle;margin-left:3px;transition:all .15s}
+.hint-ic:hover{background:var(--ac);color:var(--bg);border-color:var(--ac)}
+.hint-ic:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);width:230px;background:var(--bg2);border:.5px solid var(--ac);border-radius:8px;padding:9px 11px;font-size:11px;font-weight:400;line-height:1.5;color:var(--text2);text-align:left;z-index:9999;box-shadow:0 6px 24px rgba(0,0,0,.5);white-space:normal;pointer-events:none}
+.hint-ic:hover::before{content:'';position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--ac);z-index:9999}
+.story-start-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px;min-height:400px;gap:14px}
+.story-start-icon{font-size:48px;opacity:.7}
+.story-start-title{font-family:'Cinzel',serif;font-size:24px;font-weight:600;color:var(--ac)}
+.story-start-desc{font-size:14px;color:var(--text2);line-height:1.6;max-width:480px}
+.story-start-btn{margin-top:10px;font-size:15px;padding:0 28px;min-height:46px}
+.story-start-hint{font-size:12px;color:var(--text3);margin-top:2px}
 /* ─── STAT BUTTONS (единый стиль, реагирует на тему) ─── */
 .stat-pm{width:22px;height:22px;border-radius:5px;border:.5px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;font-size:13px;font-weight:600;line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:0;transition:all .12s;flex-shrink:0}
 .stat-pm:hover{border-color:var(--ac);color:var(--ac);background:var(--bg3)}
@@ -806,19 +816,19 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
         <div class="form-group">
           <label class="field-label">Режим игры</label>
           <div class="grid2">
-            <div class="mc sel" onclick="selMC(this,'mode')" data-v="game"><div class="mc-title">Приключение</div><div class="mc-desc">Действия имеют последствия</div></div>
-            <div class="mc" onclick="selMC(this,'mode')" data-v="story"><div class="mc-title">История</div><div class="mc-desc">Совместное творчество</div></div>
-            <div class="mc" onclick="selMC(this,'mode')" data-v="chat"><div class="mc-title">Диалоги</div><div class="mc-desc">Воплощение NPC</div></div>
-            <div class="mc" onclick="selMC(this,'mode')" data-v="sim"><div class="mc-title">Симуляция</div><div class="mc-desc">Мир развивается сам</div></div>
+            <div class="mc sel" onclick="selMC(this,'mode')" data-v="game"><div class="mc-title">Приключение <span class="hint-ic" data-tip="Классическая игра: твои действия меняют мир и имеют последствия. Нарратор реагирует на выборы, ведёт сюжет к развязке. Баланс действия, диалогов и исследования.">?</span></div><div class="mc-desc">Действия имеют последствия</div></div>
+            <div class="mc" onclick="selMC(this,'mode')" data-v="story"><div class="mc-title">История <span class="hint-ic" data-tip="Упор на повествование и драму. Нарратор ведёт более литературный, насыщенный рассказ, как в романе. Меньше игровой механики, больше атмосферы и характеров.">?</span></div><div class="mc-desc">Совместное творчество</div></div>
+            <div class="mc" onclick="selMC(this,'mode')" data-v="chat"><div class="mc-title">Диалоги <span class="hint-ic" data-tip="Фокус на общении с персонажами. Нарратор отыгрывает NPC живо и подробно, реплики и характеры выходят на первый план. Хорошо для ролевого отыгрыша и социальных историй.">?</span></div><div class="mc-desc">Воплощение NPC</div></div>
+            <div class="mc" onclick="selMC(this,'mode')" data-v="sim"><div class="mc-title">Симуляция <span class="hint-ic" data-tip="Живой мир, который существует сам по себе. NPC действуют по своим целям, события происходят независимо от тебя. Песочница, где ты — часть большого мира, а не его центр.">?</span></div><div class="mc-desc">Мир развивается сам</div></div>
           </div>
         </div>
         <div class="form-group">
           <label class="field-label">Игровая система</label>
           <div class="grid2" id="rules-grid">
-            <div class="mc sel" onclick="selMC(this,'rules')" data-v="free"><div class="mc-title">Свободная</div><div class="mc-desc">Нарратор решает исходы</div></div>
-            <div class="mc" onclick="selMC(this,'rules')" data-v="dnd"><div class="mc-title">⚔ D&D</div><div class="mc-desc">Кубики, проверки навыков — дайсы включены</div></div>
-            <div class="mc" onclick="selMC(this,'rules')" data-v="survival"><div class="mc-title">Выживание</div><div class="mc-desc">Ресурсы, голод, усталость</div></div>
-            <div class="mc" onclick="selMC(this,'rules')" data-v="detective"><div class="mc-title">🔍 Детектив</div><div class="mc-desc">Улики, допросы, дедукция</div></div>
+            <div class="mc sel" onclick="selMC(this,'rules')" data-v="free"><div class="mc-title">Свободная <span class="hint-ic" data-tip="Нарратор сам решает, что получится у героя, без кубиков и жёстких правил. Награждает предметами за находки, описывает последствия выборов живо и непредсказуемо. Лучший выбор для чистого повествования и ролевой игры.">?</span></div><div class="mc-desc">Нарратор решает исходы</div></div>
+            <div class="mc" onclick="selMC(this,'rules')" data-v="dnd"><div class="mc-title">⚔ D&D <span class="hint-ic" data-tip="Классическая система D&D 5e. Нарратор просит броски кубика d20 при проверках навыков (учитывая характеристики героя), следит за HP, КБ и уровнями. Можно отключить отдельные механики ниже. Подходит для тактических приключений с числами.">?</span></div><div class="mc-desc">Кубики, проверки навыков</div></div>
+            <div class="mc" onclick="selMC(this,'rules')" data-v="survival"><div class="mc-title">Выживание <span class="hint-ic" data-tip="Нарратор отслеживает шкалы голода, жажды и усталости (0-100). Они снижаются со временем, и герою нужно искать еду, воду и отдых. Игнорируешь — последствия для здоровья. Атмосфера борьбы за жизнь.">?</span></div><div class="mc-desc">Ресурсы, голод, усталость</div></div>
+            <div class="mc" onclick="selMC(this,'rules')" data-v="detective"><div class="mc-title">🔍 Детектив <span class="hint-ic" data-tip="Нарратор ведёт расследование: подбрасывает улики, противоречия в показаниях, ложные следы. Найденные улики записываются в журнал. Разгадку не раскрывает — до правды нужно дойти дедукцией, допрашивая подозреваемых.">?</span></div><div class="mc-desc">Улики, допросы, дедукция</div></div>
           </div>
           <!-- Custom user systems appended here by JS -->
           <div id="custom-rules-systems" style="margin-top:8px;display:flex;flex-direction:column;gap:6px"></div>
@@ -863,7 +873,7 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
           <label class="field-label">Хардкор режим</label>
           <div class="grid2">
             <div class="mc sel" onclick="selMC(this,'hardcore')" data-v="0"><div class="mc-title">Обычный</div><div class="mc-desc">Можно редактировать и перегенерировать</div></div>
-            <div class="mc" onclick="selMC(this,'hardcore')" data-v="1"><div class="mc-title">☠ Хардкор</div><div class="mc-desc">Нельзя редактировать ответы. Один слот сохранения.</div></div>
+            <div class="mc" onclick="selMC(this,'hardcore')" data-v="1"><div class="mc-title">☠ Хардкор <span class="hint-ic" data-tip="Жёсткий режим: нельзя редактировать или перегенерировать ответы нарратора и свои действия — что сделано, то сделано. Только один слот сохранения. Для тех, кто хочет честную игру без переигровок.">?</span></div><div class="mc-desc">Нельзя редактировать ответы. Один слот сохранения.</div></div>
           </div>
         </div>
       </div>
@@ -918,11 +928,11 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
           <label class="field-label">Качество нейросети (серверный режим)</label>
           <div class="grid2">
             <div class="mc sel" onclick="selMC(this,'serverTier')" data-v="haiku">
-              <div class="mc-title">⚡ Быстрый</div>
+              <div class="mc-title">⚡ Быстрый <span class="hint-ic" data-tip="Быстрая и экономная нейросеть. Тратит примерно 50 токенов за ход. Хорошо справляется с динамичными приключениями. Выбор по умолчанию для большинства игр.">?</span></div>
               <div class="mc-desc">Быстро и экономно, ~50 токенов за ход</div>
             </div>
             <div class="mc" onclick="selMC(this,'serverTier')" data-v="sonnet">
-              <div class="mc-title">✦ Качественный</div>
+              <div class="mc-title">✦ Качественный <span class="hint-ic" data-tip="Более умная и литературная нейросеть. Тратит примерно в 3 раза больше токенов, но даёт глубже проработанные описания, тоньше отыгрывает персонажей и лучше держит сложный сюжет.">?</span></div>
               <div class="mc-desc">Умнее и литературнее, ~150 токенов за ход</div>
             </div>
           </div>
@@ -1130,7 +1140,7 @@ const PRESETS=[
    desc:'Королевство Валдрас умирает. Некромант Морак овладел Кровавой Литанией — ритуалом, что удерживает мёртвых в мире живых: они помнят свои жизни и потому особенно опасны. Церковь Света слала охотников десятками — вернулись единицы, и те поседевшие. Деревни пустеют, кладбища пустеют ещё быстрее. Говорят, в сердце Могильника бьётся чёрное сердце, и пока оно бьётся — мёртвые не лягут.',
    worldStart:'Вы приходите в себя среди трупов на поле у деревни Горький Брод — не помня, как здесь оказались. Алый свет пульсирует в тумане за деревней, в такт чьему-то сердцу. Рядом стонет раненый — седая женщина в облачении жрицы пытается подняться, опираясь на светящийся посох.',
    npcs:'Морак Бледный — некромант, держит Кровавую Литанию, прячется в склепе под церковью. Жрица Алва — выжившая охотница, знает обряд упокоения, но ранена. Дух стражника Кеара — помнит тайный ход в склеп, торгуется за упокоение своей души. Староста Виг — прячет жителей в амбаре, не доверяет чужакам.',
-   chars:[{name:'Арвин',cls:'Воин',desc:'Бывший стражник королевской гвардии, изгнанный за то, что отказался казнить невиновных. Ищет искупления.',appearance:'Высокий, шрам через щёку, потрёпанные доспехи с содранным гербом',armor:'medium',stats:{STR:15,DEX:13,CON:14,INT:10,WIS:12,CHA:8},
+   chars:[{name:'Арвин',cls:'Воин',desc:'Бывший стражник королевской гвардии, изгнанный за то, что отказался казнить невиновных. Ищет искупления.',appearance:'Высокий, широкоплечий, шрам через всю щёку, на месте герба на груди — содранная нашивка',armor:'medium',stats:{STR:15,DEX:13,CON:14,INT:10,WIS:12,CHA:8},
      skills:[{name:'Фехтование',desc:'Мастерское владение мечом: можно делать рискованные приёмы, парировать, обезоруживать'},{name:'Боевой опыт',desc:'Чутьё на засады и опасность — замечает то, что выдаёт врага заранее'},{name:'Выживание',desc:'Ориентируется в дикой местности, находит еду и укрытие, читает следы'}],
      charTraits:[{name:'Верен слову',desc:'Дав обещание, не отступит — даже во вред себе'},{name:'Не терпит несправедливости',desc:'Вступится за слабого, даже против превосходящих сил'},{name:'Боится предать снова',desc:'Прошлое давит: в моменты выбора колеблется, когда на кону чужие жизни'}],
      items:[{name:'Длинный меч',icon:'⚔',desc:'Надёжный гвардейский клинок, чуть зазубрен в боях'},{name:'Кольчуга',icon:'🛡',desc:'Средняя броня, видела лучшие дни, но держит удар'},{name:'Походный мешок',icon:'🎒',desc:'Трут, фляга, вяленое мясо на три дня, моток верёвки'}]}],
@@ -1140,7 +1150,7 @@ const PRESETS=[
    desc:'Фаэрун — классический мир мечей и магии. Врата Балдура балансируют на грани: культ Драконицы Бездны вербует отчаявшихся, обещая спасение в конце мира, что сами же и приближают. Арфисты — тайное общество защитников — теряют агентов одного за другим. В тавернах шепчут о звезде, что упала на востоке, и о том, кто посмеет к ней пойти.',
    worldStart:'Таверна «Расплёсканный щит» гудит от голосов. К вашему столу подходит человек в дорожном плаще, кладёт запечатанный конверт со знаком арфы и лютни — печатью Арфистов — и тихо говорит: «Эльминстер сказал, ты не откажешь. Открой, когда останешься один». И растворяется в толпе.',
    npcs:'Эльминстер — древний маг-арфист, говорит загадками, но всегда по делу. Леди Альда — связная Арфистов в городе, проверяет новичков. Жрец культа Бездны под личиной торговца — вербует и следит. Капитан стражи Зорн — подкуплен культом, но сам того не знает.',
-   chars:[{name:'Адрен',cls:'Следопыт',desc:'Полуэльф из Цитадели Стрел. Брат пропал, отправившись к упавшей звезде. Идёт по его следу.',appearance:'Стройный, острые уши, зелёные глаза, лёгкий кожаный доспех с эльфийским узором',armor:'light',stats:{STR:12,DEX:15,CON:13,INT:10,WIS:14,CHA:8},
+   chars:[{name:'Адрен',cls:'Следопыт',desc:'Полуэльф из Цитадели Стрел. Брат пропал, отправившись к упавшей звезде. Идёт по его следу.',appearance:'Стройный, острые эльфийские уши, пронзительные зелёные глаза, собранные в хвост тёмные волосы',armor:'light',stats:{STR:12,DEX:15,CON:13,INT:10,WIS:14,CHA:8},
      skills:[{name:'Стрельба из лука',desc:'Бьёт без промаха на расстоянии, может целить в уязвимые места'},{name:'Следопытство',desc:'Читает следы, определяет давность и количество прошедших, не теряется в глуши'},{name:'Бой двумя клинками',desc:'В ближнем бою сражается парой коротких мечей, быстрые серии ударов'},{name:'Природная магия',desc:'Слабые друидские чары: говорит с животными, чует магию, заживляет лёгкие раны'}],
      charTraits:[{name:'Наблюдателен',desc:'Замечает детали, что упускают другие — фальшь, скрытую дверь, чужую ложь'},{name:'Осторожен',desc:'Предпочитает разведку лобовой атаке, готовит пути отхода'},{name:'Не доверяет людям',desc:'Эльфийская кровь и горький опыт: к людям относится с холодком'}],
      items:[{name:'Длинный лук',icon:'🏹',desc:'Эльфийской работы, дальнобойный, колчан на 20 стрел'},{name:'Два коротких меча',icon:'⚔',desc:'Парные клинки для ближнего боя'},{name:'Кожаный доспех',icon:'🛡',desc:'Лёгкая броня, не стесняет движений'},{name:'Сигнальный рог',icon:'📯',desc:'Зов слышен за лигу — на крайний случай'}]}],
@@ -1150,7 +1160,7 @@ const PRESETS=[
    desc:'Континент жесток и несправедлив. Люди вытесняют старшие расы, костры пылают для «нелюдей», а чудовища всё равно жрут скот и детей по ночам. Ведьмаки — мутанты-охотники, отвергнутые теми, кого защищают. За работу платят скупо и плюют вслед. Война с Нильфгаардом катится с юга, и в её тени монстры плодятся быстрее, чем ведьмаки успевают их класть.',
    worldStart:'Деревня Брокилонский Брод встречает вас грязью и косыми взглядами. Ночью кто-то задрал трёх овец и батрака — то, что осталось, лежит под рогожей. Староста мнётся у ворот с тощим кошелём: «Ведьмак, говорят? Разберись с тварью. Только дёшево — мы люди небогатые».',
    npcs:'Староста Фьорн — скуп, торгуется за каждый грош, что-то недоговаривает о пропавших раньше. Знахарка Лешка — знает повадки тварей и местные легенды, но просит услугу взамен. Стражник Петрок — ненавидит ведьмаков, мешает из принципа. Вдова батрака — видела ночью то, о чём боится сказать при старосте.',
-   chars:[{name:'Геральт',cls:'Ведьмак',desc:'Мутант школы Волка, прошедший Испытание Травами. Циник с кодексом: за деньги убивает чудовищ, но детей не трогает и невиновных не сдаёт.',appearance:'Седые волосы, кошачьи жёлтые глаза, паутина шрамов, два меча за спиной',armor:'light',stats:{STR:14,DEX:15,CON:14,INT:12,WIS:13,CHA:10},
+   chars:[{name:'Геральт',cls:'Ведьмак',desc:'Мутант школы Волка, прошедший Испытание Травами. Циник с кодексом: за деньги убивает чудовищ, но детей не трогает и невиновных не сдаёт.',appearance:'Седые волосы до плеч, кошачьи жёлтые глаза мутанта, паутина старых шрамов на лице и руках',armor:'light',stats:{STR:14,DEX:15,CON:14,INT:12,WIS:13,CHA:10},
      skills:[{name:'Ведьмачьи знаки',desc:'Аард (телекинетический толчок), Игни (струя огня), Квен (защитный щит), Аксий (внушение), Ирден (магическая ловушка)'},{name:'Алхимия',desc:'Варит эликсиры и масла против конкретных тварей, бомбы; знает яды и противоядия'},{name:'Два меча',desc:'Стальной — против людей и зверей, серебряный — против чудовищ. Танцующий стиль боя'},{name:'Ведьмачье чутьё',desc:'Обострённые чувства: видит следы, чует кровь и магию, идёт по запаху'}],
      charTraits:[{name:'Циничный профессионал',desc:'Не строит иллюзий о людях, но работу делает на совесть'},{name:'Кодекс ведьмака',desc:'Деньги важны, но есть черта: дети и невиновные — неприкосновенны'},{name:'Нейтралитет',desc:'Старается не лезть в политику и чужие войны — выходит редко'}],
      items:[{name:'Стальной меч',icon:'⚔',desc:'Против людей, зверей и нежити из плоти'},{name:'Серебряный меч',icon:'🗡',desc:'Против чудовищ — упырей, утопцев, оборотней'},{name:'Доспех ведьмака',icon:'🛡',desc:'Лёгкая броня усиленной кожи, не сковывает в бою'},{name:'Набор алхимика',icon:'⚗',desc:'Колбы, ингредиенты, три готовых эликсира и две бомбы'}]}],
@@ -1599,11 +1609,26 @@ G.chars.forEach(c=>{
   enterGame(true);}
 
 // ══ GAME ENGINE ══════════════════════════════════
+function beginStory(){
+  var area=el('story');
+  area.innerHTML='<div class="system-msg">История начинается...</div>';
+  var msg=G.worldStart||('Начни историю в мире "'+G.worldName+'". '+(G.chars.length?'Главный герой: '+(G.chars[G.activeChar]?G.chars[G.activeChar].name:'')+'. '+(G.chars[G.activeChar]?G.chars[G.activeChar].desc:''):''));
+  sendAI(msg,true);
+}
 function enterGame(isNew){showPage('game-page');
   // Onboarding hint for first-timers
   const p=getProgress();
   if((p.games||0)<=1&&isNew){setTimeout(()=>{notif('💡 Пишите действия внизу. Наведите на текст нарратора — появятся кнопки «Изменить» и «Другой ответ»','info');},3000);}el('g-wn').textContent=G.worldName;el('g-wt').textContent=G.genres.join(' · ')||G.mode;el('hcb').classList.toggle('hidden',!G.hardcore);el('game-uname').textContent=user?.username||'';const provLabel=G.useOwnKey&&user?.own_api_key?(PROVIDERS_INFO[user.own_provider]?.name||'Свой ключ'):'Встроенная нейросеть';el('g-prov').textContent='🤖 '+provLabel+(G.rules==='dnd'?' · ⚔ D&D':'');updateGameBal();if(prices)buildPkgMini('pkg-grid-game');partyMode='single';activeParty=[0];blockVariants={};renderGChars();renderJournal();renderQA();switchRightTab('journal');// Notes restore
-const savedNotes=localStorage.getItem('aq_notes_'+G.slotId)||'';el('g-notes').value=savedNotes;el('g-notes').oninput=()=>localStorage.setItem('aq_notes_'+G.slotId,el('g-notes').value);const charName=G.chars[G.activeChar]?.name;el('pi').placeholder=charName?`Что делает ${charName}?`:'Что происходит?';const area=el('story');if(isNew){area.innerHTML='<div class="system-msg">История начинается...</div>';const msg=G.worldStart||`Начни историю в мире "${G.worldName}". ${G.chars.length?'Главный герой: '+G.chars[G.activeChar]?.name+'. '+G.chars[G.activeChar]?.desc:''}`;sendAI(msg,true);}else{area.innerHTML='';history.forEach(m=>{if(m.role==='user'&&!m._sys)addBlock(m.content,true);else if(m.role==='assistant')addBlock(m.content,false);});}}
+const savedNotes=localStorage.getItem('aq_notes_'+G.slotId)||'';el('g-notes').value=savedNotes;el('g-notes').oninput=()=>localStorage.setItem('aq_notes_'+G.slotId,el('g-notes').value);const charName=G.chars[G.activeChar]?.name;el('pi').placeholder=charName?`Что делает ${charName}?`:'Что происходит?';const area=el('story');if(isNew){
+    // Не запускаем генерацию автоматически — ждём кнопку «Начать историю»
+    area.innerHTML='<div class="story-start-screen">'
+      +'<div class="story-start-icon">📖</div>'
+      +'<div class="story-start-title">'+esc(G.worldName)+'</div>'
+      +'<div class="story-start-desc">'+esc((G.worldDesc||'').slice(0,200))+'</div>'
+      +'<button class="btn primary story-start-btn" onclick="beginStory()">▶ Начать историю</button>'
+      +'<div class="story-start-hint">Нейросеть создаст вступление, когда вы будете готовы</div>'
+      +'</div>';
+  }else{area.innerHTML='';history.forEach(m=>{if(m.role==='user'&&!m._sys)addBlock(m.content,true);else if(m.role==='assistant')addBlock(m.content,false);});}}
 
 function renderGChars(){
   var e=el('g-chars');if(!e)return;e.innerHTML='';
@@ -1827,13 +1852,15 @@ function renderCharPanel(){
 
   // Способности — структурированные, с кнопкой Использовать
   var skills=cs.skills||[];
+  // Кнопки "Применить" нужны там, где механики важны (D&D/кастом с кубиками). В чистом повествовании — просто список.
+  var showUseButtons=(G.rules==='dnd')||(G.rules==='custom'&&(function(){var cs2=customSystems.find(function(s){return s.id===G.rulesCustomId;});return cs2&&cs2.mech&&cs2.mech.dice;})());
   if(skills.length){
     html+='<div class="char-stat-group"><div class="char-stat-label">💪 Способности</div>';
     skills.forEach(function(sk){
       html+='<div class="entity-card">';
       html+='<div class="entity-name">'+esc(sk.name)+'</div>';
       if(sk.desc)html+='<div class="entity-desc">'+esc(sk.desc)+'</div>';
-      html+='<button class="entity-use" data-use="'+esc(sk.name)+'" onclick="useAbility(this.dataset.use)">Применить</button>';
+      if(showUseButtons)html+='<button class="entity-use" data-use="'+esc(sk.name)+'" onclick="useAbility(this.dataset.use)">Применить</button>';
       html+='</div>';
     });
     html+='</div>';
@@ -1847,7 +1874,7 @@ function renderCharPanel(){
       html+='<div class="entity-card">';
       html+='<div class="entity-name">'+esc(tr.name)+'</div>';
       if(tr.desc)html+='<div class="entity-desc">'+esc(tr.desc)+'</div>';
-      html+='<button class="entity-use" data-use="'+esc(tr.name)+'" onclick="useTrait(this.dataset.use)">Задействовать</button>';
+      if(showUseButtons)html+='<button class="entity-use" data-use="'+esc(tr.name)+'" onclick="useTrait(this.dataset.use)">Задействовать</button>';
       html+='</div>';
     });
     html+='</div>';
