@@ -266,7 +266,7 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
 
 /* ─── GAME PAGE ─── */
 #game-page{overflow:hidden}
-.game-layout{display:grid;grid-template-columns:200px 1fr 195px;height:calc(100vh - 46px)}
+.game-layout{display:grid;grid-template-columns:240px 1fr 250px;height:calc(100vh - 46px)}
 .game-left{display:flex;flex-direction:column;overflow:hidden;background:var(--bg2);border-right:.5px solid var(--border)}
 .panel-hdr{padding:6px 12px;border-bottom:.5px solid var(--border);font-size:10px;font-weight:600;color:var(--text3);background:var(--bg3);flex-shrink:0;letter-spacing:.03em;display:flex;justify-content:space-between;align-items:center;min-height:28px}
 .world-card{padding:10px 12px;border-bottom:.5px solid var(--border);flex-shrink:0}
@@ -499,7 +499,7 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
   .game-left{display:none}
   .game-right{display:none}
   .game-layout.show-left .game-left{display:flex;position:fixed;inset:0;z-index:400;top:46px}
-  .game-layout.show-right .game-right{display:flex;position:fixed;inset:0;z-index:400;top:46px;left:auto;width:min(280px,90vw)}
+  .game-layout.show-right .game-right{display:flex;position:fixed;inset:0;z-index:400;top:46px;left:auto;width:min(320px,92vw)}
   .story{padding:12px 14px}
   .narrator-text{font-size:16px;line-height:1.75}
   .topbar-group{display:none}
@@ -698,6 +698,12 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
               <button class="tag" data-m="hunger" onclick="this.classList.toggle('on')">🍖 Голод</button>
               <button class="tag" data-m="thirst" onclick="this.classList.toggle('on')">💧 Жажда</button>
               <button class="tag" data-m="fatigue" onclick="this.classList.toggle('on')">😴 Усталость</button>
+              <button class="tag" data-m="sanity" onclick="this.classList.toggle('on')">🧠 Рассудок</button>
+              <button class="tag" data-m="reputation" onclick="this.classList.toggle('on')">⭐ Репутация</button>
+              <button class="tag" data-m="mana" onclick="this.classList.toggle('on')">🔮 Мана</button>
+              <button class="tag" data-m="infection" onclick="this.classList.toggle('on')">🦠 Заражение</button>
+              <button class="tag" data-m="luck" onclick="this.classList.toggle('on')">🍀 Удача</button>
+              <button class="tag" data-m="heat" onclick="this.classList.toggle('on')">🔥 Розыск</button>
             </div>
           </div>
           <button class="btn primary btn-sm" onclick="saveCustomSystem()" style="align-self:flex-start">Сохранить систему</button>
@@ -1376,6 +1382,18 @@ var ARMOR_TYPES = {
   medium: {name:'Средняя броня',  base:14, dexCap:2},   // 14 + Лов (макс +2)
   heavy:  {name:'Тяжёлая броня',  base:17, dexCap:0}    // 17, без Лов
 };
+// Универсальные шкалы для кастомных режимов
+var METER_DEFS = {
+  hunger:    {name:'Голод',     icon:'🍖', color:'#e0a050', start:100, good:'high'},
+  thirst:    {name:'Жажда',     icon:'💧', color:'#50a0e0', start:100, good:'high'},
+  fatigue:   {name:'Усталость', icon:'😴', color:'#a080d0', start:0,   good:'low'},
+  sanity:    {name:'Рассудок',  icon:'🧠', color:'#7050d0', start:100, good:'high'},
+  reputation:{name:'Репутация', icon:'⭐', color:'#e0c040', start:50,  good:'high'},
+  mana:      {name:'Мана',      icon:'🔮', color:'#4080e0', start:100, good:'high'},
+  infection: {name:'Заражение', icon:'🦠', color:'#60c060', start:0,   good:'low'},
+  luck:      {name:'Удача',     icon:'🍀', color:'#50c080', start:50,  good:'high'},
+  heat:      {name:'Розыск',    icon:'🔥', color:'#e05040', start:0,   good:'low'}
+};
 function statMod(v){ return Math.floor((parseInt(v)||10 - 10)/2); }
 function abilityMod(v){ return Math.floor(((parseInt(v)||10) - 10)/2); }
 // HP в BG3: базовое (по классу) + мод.Телосложения за уровень + чуть от Силы
@@ -1574,7 +1592,7 @@ G.chars.forEach(c=>{
       charTraits:JSON.parse(JSON.stringify(c.charTraits||[])),
       hp:hpVal, hpCur:c.hpCur||hpVal, ac:acVal, armor:armor,
       stats:cs2, level:parseInt(c.level)||1, xp:parseInt(c.xp)||0,
-      hunger:100, thirst:100, fatigue:0
+      hunger:100, thirst:100, fatigue:0, sanity:100, reputation:50, mana:100, infection:0, luck:50, heat:0
     };
     inventory[c.name]=JSON.parse(JSON.stringify(c.items||[]));
   });
@@ -1679,28 +1697,36 @@ function renderCharPanel(){
   if(cs.cls)html+='<div style="font-size:11px;color:var(--text3)">'+esc(cs.cls)+'</div>';
   html+='</div>';
 
-  // Шкалы выживания (только включённые)
-  if(isSurvival){
-    var bars=[];
-    if(surv.hunger!==false)bars.push(['hunger','🍖 Голод','#e0a050']);
-    if(surv.thirst!==false)bars.push(['thirst','💧 Жажда','#50a0e0']);
-    if(surv.fatigue!==false)bars.push(['fatigue','😴 Усталость','#a080d0']);
-    bars.forEach(function(bar){
-      var key=bar[0],label=bar[1],color=bar[2];
-      var val=Math.max(0,Math.min(100,parseInt(cs[key]!=null?cs[key]:(key==='fatigue'?0:100))));
+  // Универсальные шкалы режима (выживание + кастомные механики)
+  var activeMeters=[];
+  if(G.rules==='survival'){
+    var sv=G.survMech||{};
+    if(sv.hunger!==false)activeMeters.push('hunger');
+    if(sv.thirst!==false)activeMeters.push('thirst');
+    if(sv.fatigue!==false)activeMeters.push('fatigue');
+  }
+  if(G.rules==='custom'&&G.rulesCustomId){
+    var csys=customSystems.find(function(s){return s.id===G.rulesCustomId;});
+    if(csys&&csys.mech){
+      Object.keys(METER_DEFS).forEach(function(mk){if(csys.mech[mk])activeMeters.push(mk);});
+    }
+  }
+  if(activeMeters.length){
+    activeMeters.forEach(function(key){
+      var def=METER_DEFS[key];if(!def)return;
+      var val=Math.max(0,Math.min(100,parseInt(cs[key]!=null?cs[key]:def.start)));
       html+='<div style="margin-bottom:7px">';
       html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">';
-      html+='<span style="font-size:10px;color:var(--text3)">'+label+'</span>';
+      html+='<span style="font-size:10px;color:var(--text3)">'+def.icon+' '+def.name+'</span>';
       html+='<input type="number" value="'+val+'" min="0" max="100" data-cn="'+esc(char.name)+'" data-key="'+key+'" ';
       html+='style="width:42px;background:var(--bg);border:.5px solid var(--border2);border-radius:3px;padding:1px 3px;font-size:11px;color:var(--text2);text-align:center" ';
       html+='onchange="updateCharStat(this.dataset.cn,this.dataset.key,Math.max(0,Math.min(100,parseInt(this.value)||0)));renderCharPanel()" />';
       html+='</div>';
       html+='<div style="height:5px;background:var(--bg3);border-radius:3px;overflow:hidden">';
-      html+='<div style="height:100%;width:'+val+'%;background:'+color+';transition:width .3s;border-radius:3px"></div>';
+      html+='<div style="height:100%;width:'+val+'%;background:'+def.color+';transition:width .3s;border-radius:3px"></div>';
       html+='</div></div>';
     });
   }
-
   if(isDnd){
     // Уровень и XP (если включены)
     var canEdit=!!G.statsEditable;
@@ -1747,17 +1773,28 @@ function renderCharPanel(){
       html+='<div id="'+barId+'" style="height:100%;width:'+pct+'%;background:'+col+';transition:width .3s;border-radius:3px"></div>';
       html+='</div></div>';
     }
-    // КБ — редактируется только в режиме редактирования
+    // КБ — зависит от типа брони и Ловкости (BG3). Меняешь броню — меняется КБ.
     if(mech.ac!==false){
-      var acv=Math.max(1,Math.min(30,parseInt(cs.ac)||10));
-      html+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;padding:6px 10px;background:var(--bg3);border-radius:4px">';
+      var armorType=cs.armor||'none';
+      var acv=(G.rules==='dnd')?calcAC(cs.stats,armorType):(Math.max(1,Math.min(30,parseInt(cs.ac)||10)));
+      // учесть бонусы от предметов
+      var acItemBonus=0;
+      (inventory[char.name]||[]).forEach(function(it){if(it.effects&&it.effects.ac)acItemBonus+=parseInt(it.effects.ac)||0;});
+      acv+=acItemBonus;
+      html+='<div style="margin-bottom:8px;padding:6px 10px;background:var(--bg3);border-radius:4px">';
+      html+='<div style="display:flex;align-items:center;gap:6px">';
       html+='<span style="font-size:10px;font-weight:600;color:var(--text3)">🛡 КБ</span>';
-      if(canEdit){
-        html+='<button class="stat-pm" data-cn="'+esc(char.name)+'" data-d="-1" onclick="bumpAC(this.dataset.cn,parseInt(this.dataset.d))">&minus;</button>';
-        html+='<span style="font-size:14px;font-weight:700;color:var(--text);min-width:24px;text-align:center">'+acv+'</span>';
-        html+='<button class="stat-pm" data-cn="'+esc(char.name)+'" data-d="1" onclick="bumpAC(this.dataset.cn,parseInt(this.dataset.d))">+</button>';
-      } else {
-        html+='<span style="font-size:14px;font-weight:700;color:var(--text)">'+acv+'</span>';
+      html+='<span style="font-size:14px;font-weight:700;color:var(--text)">'+acv+'</span>';
+      html+='<span style="font-size:10px;color:var(--text3)">'+(ARMOR_TYPES[armorType]?ARMOR_TYPES[armorType].name:'')+(acItemBonus?' +'+acItemBonus+' от предметов':'')+'</span>';
+      html+='</div>';
+      // Выбор брони в режиме редактирования (для D&D)
+      if(canEdit&&G.rules==='dnd'){
+        html+='<div class="seg-row" style="margin-top:6px">';
+        Object.keys(ARMOR_TYPES).forEach(function(at){
+          var on=(armorType===at);
+          html+='<button class="seg-btn'+(on?' on':'')+'" style="padding:3px 8px;font-size:10px" data-cn="'+esc(char.name)+'" data-at="'+at+'" onclick="setCharArmor(this.dataset.cn,this.dataset.at)">'+ARMOR_TYPES[at].name+'</button>';
+        });
+        html+='</div>';
       }
       html+='</div>';
     }
@@ -1830,6 +1867,14 @@ function bumpAC(cn,d){
   var cur=parseInt(charStats[cn].ac)||10;
   charStats[cn].ac=Math.max(1,Math.min(30,cur+d));
   renderCharPanel(); autoSave();
+}
+function setCharArmor(cn,at){
+  if(!charStats[cn])charStats[cn]={};
+  charStats[cn].armor=at;
+  // Пересчёт КБ по формуле BG3
+  charStats[cn].ac=calcAC(charStats[cn].stats, at);
+  renderCharPanel(); autoSave();
+  notif('Броня: '+(ARMOR_TYPES[at]?ARMOR_TYPES[at].name:at),'info');
 }
 function bumpMeta(cn,key,d,lo,hi){
   if(!charStats[cn])charStats[cn]={};
@@ -1922,7 +1967,7 @@ function addInvItem(charName){
   inventory[charName].push({name:ni.value.trim(), icon:'📦', desc:(di?di.value.trim():'')});
   renderInvPanel(); autoSave();
 }
-function removeInvItem(charName,idx){if(!inventory[charName])return;inventory[charName].splice(idx,1);renderInvPanel();autoSave();}
+function removeInvItem(charName,idx){if(!inventory[charName])return;inventory[charName].splice(idx,1);applyItemEffects(charName);renderInvPanel();if(rightTab==='chars')renderCharPanel();autoSave();}
 
 function renderJournal(){const jl=el('journal');if(!jl)return;jl.innerHTML=journal.length?journal.map(e=>`<div class="journal-item"><span class="journal-item-label">Событие</span>${esc(e)}</div>`).join(''):'<div style="padding:8px;font-size:12px;color:var(--text3);font-style:italic;line-height:1.6">Пока пусто...</div>';}
 function renderQA(){const e=el('qa-btns');if(!e)return;e.innerHTML='';qaList.forEach(a=>{const txt=typeof a==='string'?a:a.text;const cat=typeof a==='string'?'custom':a.cat;if(!txt?.trim())return;const b=document.createElement('button');b.className='qa-btn '+(cat||'custom');b.textContent=txt.endsWith(': ')?txt.slice(0,-2):txt;b.onclick=()=>{const pi=el('pi');if(sendMode==='send'&&!txt.endsWith(': ')){pi.value=txt;doSend();}else{pi.value=txt;pi.focus();}};e.appendChild(b);});}
@@ -1964,11 +2009,25 @@ function buildSys(){
     if(sv.hunger!==false)sc.push('голод');if(sv.thirst!==false)sc.push('жажда');if(sv.fatigue!==false)sc.push('усталость');
     rulesInstr='Выживание. Шкалы 0-100: '+(sc.join(', ')||'—')+'. Меняй через {"survival":{"char":"имя"'+(sv.hunger!==false?',"hunger":N':'')+(sv.thirst!==false?',"thirst":N':'')+(sv.fatigue!==false?',"fatigue":N':'')+'}}.';
   }else if(G.rules==='detective'){
-    rulesInstr='Детектив: улики, противоречия, ложные следы. Улики: {"note":"улика: ..."}. Не раскрывай разгадку раньше времени.';
+    rulesInstr='Детектив: веди расследование. Подбрасывай улики и противоречия в показаниях, ложные следы. Каждую найденную улику записывай: {"note":"Улика: ..."}. Можешь вести шкалу доверия NPC через {"scale":{"char":"имя","name":"reputation","value":N}}. Не раскрывай разгадку — пусть игрок дойдёт сам через дедукцию.';
   }else if(G.rules==='custom'&&G.rulesCustomId){
     var csd=customSystems.find(function(s){return s.id===G.rulesCustomId;});
-    if(csd){rulesInstr=csd.desc.slice(0,200);}
-  }else if(G.customRules){rulesInstr='Правила: '+G.customRules.slice(0,120);}
+    if(csd){
+      rulesInstr=csd.desc.slice(0,200);
+      if(csd.mech){
+        var mp2=[];
+        if(csd.mech.dice)mp2.push('проверки кубиком: {"dice":true,"dc":5-25,"skill":"..."}');
+        if(csd.mech.hp)mp2.push('следи за HP');
+        // Активные шкалы
+        var scales2=Object.keys(METER_DEFS).filter(function(k){return csd.mech[k];});
+        if(scales2.length){
+          var scNames=scales2.map(function(k){return METER_DEFS[k].name+' ('+k+')';}).join(', ');
+          mp2.push('шкалы 0-100: '+scNames+'. Меняй любую через {"scale":{"char":"имя","name":"код","value":N}} (коды: '+scales2.join(', ')+')');
+        }
+        if(mp2.length)rulesInstr+=' Механики: '+mp2.join('; ')+'.';
+      }
+    }
+  }else if(G.customRules){rulesInstr='Правила: '+G.customRules.slice(0,120);}else{rulesInstr='Свободный режим: гибкое повествование без жёстких правил. Награждай героя предметами за находки и достижения, описывай последствия выбора живо и непредсказуемо.';}
 
   // Сборка. worldDesc/npcs/narratorExtra сильно урезаны — детали модель помнит из истории.
   var p='Ты нарратор Artist Quest. '+(G.lang==='en'?'Reply ONLY in English.':'Отвечай ТОЛЬКО по-русски.')+partyNote
@@ -1980,7 +2039,7 @@ function buildSys(){
     +(rulesInstr?'\n'+rulesInstr:'')
     +(G.hardcore?' Хардкор: напряжение максимальное.':'')
     +(G.narratorExtra?'\n'+G.narratorExtra.slice(0,150):'')
-    +'\nКоманды: {"note":"факт"} в журнал; {"item":"название","icon":"эмодзи","char":"имя","desc":"что это и свойства"} когда герой находит/получает предмет. Когда предмет израсходован, сломан или отдан — убери его: {"remove_item":"название","char":"имя"}. [правка: текст] — изменение без хода.'
+    +'\nКоманды: {"note":"факт"} в журнал; ВЫДАЧА ПРЕДМЕТА (когда герой находит/получает): {"item":"название","icon":"эмодзи","char":"имя","desc":"описание","effects":{"hp":5,"STR":1,"ac":1}} — effects опционально, для магических вещей (hp=макс.HP, ac=КБ, или код характеристики STR/DEX/CON/INT/WIS/CHA). УДАЛЕНИЕ (израсходован/сломан/отдан): {"remove_item":"название","char":"имя"}. ОБЯЗАТЕЛЬНО выдавай и убирай предметы по ходу сюжета. [правка: текст] — изменение без хода.'
     +(summaryCache?'\nПРЕДЫСТОРИЯ: '+summaryCache.slice(0,700):'');
   return p;
 }
@@ -1996,6 +2055,127 @@ async function sendAI(msg,isSystem=false){if(thinking)return;if(!G.useOwnKey&&us
     history.push({role:'user',content:'['+actor+']: '+msg});}showThink();try{const resp=await apiFetch('/api/ai/chat',{method:'POST',body:JSON.stringify({system:buildSys(),messages:buildMsgs(msg,isSystem),max_tokens:700,model:G.gameModel||undefined})});hideThink();if(resp.error){addError('Ошибка нейросети',resp.message||resp.error,resp.action||'Попробуйте ещё раз.');thinking=false;el('send-btn').disabled=false;return;}const reply=resp.content?.map(c=>c.text||'').join('')||'...';const blockId=addBlock(reply,false);blockVariants[blockId]={v0:reply,versions:[reply],current:0};if(isSystem)history.push({role:'user',content:msg,_sys:true});history.push({role:'assistant',content:reply});if(history.length>60)history=history.slice(-60);if(resp._meta?.tokens_balance!==null&&resp._meta?.tokens_balance!==undefined&&user){user.tokens_balance=resp._meta.tokens_balance;updateGameBal();}trackMessage();await maybeSummarize();autoSave();}catch(e){hideThink();addError('Ошибка соединения','Не удалось связаться с сервером.','Проверьте интернет и попробуйте снова.');}thinking=false;el('send-btn').disabled=false;}
 
 // ── STORY BLOCKS ──────────────────────────────────
+function parseNarratorMeta(text){
+  // Находит все сбалансированные {...} JSON-блоки и обрабатывает их по полю-типу
+  var out='';
+  var i=0;
+  while(i<text.length){
+    if(text[i]==='{'){
+      // ищем сбалансированную закрывающую скобку
+      var depth=0, j=i, inStr=false, esc2=false;
+      for(;j<text.length;j++){
+        var ch=text[j];
+        if(inStr){
+          if(esc2)esc2=false;
+          else if(ch==='\\')esc2=true;
+          else if(ch==='"')inStr=false;
+        } else {
+          if(ch==='"')inStr=true;
+          else if(ch==='{')depth++;
+          else if(ch==='}'){depth--;if(depth===0){j++;break;}}
+        }
+      }
+      var blk=text.slice(i,j);
+      var handled=false;
+      try{
+        var o=JSON.parse(blk);
+        handled=handleMetaObject(o);
+      }catch(e){handled=false;}
+      if(handled){ i=j; continue; }    // вырезаем обработанный блок
+      else { out+=text[i]; i++; }      // не мета — оставляем как текст
+    } else {
+      out+=text[i]; i++;
+    }
+  }
+  return out.trim();
+}
+function handleMetaObject(o){
+  if(o.note){journal.unshift(String(o.note).slice(0,120));if(journal.length>30)journal.pop();renderJournal();return true;}
+  if(o.item){
+    var cn=o.char||(G.chars[G.activeChar]&&G.chars[G.activeChar].name)||'Герой';
+    if(!inventory[cn])inventory[cn]=[];
+    if(!inventory[cn].find(function(it){return it.name===o.item;})){
+      var newItem={name:o.item,icon:o.icon||'📦',desc:o.desc||''};
+      if(o.effects)newItem.effects=o.effects; // {hp:+5,STR:+1,ac:+1}
+      inventory[cn].push(newItem);
+      applyItemEffects(cn);
+    }
+    if(rightTab==='inv')renderInvPanel();
+    if(rightTab==='chars')renderCharPanel();
+    return true;
+  }
+  if(o.remove_item){
+    var cn2=o.char||(G.chars[G.activeChar]&&G.chars[G.activeChar].name)||'Герой';
+    if(inventory[cn2]){
+      var before=inventory[cn2].length;
+      inventory[cn2]=inventory[cn2].filter(function(it){return it.name.toLowerCase()!==String(o.remove_item).toLowerCase();});
+      if(inventory[cn2].length<before){
+        applyItemEffects(cn2);
+        if(rightTab==='inv')renderInvPanel();
+        if(rightTab==='chars')renderCharPanel();
+        notif('Предмет израсходован: '+o.remove_item,'info');
+      }
+    }
+    return true;
+  }
+  if(o.survival&&o.survival.char){
+    var sc=o.survival.char;if(!charStats[sc])charStats[sc]={};
+    Object.keys(METER_DEFS).forEach(function(k){if(o.survival[k]!=null)charStats[sc][k]=Math.max(0,Math.min(100,parseInt(o.survival[k])));});
+    if(rightTab==='chars')renderCharPanel();
+    return true;
+  }
+  if(o.scale&&o.scale.char&&o.scale.name){
+    // {"scale":{"char":"имя","name":"sanity","value":N}} — изменить любую шкалу
+    var qc=o.scale.char;if(!charStats[qc])charStats[qc]={};
+    charStats[qc][o.scale.name]=Math.max(0,Math.min(100,parseInt(o.scale.value)));
+    if(rightTab==='chars')renderCharPanel();
+    return true;
+  }
+  if(o.xp&&o.xp.char){
+    var xc=o.xp.char;if(!charStats[xc])charStats[xc]={};
+    charStats[xc].xp=(parseInt(charStats[xc].xp)||0)+(parseInt(o.xp.amount)||0);
+    if(rightTab==='chars')renderCharPanel();
+    notif('+'+(o.xp.amount||0)+' XP — '+xc,'info');
+    return true;
+  }
+  if(o.meter&&o.meter.char){
+    // Универсальная шкала для кастомных режимов: {"meter":{"char":"имя","name":"Рассудок","value":N}}
+    var mc=o.meter.char;if(!charStats[mc])charStats[mc]={};
+    if(!charStats[mc].meters)charStats[mc].meters={};
+    charStats[mc].meters[o.meter.name]=Math.max(0,Math.min(100,parseInt(o.meter.value)));
+    if(rightTab==='chars')renderCharPanel();
+    return true;
+  }
+  return false;
+}
+// Применяет эффекты всех предметов героя к его статам (макс HP, характеристики, КБ)
+function applyItemEffects(cn){
+  var cs=charStats[cn];if(!cs)return;
+  var items=inventory[cn]||[];
+  // Сброс бонусов к базовым
+  if(!cs.baseStats)cs.baseStats=JSON.parse(JSON.stringify(cs.stats||{}));
+  if(cs.baseHp==null)cs.baseHp=parseInt(cs.hp)||10;
+  var stats=JSON.parse(JSON.stringify(cs.baseStats));
+  var hpBonus=0, acBonus=0;
+  items.forEach(function(it){
+    if(!it.effects)return;
+    Object.keys(it.effects).forEach(function(k){
+      var v=parseInt(it.effects[k])||0;
+      if(k==='hp')hpBonus+=v;
+      else if(k==='ac')acBonus+=v;
+      else if(stats[k]!=null)stats[k]=(parseInt(stats[k])||10)+v;
+    });
+  });
+  cs.stats=stats;
+  cs.hp=cs.baseHp+hpBonus;
+  if(cs.hpCur>cs.hp)cs.hpCur=cs.hp;
+  // КБ зависит от брони + эффекты
+  if(G.rules==='dnd'){
+    cs.ac=calcAC(cs.stats, cs.armor||'none')+acBonus;
+  } else if(acBonus){
+    cs.ac=(parseInt(cs.ac)||10)+acBonus;
+  }
+}
 function addBlock(text,isPlayer,blockId,actorOverride){const area=el('story');const wrap=document.createElement('div');wrap.className='story-block';const id=blockId||('blk_'+Date.now()+'_'+Math.random().toString(36).slice(2,6));wrap.dataset.id=id;
 if(isPlayer){const actor=actorOverride||(G.chars[G.activeChar]?.name||'Путник');wrap.innerHTML=`<div class="player-wrap">
   <div class="player-block">
@@ -2009,7 +2189,7 @@ if(isPlayer){const actor=actorOverride||(G.chars[G.activeChar]?.name||'Путн�
   ${G.hardcore?'':'<div class="player-controls"><button class="nc-btn" onclick="startInlineEdit(\''+id+'\',true)">✏ Изменить</button></div>'}
 </div>`;}
 else{// Parse JSON metadata from reply
-let clean=text.replace(/\{"note":[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.note){journal.unshift(o.note.slice(0,120));if(journal.length>30)journal.pop();renderJournal();}}catch(e){}return '';}).replace(/\{"item":[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.item){const charName=o.char||(G.chars[G.activeChar]?.name||'Герой');if(!inventory[charName])inventory[charName]=[];if(!inventory[charName].find(i=>i.name===o.item))inventory[charName].push({name:o.item,icon:o.icon||'📦',desc:o.desc||''});if(rightTab==='inv')renderInvPanel();}}catch(e){}return '';}).replace(/\{"remove_item":[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.remove_item){const cn=o.char||(G.chars[G.activeChar]?.name||'Герой');if(inventory[cn]){const before=inventory[cn].length;inventory[cn]=inventory[cn].filter(it=>it.name.toLowerCase()!==String(o.remove_item).toLowerCase());if(inventory[cn].length<before){if(rightTab==='inv')renderInvPanel();notif('Предмет израсходован: '+o.remove_item,'info');}}}}catch(e){}return '';}).replace(/\{"survival":[^}]+\}\}/g,m=>{try{const o=JSON.parse(m);if(o.survival&&o.survival.char){const cn=o.survival.char;if(!charStats[cn])charStats[cn]={};['hunger','thirst','fatigue'].forEach(k=>{if(o.survival[k]!=null)charStats[cn][k]=Math.max(0,Math.min(100,parseInt(o.survival[k])));});if(rightTab==='chars')renderCharPanel();}}catch(e){}return '';}).replace(/\{"xp":[^}]+\}\}/g,m=>{try{const o=JSON.parse(m);if(o.xp&&o.xp.char){const cn=o.xp.char;if(!charStats[cn])charStats[cn]={};charStats[cn].xp=(parseInt(charStats[cn].xp)||0)+(parseInt(o.xp.amount)||0);if(rightTab==='chars')renderCharPanel();notif('+'+(o.xp.amount||0)+' XP — '+cn,'info');}}catch(e){}return '';}).trim();
+let clean=parseNarratorMeta(text);
 // D&D dice check
 let diceBlock='';
 clean=clean.replace(/\{"dice":true[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.dice&&isOn("dice")){diceBlock=makeDiceBlock(o.dc,o.skill,o.hideDC===true);}}catch(e){}return '';}).trim();
