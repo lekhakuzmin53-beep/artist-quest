@@ -823,19 +823,7 @@ to{transform:scale(1.12)}}
         <div class="form-group"><label class="field-label">Описание вселенной</label><textarea class="input" id="wd" rows="5" placeholder="Законы мира, магия или технологии, история, угрозы, культура..."></textarea></div>
         <div class="form-group">
           <label class="field-label">Жанр и атмосфера</label>
-          <div class="tag-row" id="genre-tags">
-            <button class="tag" onclick="this.classList.toggle('on')">Тёмное фэнтези</button>
-            <button class="tag" onclick="this.classList.toggle('on')">Высокое фэнтези</button>
-            <button class="tag" onclick="this.classList.toggle('on')">Sci-Fi</button>
-            <button class="tag" onclick="this.classList.toggle('on')">Постапок</button>
-            <button class="tag" onclick="this.classList.toggle('on')">Хоррор</button>
-            <button class="tag" onclick="this.classList.toggle('on')">Стимпанк</button>
-            <button class="tag" onclick="this.classList.toggle('on')">Нуар</button>
-            <button class="tag" onclick="this.classList.toggle('on')">Исторический</button>
-            <button class="tag" onclick="this.classList.toggle('on')">Мифология</button>
-            <button class="tag" onclick="this.classList.toggle('on')">Современность</button>
-            <button class="tag" onclick="this.classList.toggle('on')">Киберпанк</button>
-          </div>
+          <div class="tag-row" id="genre-tags"><button class="tag" onclick="this.classList.toggle('on')">Тёмное фэнтези</button><button class="tag" onclick="this.classList.toggle('on')">Высокое фэнтези</button><button class="tag" onclick="this.classList.toggle('on')">Фэнтези</button><button class="tag" onclick="this.classList.toggle('on')">Sci-Fi</button><button class="tag" onclick="this.classList.toggle('on')">Киберпанк</button><button class="tag" onclick="this.classList.toggle('on')">Постапок</button><button class="tag" onclick="this.classList.toggle('on')">Выживание</button><button class="tag" onclick="this.classList.toggle('on')">Хоррор</button><button class="tag" onclick="this.classList.toggle('on')">Лавкрафт</button><button class="tag" onclick="this.classList.toggle('on')">Мистика</button><button class="tag" onclick="this.classList.toggle('on')">Стимпанк</button><button class="tag" onclick="this.classList.toggle('on')">Нуар</button><button class="tag" onclick="this.classList.toggle('on')">Детектив</button><button class="tag" onclick="this.classList.toggle('on')">Исторический</button><button class="tag" onclick="this.classList.toggle('on')">Вестерн</button><button class="tag" onclick="this.classList.toggle('on')">Космоопера</button><button class="tag" onclick="this.classList.toggle('on')">Гримдарк</button><button class="tag" onclick="this.classList.toggle('on')">Сказка</button><button class="tag" onclick="this.classList.toggle('on')">Приключения</button><button class="tag" onclick="this.classList.toggle('on')">Мифология</button></div>
           <div style="display:flex;gap:6px;margin-top:7px"><input class="input" id="cg" placeholder="Свой жанр..." style="flex:1"/><button class="btn btn-sm" onclick="addCG()">+ Добавить</button></div>
         </div>
         <div class="form-group"><label class="field-label">Начальная сцена</label><textarea class="input" id="ws" rows="3" placeholder="С чего начинается история..."></textarea></div>
@@ -846,268 +834,7 @@ to{transform:scale(1.12)}}
       <div class="wizard-section" id="step-3">
         <div class="form-group">
           <label class="field-label">Режим игры</label>
-          <div class="grid2" id="format-cards"></div></div>
-    <div id="menu-guest">
-      <div class="menu-actions">
-        <div class="menu-item featured" onclick="openAuth('login')"><div class="menu-item-icon">⚔</div><div class="menu-item-body"><div class="menu-item-title">Начать приключение</div><div class="menu-item-desc">Вход или регистрация</div></div><div class="menu-item-arrow">→</div></div>
-      </div>
-      <div class="menu-bottom"><div class="theme-section-title">Оформление</div><div class="theme-dots" id="theme-dots-guest"></div></div>
-    </div>
-    <div id="menu-user" style="display:none">
-      <div class="menu-actions">
-        <div class="menu-item featured" onclick="showPage('create-page');initCreatePage()"><div class="menu-item-icon">⚔</div><div class="menu-item-body"><div class="menu-item-title">Новое приключение</div><div class="menu-item-desc">Создать новый мир и историю</div></div><div class="menu-item-arrow">→</div></div>
-        <div class="menu-item" onclick="openSaves()"><div class="menu-item-icon">📖</div><div class="menu-item-body"><div class="menu-item-title">Продолжить</div><div class="menu-item-desc">Загрузить сохранённую игру</div></div><div class="menu-item-arrow">→</div></div>
-        <div class="menu-item" onclick="showPage('settings-page');loadSettingsData()"><div class="menu-item-icon">⚙</div><div class="menu-item-body"><div class="menu-item-title">Настройки</div><div class="menu-item-desc">Нейросети, ключи, темы, нарраторы</div></div><div class="menu-item-arrow">→</div></div>
-      </div>
-      <div class="menu-bottom">
-        <div class="menu-user-row"><div style="font-size:12px;color:var(--text3)">Путник:</div><div class="menu-user-name" id="menu-uname">—</div><button class="menu-logout" onclick="doLogout()">Выйти</button></div>
-        <div><div class="theme-section-title" style="margin-bottom:8px">Оформление</div><div class="theme-dots" id="theme-dots-user"></div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════ AUTH ══════════ -->
-<div class="auth-overlay" id="auth-overlay">
-  <div class="auth-card">
-    <div class="auth-logo">Artist Quest</div>
-    <div class="auth-tagline">Добро пожаловать, путник</div>
-    <div class="auth-tabs"><button class="auth-tab on" onclick="switchAuthTab('login')">Войти</button><button class="auth-tab" onclick="switchAuthTab('register')">Регистрация</button></div>
-    <div id="login-form" class="auth-form">
-      <div class="form-group"><label class="field-label">Email</label><input class="input" id="l-email" type="email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doLogin()"/></div>
-      <div class="form-group"><label class="field-label">Пароль</label><input class="input" id="l-pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/></div>
-      <div id="l-err" class="field-error"></div>
-      <button class="btn primary full" onclick="doLogin()">Войти →</button>
-      <button class="btn ghost full" onclick="closeAuth()">Отмена</button>
-    </div>
-    <div id="reg-form" class="auth-form hidden">
-      <div class="form-group"><label class="field-label">Имя путника</label><input class="input" id="r-name" type="text" placeholder="Арвин Тёмный"/></div>
-      <div class="form-group"><label class="field-label">Email</label><input class="input" id="r-email" type="email" placeholder="your@email.com"/></div>
-      <div class="form-group"><label class="field-label">Пароль (мин. 6 символов)</label><input class="input" id="r-pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doRegister()"/></div>
-      <div id="r-err" class="field-error"></div>
-      <button class="btn primary full" onclick="doRegister()">Создать аккаунт →</button>
-      <button class="btn ghost full" onclick="closeAuth()">Отмена</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════ SETTINGS PAGE ══════════ -->
-<div id="settings-page" class="page">
-  <div class="topbar">
-    <div class="topbar-logo" onclick="showMenu()">Artist Quest</div>
-    <div class="topbar-group">
-      <button class="tb-btn" id="back-to-game-btn" onclick="backToGame()" style="display:none">← Вернуться в игру</button>
-      <button class="tb-btn" onclick="showMenu()">← В меню</button>
-    </div>
-  </div>
-  <div class="settings-body">
-
-    <!-- General -->
-    <div class="settings-sec" id="set-general">
-      <div class="settings-sec-hdr" onclick="toggleSec(this)"><span class="sec-icon">⚙</span><span class="sec-title">Общие настройки</span><span class="sec-arrow">▾</span></div>
-      <div class="settings-sec-body">
-        <div class="form-group" style="margin-bottom:14px">
-          <label class="field-label">Объём ответов нарратора (по умолчанию)</label>
-          <div class="slider-row"><span style="font-size:12px;color:var(--text3)">Кратко</span><input type="range" min="1" max="5" value="3" id="global-det" oninput="el('global-dv').textContent=detLabels[this.value-1]"/><span style="font-size:12px;color:var(--text3)">Эпично</span><span class="slider-val" id="global-dv">Среднее</span></div>
-        </div>
-        <div class="form-group" style="margin-bottom:14px">
-          <div style="display:flex;align-items:center;gap:12px">
-            <div style="flex:1">
-              <div style="font-size:13px;font-weight:500;color:var(--text)">Подсказки и обучение</div>
-              <div style="font-size:12px;color:var(--text3);margin-top:2px">Значки «?» с пояснениями и обучающие уведомления</div>
-            </div>
-            <label class="switch"><input type="checkbox" id="global-hints" onchange="toggleHints(this.checked)"/><span class="switch-track"><span class="switch-thumb"></span></span></label>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="field-label">Язык нарратора по умолчанию</label>
-          <div style="display:flex;gap:8px"><button class="tag on" id="lang-ru" onclick="setGlobalLang('ru')">🇷🇺 Русский</button><button class="tag" id="lang-en" onclick="setGlobalLang('en')">🇬🇧 English</button></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- AI Keys -->
-    <div class="settings-sec" id="set-keys">
-      <div class="settings-sec-hdr" onclick="toggleSec(this)"><span class="sec-icon">🔑</span><span class="sec-title">Мои нейросети</span><span class="sec-badge" id="keys-badge"></span><span class="sec-arrow">▾</span></div>
-      <div class="settings-sec-body">
-        <p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.6">Добавьте ключ любой нейросети — запросы пойдут через ваш аккаунт, баланс токенов не тратится.</p>
-        <div class="provider-grid" id="provider-cards"></div>
-        <div style="display:flex;flex-direction:column;gap:12px">
-          <div class="form-group"><label class="field-label">Провайдер</label>
-            <select class="input" id="key-provider" onchange="updateModelList()">
-              <option value="aitunnel">AITunnel (РФ) — sk-aitunnel-...</option>
-              <option value="claude">Claude (Anthropic) — sk-ant-...</option>
-              <option value="openai">OpenAI (GPT) — sk-...</option>
-              <option value="gemini">Google Gemini — AIza...</option>
-              <option value="mistral">Mistral AI</option>
-            </select>
-          </div>
-          <div class="form-group"><label class="field-label">API ключ</label><input class="input" id="key-input" type="password" placeholder="Вставьте ключ сюда..."/></div>
-          <div class="form-group"><label class="field-label">Модель</label><select class="input" id="key-model"></select></div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn primary" onclick="saveKey()">Сохранить ключ</button>
-            <button class="btn danger" id="remove-key-btn" onclick="removeKey()" style="display:none">Удалить ключ</button>
-          </div>
-          <div id="key-result"></div>
-        </div>
-        <div style="margin-top:14px;padding:12px 14px;background:var(--bg3);border-radius:var(--rad);font-size:12px;color:var(--text3);line-height:1.8;border:.5px solid var(--border)">
-          <div style="font-weight:600;color:var(--text2);margin-bottom:6px">Где взять ключ</div>
-          AITunnel (РФ): <span style="color:var(--text2)">aitunnel.ru → Купить доступ</span><br>
-          Claude: <span style="color:var(--text2)">console.anthropic.com → API Keys</span><br>
-          OpenAI: <span style="color:var(--text2)">platform.openai.com → API Keys</span><br>
-          Gemini: <span style="color:var(--text2)">aistudio.google.com → Get API key</span><br>
-          Mistral: <span style="color:var(--text2)">console.mistral.ai → API Keys</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Custom Narrators -->
-    <div class="settings-sec collapsed" id="set-narrators">
-      <div class="settings-sec-hdr" onclick="toggleSec(this)"><span class="sec-icon">🪶</span><span class="sec-title">Мои нарраторы</span><span class="sec-badge" id="narrators-badge">0 / 4</span><span class="sec-arrow">▾</span></div>
-      <div class="settings-sec-body">
-        <p style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6">Создайте собственные стили повествования. Они появятся при выборе нарратора в настройках игры. Лимит: 4 нарратора.</p>
-        <div id="custom-narrators-list" style="margin-bottom:12px"></div>
-        <div id="narrator-form" style="background:var(--bg3);border:.5px solid var(--border);border-radius:var(--rad);padding:14px;display:flex;flex-direction:column;gap:10px">
-          <div class="form-group"><label class="field-label">Название нарратора</label><input class="input" id="nar-name" placeholder="Мой стиль..."/></div>
-          <div class="form-group"><label class="field-label">Описание стиля (инструкция для нейросети)</label><textarea class="input" id="nar-desc" rows="3" placeholder="Повествуй в стиле Говарда Лавкрафта — мрачно, атмосферно, с нагнетанием ужаса..."></textarea></div>
-          <button class="btn primary btn-sm" onclick="saveCustomNarrator()" style="align-self:flex-start">Сохранить нарратора</button>
-          <div id="nar-err" class="field-error"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Custom Game Systems -->
-    <div class="settings-sec collapsed" id="set-systems">
-      <div class="settings-sec-hdr" onclick="toggleSec(this)"><span class="sec-icon">📜</span><span class="sec-title">Мои игровые системы</span><span class="sec-badge" id="systems-badge">0 / 4</span><span class="sec-arrow">▾</span></div>
-      <div class="settings-sec-body">
-        <p style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6">Создайте собственные правила и механики. Лимит: 4 системы.</p>
-        <div id="custom-systems-list" style="margin-bottom:12px"></div>
-        <div style="background:var(--bg3);border:.5px solid var(--border);border-radius:var(--rad);padding:14px;display:flex;flex-direction:column;gap:10px">
-          <div class="form-group"><label class="field-label">Название системы</label><input class="input" id="sys-name" placeholder="Моя система..."/></div>
-          <div class="form-group"><label class="field-label">Правила (инструкция для нейросети)</label><textarea class="input" id="sys-desc" rows="3" placeholder="Используй систему очков судьбы: каждые 3 хода игрок может потратить 1 очко судьбы чтобы изменить исход..."></textarea></div>
-          <div class="form-group"><label class="field-label">Механики системы — включи нужные</label>
-            <div style="display:flex;flex-wrap:wrap;gap:6px" id="sys-mech-tags">
-              <button class="tag" data-m="dice" onclick="this.classList.toggle('on')">🎲 Кубики</button>
-              <button class="tag" data-m="hp" onclick="this.classList.toggle('on')">❤ HP</button>
-              <button class="tag" data-m="stats" onclick="this.classList.toggle('on')">💪 Характеристики</button>
-              <button class="tag" data-m="levels" onclick="this.classList.toggle('on')">⬆ Уровни</button>
-              <button class="tag" data-m="ac" onclick="this.classList.toggle('on')">🛡 КБ</button>
-              <button class="tag" data-m="hunger" onclick="this.classList.toggle('on')">🍖 Голод</button>
-              <button class="tag" data-m="thirst" onclick="this.classList.toggle('on')">💧 Жажда</button>
-              <button class="tag" data-m="fatigue" onclick="this.classList.toggle('on')">😴 Усталость</button>
-              <button class="tag" data-m="sanity" onclick="this.classList.toggle('on')">🧠 Рассудок</button>
-              <button class="tag" data-m="reputation" onclick="this.classList.toggle('on')">⭐ Репутация</button>
-              <button class="tag" data-m="mana" onclick="this.classList.toggle('on')">🔮 Мана</button>
-              <button class="tag" data-m="infection" onclick="this.classList.toggle('on')">🦠 Заражение</button>
-              <button class="tag" data-m="luck" onclick="this.classList.toggle('on')">🍀 Удача</button>
-              <button class="tag" data-m="heat" onclick="this.classList.toggle('on')">🔥 Розыск</button>
-            </div>
-          </div>
-          <button class="btn primary btn-sm" onclick="saveCustomSystem()" style="align-self:flex-start">Сохранить систему</button>
-          <div id="sys-err" class="field-error"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Themes -->
-    <div class="settings-sec collapsed" id="set-themes">
-      <div class="settings-sec-hdr" onclick="toggleSec(this)"><span class="sec-icon">🎨</span><span class="sec-title">Темы оформления</span><span class="sec-badge" id="themes-badge">0 / 3 своих</span><span class="sec-arrow">▾</span></div>
-      <div class="settings-sec-body">
-        <div class="themes-grid" id="theme-cards-grid"></div>
-        <div id="custom-themes-list" style="margin-bottom:12px"></div>
-        <div id="custom-theme-form" class="custom-theme-area">
-          <div style="font-weight:600;font-size:13px;color:var(--text);margin-bottom:12px">Создать свою тему</div>
-          <div class="color-row"><label>Название</label><input class="input" id="ct-name" placeholder="Моя тема..." style="flex:2;min-height:32px;padding:6px 10px;font-size:13px"/></div>
-          <div class="color-row"><label>Фон основной</label><input type="color" id="ct-bg" value="#1c1208"/></div>
-          <div class="color-row"><label>Фон карточек</label><input type="color" id="ct-bg2" value="#251a0a"/></div>
-          <div class="color-row"><label>Основной текст</label><input type="color" id="ct-text" value="#e8d9a8"/></div>
-          <div class="color-row"><label>Цвет акцента</label><input type="color" id="ct-ac" value="#d4a830"/></div>
-          <div class="color-row"><label>Цвет границ</label><input type="color" id="ct-border" value="#c8a03c"/></div>
-          <button class="btn primary btn-sm" style="margin-top:6px" onclick="saveCustomTheme()">Создать тему</button>
-          <div id="theme-err" class="field-error"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Progress / Achievements -->
-    <div class="settings-sec collapsed" id="set-progress">
-      <div class="settings-sec-hdr" onclick="toggleSec(this)"><span class="sec-icon">🏆</span><span class="sec-title">Прогресс и достижения</span><span class="sec-arrow">▾</span></div>
-      <div class="settings-sec-body">
-        <div id="progress-body" style="display:flex;flex-direction:column;gap:14px">
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px" id="progress-stats"></div>
-          <div><div style="font-weight:600;font-size:13px;color:var(--text);margin-bottom:8px">Достижения</div><div id="achievements-grid" style="display:flex;flex-direction:column;gap:5px"></div></div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- ══════════ CREATE GAME PAGE ══════════ -->
-<div id="create-page" class="page">
-  <div class="topbar">
-    <div class="topbar-logo" onclick="showMenu()">Artist Quest</div>
-    <div class="topbar-group"><span style="font-size:13px;font-weight:600;color:var(--text2);padding:0 8px">Новое приключение</span></div>
-    <div class="topbar-group right"><button class="tb-btn" onclick="showMenu()">✕ Отмена</button></div>
-  </div>
-  <div style="flex:1;overflow-y:auto">
-    <div class="create-body">
-      <!-- Steps -->
-      <div class="wizard-steps" id="wizard-steps">
-        <div class="wizard-step active" onclick="goStep(0)"><span class="wizard-step-num">1</span>Сценарий</div>
-        <div class="wizard-step" onclick="goStep(1)"><span class="wizard-step-num">2</span>Мир</div>
-        <div class="wizard-step" onclick="goStep(2)"><span class="wizard-step-num">3</span>Режим</div>
-        <div class="wizard-step" onclick="goStep(3)"><span class="wizard-step-num">4</span>Герои</div>
-        <div class="wizard-step" onclick="goStep(4)" style="border-color:var(--ac);background:rgba(212,168,48,.06)"><span class="wizard-step-num" style="background:var(--ac);border-color:var(--ac);color:var(--bg)">5</span><span style="color:var(--ac)">Нейросеть</span></div>
-      </div>
-
-      <!-- Step 0: Scenarios -->
-      <div class="wizard-section active" id="step-0">
-        <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
-          <div style="font-size:14px;font-weight:600;color:var(--text)">Выберите сценарий или начните с пустого мира</div>
-        </div>
-        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-          <button class="btn btn-sm" onclick="selectPreset(null)">✦ Пустой мир</button>
-          <button class="btn info btn-sm" onclick="generateWorldAI()">🤖 Сгенерировать ИИ</button>
-        </div>
-        <div class="preset-grid" id="preset-grid"></div>
-      </div>
-
-      <!-- Step 1: World -->
-      <div class="wizard-section" id="step-1">
-        <div class="form-group"><label class="field-label">Название мира *</label><input class="input" id="wn" placeholder="Эрмиллион, Пустота, Земля-2189..."/></div>
-        <div class="form-group"><label class="field-label">Описание вселенной</label><textarea class="input" id="wd" rows="5" placeholder="Законы мира, магия или технологии, история, угрозы, культура..."></textarea></div>
-        <div class="form-group">
-          <label class="field-label">Жанр и атмосфера</label>
-          <div class="tag-row" id="genre-tags">
-            <button class="tag" onclick="this.classList.toggle('on')">Тёмное фэнтези</button>
-            <button class="tag" onclick="this.classList.toggle('on')">Высокое фэнтези</button>
-            <button class="tag" onclick="this.classList.toggle('on')">Sci-Fi</button>
-            <button class="tag" onclick="this.classList.toggle('on')">Постапок</button>
-            <button class="tag" onclick="this.classList.toggle('on')">Хоррор</button>
-            <button class="tag" onclick="this.classList.toggle('on')">Стимпанк</button>
-            <button class="tag" onclick="this.classList.toggle('on')">Нуар</button>
-            <button class="tag" onclick="this.classList.toggle('on')">Исторический</button>
-            <button class="tag" onclick="this.classList.toggle('on')">Мифология</button>
-            <button class="tag" onclick="this.classList.toggle('on')">Современность</button>
-            <button class="tag" onclick="this.classList.toggle('on')">Киберпанк</button>
-          </div>
-          <div style="display:flex;gap:6px;margin-top:7px"><input class="input" id="cg" placeholder="Свой жанр..." style="flex:1"/><button class="btn btn-sm" onclick="addCG()">+ Добавить</button></div>
-        </div>
-        <div class="form-group"><label class="field-label">Начальная сцена</label><textarea class="input" id="ws" rows="3" placeholder="С чего начинается история..."></textarea></div>
-        <div class="form-group"><label class="field-label">NPC и фракции мира</label><textarea class="input" id="np" rows="2" placeholder="Важные персонажи, организации..."></textarea></div>
-      </div>
-
-      <!-- Step 2: Characters -->
-      <div class="wizard-section" id="step-3">
-        <div class="form-group">
-          <label class="field-label">Режим игры</label>
-          <div class="grid2">
-            <div class="mc sel" onclick="selMC(this,'mode')" data-v="game"><div class="mc-title">Приключение <span class="hint-ic" data-tip="Классическая игра: твои действия меняют мир и имеют последствия. Нарратор реагирует на выборы, ведёт сюжет к развязке. Баланс действия, диалогов и исследования.">?</span></div><div class="mc-desc">Действия имеют последствия</div></div>
-            <div class="mc" onclick="selMC(this,'mode')" data-v="story"><div class="mc-title">История <span class="hint-ic" data-tip="Упор на повествование и драму. Нарратор ведёт более литературный, насыщенный рассказ, как в романе. Меньше игровой механики, больше атмосферы и характеров.">?</span></div><div class="mc-desc">Совместное творчество</div></div>
-            <div class="mc" onclick="selMC(this,'mode')" data-v="chat"><div class="mc-title">Диалоги <span class="hint-ic" data-tip="Фокус на общении с персонажами. Нарратор отыгрывает NPC живо и подробно, реплики и характеры выходят на первый план. Хорошо для ролевого отыгрыша и социальных историй.">?</span></div><div class="mc-desc">Воплощение NPC</div></div>
-            <div class="mc" onclick="selMC(this,'mode')" data-v="sim"><div class="mc-title">Симуляция <span class="hint-ic" data-tip="Живой мир, который существует сам по себе. NPC действуют по своим целям, события происходят независимо от тебя. Песочница, где ты — часть большого мира, а не его центр.">?</span></div><div class="mc-desc">Мир развивается сам</div></div>
-          </div>
+          <div class="grid2" id="format-cards"></div>
         </div>
         <div class="form-group">
           <label class="field-label">Игровая система</label>
@@ -1116,26 +843,9 @@ to{transform:scale(1.12)}}
           <button type="button" class="fine-tune-toggle" id="fine-tune-toggle" onclick="toggleFineTune()">⚙ Тонкая настройка механик ▾</button>
           <div id="mech-fine-tune" style="display:none"></div>
           <!-- D&D механики (показывается при выборе D&D) -->
-          <div id="dnd-mechanics" style="display:none;margin-top:10px;padding:12px;background:var(--bg3);border-radius:var(--rad);border:.5px solid var(--border)">
-            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">Механики D&D — выключи ненужные:</div>
-            <div style="display:flex;flex-wrap:wrap;gap:6px">
-              <button class="tag on" data-mech="dice" onclick="this.classList.toggle('on');renderSetupChars()">🎲 Броски кубиков</button>
-              <button class="tag on" data-mech="hp" onclick="this.classList.toggle('on');renderSetupChars()">❤ HP и урон</button>
-              <button class="tag on" data-mech="stats" onclick="this.classList.toggle('on');renderSetupChars()">💪 Характеристики</button>
-              <button class="tag on" data-mech="levels" onclick="this.classList.toggle('on');renderSetupChars()">⬆ Уровни и XP</button>
-              <button class="tag on" data-mech="ac" onclick="this.classList.toggle('on');renderSetupChars()">🛡 Класс брони</button>
-            </div>
-          </div>
+          
           <!-- Выживание (показывается при выборе Выживания) -->
-          <div id="survival-info" style="display:none;margin-top:10px;padding:12px;background:var(--bg3);border-radius:var(--rad);border:.5px solid var(--border)">
-            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">Шкалы выживания — выключи ненужные (можно оставить одну):</div>
-            <div style="display:flex;flex-wrap:wrap;gap:6px">
-              <button class="tag on" data-surv="hunger" onclick="this.classList.toggle('on')">🍖 Голод</button>
-              <button class="tag on" data-surv="thirst" onclick="this.classList.toggle('on')">💧 Жажда</button>
-              <button class="tag on" data-surv="fatigue" onclick="this.classList.toggle('on')">😴 Усталость</button>
-              <button class="tag on" data-surv="hp" onclick="this.classList.toggle('on')">❤ HP</button>
-            </div>
-          </div>
+          
         </div>
         <input type="hidden" id="cr" value=""/>
         <div style="padding:9px 12px;background:var(--bg3);border-radius:var(--rad);font-size:12px;color:var(--text3);border:.5px solid var(--border);line-height:1.5">💡 Свою систему правил можно создать в <b style="color:var(--text2)">Настройках → Мои игровые системы</b> — она появится здесь как карточка.</div>
@@ -1549,20 +1259,35 @@ let G={worldName:'',worldDesc:'',genres:[],worldStart:'',chars:[],activeChar:0,c
 
 // ── Шаблоны сеттинга: выставляют дефолтные механики ──
 var SETTING_TEMPLATES = {
-  roleplay: {name:'Чистый отыгрыш', icon:'🎭', desc:'Только повествование и выборы, без чисел и кубиков',
+  roleplay: {name:'Чистый отыгрыш', icon:'🎭', desc:'Только история, без чисел',
+    tip:'Никаких кубиков и характеристик. Чистое повествование, где важны только твои решения и отыгрыш. Нейросеть награждает предметами за находки и описывает последствия выборов. Идеально для новичков и любителей историй.',
+    genres:['Фэнтези','Приключения'],
     mech:{inventory:true, skills:true, traits:true}},
-  dnd: {name:'Приключение D&D', icon:'⚔', desc:'Кубики, характеристики, HP, броня, уровни — классические правила',
+  dnd: {name:'Приключение D&D', icon:'⚔', desc:'Кубики, характеристики, бой',
+    tip:'Классические правила D&D 5e: броски d20 при проверках, характеристики, HP, класс брони, уровни и опыт. Тактический бой с числами. Любую механику можно отключить в тонкой настройке.',
+    genres:['Высокое фэнтези','Приключения'],
     mech:{dice:true, stats:true, hp:true, ac:true, levels:true, inventory:true, skills:true, traits:true}},
-  survival: {name:'Выживание', icon:'🏕', desc:'Голод, жажда, усталость, здоровье — борьба за жизнь',
+  survival: {name:'Выживание', icon:'🏕', desc:'Голод, жажда, борьба за жизнь',
+    tip:'Нарратор отслеживает шкалы голода, жажды, усталости и здоровья. Они снижаются со временем — нужно искать ресурсы и отдых. Суровая атмосфера борьбы за жизнь.',
+    genres:['Выживание','Постапок'],
     mech:{hp:true, hunger:true, thirst:true, fatigue:true, inventory:true, skills:true, traits:true}},
-  detective: {name:'Расследование', icon:'🔍', desc:'Улики, допросы, дедукция — без кубиков',
+  detective: {name:'Расследование', icon:'🔍', desc:'Улики, допросы, дедукция',
+    tip:'Ведёшь расследование: собираешь улики в журнал, допрашиваешь подозреваемых, ищешь противоречия. Нарратор подбрасывает зацепки и ложные следы, но разгадку не раскрывает — до неё нужно дойти самому.',
+    genres:['Детектив','Нуар'],
     mech:{clues:true, reputation:true, npcRelations:true, inventory:true, skills:true, traits:true}}
 };
 function applyTemplate(tplId){
-  // Сброс всех механик в false, кроме inventory
   Object.keys(G.mechanics).forEach(function(k){G.mechanics[k]=false;});
   var tpl=SETTING_TEMPLATES[tplId];
-  if(tpl){Object.keys(tpl.mech).forEach(function(k){G.mechanics[k]=tpl.mech[k];});}
+  if(tpl){
+    Object.keys(tpl.mech).forEach(function(k){G.mechanics[k]=tpl.mech[k];});
+    // Выставить жанры по умолчанию
+    if(tpl.genres){
+      document.querySelectorAll('#genre-tags .tag').forEach(function(t){
+        t.classList.toggle('on', tpl.genres.indexOf(t.textContent.trim())>=0);
+      });
+    }
+  }
   G.settingTemplate=tplId;
 }
 // Метаданные всех механик: подпись, иконка, группа, краткая и полная подсказка
@@ -2059,8 +1784,8 @@ function renderFormatCards(){
     var f=FORMAT_DEFS[fid];var on=G.format===fid;
     var d=document.createElement('div');
     d.className='mc fmt-card'+(on?' sel':'');
-    d.innerHTML='<div class="mc-title">'+f.icon+' '+f.name+' <span class="hint-ic" data-tip="'+f.tipShort+'">?</span></div>'
-      +'<div class="mc-desc">'+f.tipLong+'</div>';
+    d.innerHTML='<div class="mc-title">'+f.icon+' '+f.name+' <span class="hint-ic" data-tip="'+f.tipLong.replace(/"/g,'&quot;')+'">?</span></div>'
+      +'<div class="mc-desc">'+f.tipShort+'</div>';
     d.onclick=function(){G.format=fid;renderFormatCards();};
     c.appendChild(d);
   });
@@ -2071,8 +1796,8 @@ function renderVoiceCards(){
     var v=VOICE_DEFS[vid];var on=G.voice===vid;
     var d=document.createElement('div');
     d.className='mc voice-card'+(on?' sel':'');
-    d.innerHTML='<div class="mc-title">'+v.icon+' '+v.name+' <span class="hint-ic" data-tip="'+v.tipShort+'">?</span></div>'
-      +'<div class="mc-desc">'+v.tipLong+'</div>';
+    d.innerHTML='<div class="mc-title">'+v.icon+' '+v.name+' <span class="hint-ic" data-tip="'+v.tipLong.replace(/"/g,'&quot;')+'">?</span></div>'
+      +'<div class="mc-desc">'+v.tipShort+'</div>';
     d.onclick=function(){G.voice=vid;renderVoiceCards();};
     c.appendChild(d);
   });
@@ -2085,7 +1810,7 @@ function renderSettingTemplates(){
     var on=G.settingTemplate===tid;
     var d=document.createElement('div');
     d.className='mc setting-card'+(on?' sel':'');
-    d.innerHTML='<div class="mc-title">'+t.icon+' '+t.name+'</div><div class="mc-desc">'+t.desc+'</div>';
+    d.innerHTML='<div class="mc-title">'+t.icon+' '+t.name+(t.tip?' <span class="hint-ic" data-tip="'+t.tip.replace(/"/g,'&quot;')+'">?</span>':'')+'</div><div class="mc-desc">'+t.desc+'</div>';
     d.onclick=function(){applyTemplate(tid);renderSettingTemplates();renderMechFineTune();renderFormatCards();renderVoiceCards();if(typeof renderSetupChars==='function')renderSetupChars();};
     c.appendChild(d);
   });
