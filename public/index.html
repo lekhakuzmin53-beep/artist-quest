@@ -534,7 +534,7 @@ to{transform:scale(1.12)}}
 .char-check{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:4px;border:.5px solid var(--border3);font-size:9px;color:var(--bg);background:transparent;vertical-align:middle;transition:all .15s}
 .char-check.on{background:var(--ac);border-color:var(--ac)}
 body.no-hints .hint-ic{display:none}
-.hint-ic{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:var(--bg3);border:.5px solid var(--border2);color:var(--text3);font-size:10px;font-weight:700;cursor:help;position:relative;vertical-align:middle;margin-left:3px;transition:all .15s}
+
 .hint-ic:hover{background:var(--ac);color:var(--bg);border-color:var(--ac)}
 .hint-ic:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);width:230px;background:var(--bg2);border:.5px solid var(--ac);border-radius:8px;padding:9px 11px;font-size:11px;font-weight:400;line-height:1.5;color:var(--text2);text-align:left;z-index:9999;box-shadow:0 6px 24px rgba(0,0,0,.5);white-space:normal;pointer-events:none}
 .hint-ic:hover::before{content:'';position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--ac);z-index:9999}
@@ -550,6 +550,18 @@ body.no-hints .hint-ic{display:none}
 .im-btn.on{background:var(--bg3);border-color:var(--ac);color:var(--ac)}
 .im-btn:active{transform:scale(.97)}
 .im-hint{font-size:11px;color:var(--text3);padding:0 2px 6px;line-height:1.4;min-height:14px}
+.setting-card{cursor:pointer}
+.fine-tune-toggle{margin-top:10px;width:100%;padding:9px;background:var(--bg3);border:.5px solid var(--border2);border-radius:var(--rad);color:var(--text2);cursor:pointer;font-size:13px;font-weight:500;transition:all .15s}
+.fine-tune-toggle:hover{border-color:var(--ac);color:var(--ac)}
+.mech-group{margin-top:14px}
+.mech-group-title{font-size:12px;font-weight:600;color:var(--ac);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;padding-bottom:4px;border-bottom:.5px solid var(--border)}
+.mech-row{padding:7px 0;border-bottom:.5px solid var(--border)}
+.mech-row:last-child{border-bottom:none}
+.mech-row-head{display:flex;align-items:center}
+.mech-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;width:100%}
+.mech-toggle input{width:16px;height:16px;accent-color:var(--ac);cursor:pointer;flex-shrink:0}
+.mech-label{font-size:13px;color:var(--text);font-weight:500}
+.mech-tiplong{font-size:11px;color:var(--text3);line-height:1.5;margin-top:3px;margin-left:24px}
 /* ─── STAT BUTTONS (единый стиль, реагирует на тему) ─── */
 .stat-pm{width:22px;height:22px;border-radius:5px;border:.5px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;font-size:13px;font-weight:600;line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:0;transition:all .12s;flex-shrink:0}
 .stat-pm:hover{border-color:var(--ac);color:var(--ac);background:var(--bg3)}
@@ -834,6 +846,262 @@ to{transform:scale(1.12)}}
       <div class="wizard-section" id="step-3">
         <div class="form-group">
           <label class="field-label">Режим игры</label>
+          <div class="grid2" id="format-cards"></div></div>
+    <div id="menu-guest">
+      <div class="menu-actions">
+        <div class="menu-item featured" onclick="openAuth('login')"><div class="menu-item-icon">⚔</div><div class="menu-item-body"><div class="menu-item-title">Начать приключение</div><div class="menu-item-desc">Вход или регистрация</div></div><div class="menu-item-arrow">→</div></div>
+      </div>
+      <div class="menu-bottom"><div class="theme-section-title">Оформление</div><div class="theme-dots" id="theme-dots-guest"></div></div>
+    </div>
+    <div id="menu-user" style="display:none">
+      <div class="menu-actions">
+        <div class="menu-item featured" onclick="showPage('create-page');initCreatePage()"><div class="menu-item-icon">⚔</div><div class="menu-item-body"><div class="menu-item-title">Новое приключение</div><div class="menu-item-desc">Создать новый мир и историю</div></div><div class="menu-item-arrow">→</div></div>
+        <div class="menu-item" onclick="openSaves()"><div class="menu-item-icon">📖</div><div class="menu-item-body"><div class="menu-item-title">Продолжить</div><div class="menu-item-desc">Загрузить сохранённую игру</div></div><div class="menu-item-arrow">→</div></div>
+        <div class="menu-item" onclick="showPage('settings-page');loadSettingsData()"><div class="menu-item-icon">⚙</div><div class="menu-item-body"><div class="menu-item-title">Настройки</div><div class="menu-item-desc">Нейросети, ключи, темы, нарраторы</div></div><div class="menu-item-arrow">→</div></div>
+      </div>
+      <div class="menu-bottom">
+        <div class="menu-user-row"><div style="font-size:12px;color:var(--text3)">Путник:</div><div class="menu-user-name" id="menu-uname">—</div><button class="menu-logout" onclick="doLogout()">Выйти</button></div>
+        <div><div class="theme-section-title" style="margin-bottom:8px">Оформление</div><div class="theme-dots" id="theme-dots-user"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ AUTH ══════════ -->
+<div class="auth-overlay" id="auth-overlay">
+  <div class="auth-card">
+    <div class="auth-logo">Artist Quest</div>
+    <div class="auth-tagline">Добро пожаловать, путник</div>
+    <div class="auth-tabs"><button class="auth-tab on" onclick="switchAuthTab('login')">Войти</button><button class="auth-tab" onclick="switchAuthTab('register')">Регистрация</button></div>
+    <div id="login-form" class="auth-form">
+      <div class="form-group"><label class="field-label">Email</label><input class="input" id="l-email" type="email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+      <div class="form-group"><label class="field-label">Пароль</label><input class="input" id="l-pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+      <div id="l-err" class="field-error"></div>
+      <button class="btn primary full" onclick="doLogin()">Войти →</button>
+      <button class="btn ghost full" onclick="closeAuth()">Отмена</button>
+    </div>
+    <div id="reg-form" class="auth-form hidden">
+      <div class="form-group"><label class="field-label">Имя путника</label><input class="input" id="r-name" type="text" placeholder="Арвин Тёмный"/></div>
+      <div class="form-group"><label class="field-label">Email</label><input class="input" id="r-email" type="email" placeholder="your@email.com"/></div>
+      <div class="form-group"><label class="field-label">Пароль (мин. 6 символов)</label><input class="input" id="r-pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doRegister()"/></div>
+      <div id="r-err" class="field-error"></div>
+      <button class="btn primary full" onclick="doRegister()">Создать аккаунт →</button>
+      <button class="btn ghost full" onclick="closeAuth()">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SETTINGS PAGE ══════════ -->
+<div id="settings-page" class="page">
+  <div class="topbar">
+    <div class="topbar-logo" onclick="showMenu()">Artist Quest</div>
+    <div class="topbar-group">
+      <button class="tb-btn" id="back-to-game-btn" onclick="backToGame()" style="display:none">← Вернуться в игру</button>
+      <button class="tb-btn" onclick="showMenu()">← В меню</button>
+    </div>
+  </div>
+  <div class="settings-body">
+
+    <!-- General -->
+    <div class="settings-sec" id="set-general">
+      <div class="settings-sec-hdr" onclick="toggleSec(this)"><span class="sec-icon">⚙</span><span class="sec-title">Общие настройки</span><span class="sec-arrow">▾</span></div>
+      <div class="settings-sec-body">
+        <div class="form-group" style="margin-bottom:14px">
+          <label class="field-label">Объём ответов нарратора (по умолчанию)</label>
+          <div class="slider-row"><span style="font-size:12px;color:var(--text3)">Кратко</span><input type="range" min="1" max="5" value="3" id="global-det" oninput="el('global-dv').textContent=detLabels[this.value-1]"/><span style="font-size:12px;color:var(--text3)">Эпично</span><span class="slider-val" id="global-dv">Среднее</span></div>
+        </div>
+        <div class="form-group" style="margin-bottom:14px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:500;color:var(--text)">Подсказки и обучение</div>
+              <div style="font-size:12px;color:var(--text3);margin-top:2px">Значки «?» с пояснениями и обучающие уведомления</div>
+            </div>
+            <label class="switch"><input type="checkbox" id="global-hints" onchange="toggleHints(this.checked)"/><span class="switch-track"><span class="switch-thumb"></span></span></label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="field-label">Язык нарратора по умолчанию</label>
+          <div style="display:flex;gap:8px"><button class="tag on" id="lang-ru" onclick="setGlobalLang('ru')">🇷🇺 Русский</button><button class="tag" id="lang-en" onclick="setGlobalLang('en')">🇬🇧 English</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Keys -->
+    <div class="settings-sec" id="set-keys">
+      <div class="settings-sec-hdr" onclick="toggleSec(this)"><span class="sec-icon">🔑</span><span class="sec-title">Мои нейросети</span><span class="sec-badge" id="keys-badge"></span><span class="sec-arrow">▾</span></div>
+      <div class="settings-sec-body">
+        <p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.6">Добавьте ключ любой нейросети — запросы пойдут через ваш аккаунт, баланс токенов не тратится.</p>
+        <div class="provider-grid" id="provider-cards"></div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="form-group"><label class="field-label">Провайдер</label>
+            <select class="input" id="key-provider" onchange="updateModelList()">
+              <option value="aitunnel">AITunnel (РФ) — sk-aitunnel-...</option>
+              <option value="claude">Claude (Anthropic) — sk-ant-...</option>
+              <option value="openai">OpenAI (GPT) — sk-...</option>
+              <option value="gemini">Google Gemini — AIza...</option>
+              <option value="mistral">Mistral AI</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="field-label">API ключ</label><input class="input" id="key-input" type="password" placeholder="Вставьте ключ сюда..."/></div>
+          <div class="form-group"><label class="field-label">Модель</label><select class="input" id="key-model"></select></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn primary" onclick="saveKey()">Сохранить ключ</button>
+            <button class="btn danger" id="remove-key-btn" onclick="removeKey()" style="display:none">Удалить ключ</button>
+          </div>
+          <div id="key-result"></div>
+        </div>
+        <div style="margin-top:14px;padding:12px 14px;background:var(--bg3);border-radius:var(--rad);font-size:12px;color:var(--text3);line-height:1.8;border:.5px solid var(--border)">
+          <div style="font-weight:600;color:var(--text2);margin-bottom:6px">Где взять ключ</div>
+          AITunnel (РФ): <span style="color:var(--text2)">aitunnel.ru → Купить доступ</span><br>
+          Claude: <span style="color:var(--text2)">console.anthropic.com → API Keys</span><br>
+          OpenAI: <span style="color:var(--text2)">platform.openai.com → API Keys</span><br>
+          Gemini: <span style="color:var(--text2)">aistudio.google.com → Get API key</span><br>
+          Mistral: <span style="color:var(--text2)">console.mistral.ai → API Keys</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Narrators -->
+    <div class="settings-sec collapsed" id="set-narrators">
+      <div class="settings-sec-hdr" onclick="toggleSec(this)"><span class="sec-icon">🪶</span><span class="sec-title">Мои нарраторы</span><span class="sec-badge" id="narrators-badge">0 / 4</span><span class="sec-arrow">▾</span></div>
+      <div class="settings-sec-body">
+        <p style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6">Создайте собственные стили повествования. Они появятся при выборе нарратора в настройках игры. Лимит: 4 нарратора.</p>
+        <div id="custom-narrators-list" style="margin-bottom:12px"></div>
+        <div id="narrator-form" style="background:var(--bg3);border:.5px solid var(--border);border-radius:var(--rad);padding:14px;display:flex;flex-direction:column;gap:10px">
+          <div class="form-group"><label class="field-label">Название нарратора</label><input class="input" id="nar-name" placeholder="Мой стиль..."/></div>
+          <div class="form-group"><label class="field-label">Описание стиля (инструкция для нейросети)</label><textarea class="input" id="nar-desc" rows="3" placeholder="Повествуй в стиле Говарда Лавкрафта — мрачно, атмосферно, с нагнетанием ужаса..."></textarea></div>
+          <button class="btn primary btn-sm" onclick="saveCustomNarrator()" style="align-self:flex-start">Сохранить нарратора</button>
+          <div id="nar-err" class="field-error"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Game Systems -->
+    <div class="settings-sec collapsed" id="set-systems">
+      <div class="settings-sec-hdr" onclick="toggleSec(this)"><span class="sec-icon">📜</span><span class="sec-title">Мои игровые системы</span><span class="sec-badge" id="systems-badge">0 / 4</span><span class="sec-arrow">▾</span></div>
+      <div class="settings-sec-body">
+        <p style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6">Создайте собственные правила и механики. Лимит: 4 системы.</p>
+        <div id="custom-systems-list" style="margin-bottom:12px"></div>
+        <div style="background:var(--bg3);border:.5px solid var(--border);border-radius:var(--rad);padding:14px;display:flex;flex-direction:column;gap:10px">
+          <div class="form-group"><label class="field-label">Название системы</label><input class="input" id="sys-name" placeholder="Моя система..."/></div>
+          <div class="form-group"><label class="field-label">Правила (инструкция для нейросети)</label><textarea class="input" id="sys-desc" rows="3" placeholder="Используй систему очков судьбы: каждые 3 хода игрок может потратить 1 очко судьбы чтобы изменить исход..."></textarea></div>
+          <div class="form-group"><label class="field-label">Механики системы — включи нужные</label>
+            <div style="display:flex;flex-wrap:wrap;gap:6px" id="sys-mech-tags">
+              <button class="tag" data-m="dice" onclick="this.classList.toggle('on')">🎲 Кубики</button>
+              <button class="tag" data-m="hp" onclick="this.classList.toggle('on')">❤ HP</button>
+              <button class="tag" data-m="stats" onclick="this.classList.toggle('on')">💪 Характеристики</button>
+              <button class="tag" data-m="levels" onclick="this.classList.toggle('on')">⬆ Уровни</button>
+              <button class="tag" data-m="ac" onclick="this.classList.toggle('on')">🛡 КБ</button>
+              <button class="tag" data-m="hunger" onclick="this.classList.toggle('on')">🍖 Голод</button>
+              <button class="tag" data-m="thirst" onclick="this.classList.toggle('on')">💧 Жажда</button>
+              <button class="tag" data-m="fatigue" onclick="this.classList.toggle('on')">😴 Усталость</button>
+              <button class="tag" data-m="sanity" onclick="this.classList.toggle('on')">🧠 Рассудок</button>
+              <button class="tag" data-m="reputation" onclick="this.classList.toggle('on')">⭐ Репутация</button>
+              <button class="tag" data-m="mana" onclick="this.classList.toggle('on')">🔮 Мана</button>
+              <button class="tag" data-m="infection" onclick="this.classList.toggle('on')">🦠 Заражение</button>
+              <button class="tag" data-m="luck" onclick="this.classList.toggle('on')">🍀 Удача</button>
+              <button class="tag" data-m="heat" onclick="this.classList.toggle('on')">🔥 Розыск</button>
+            </div>
+          </div>
+          <button class="btn primary btn-sm" onclick="saveCustomSystem()" style="align-self:flex-start">Сохранить систему</button>
+          <div id="sys-err" class="field-error"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Themes -->
+    <div class="settings-sec collapsed" id="set-themes">
+      <div class="settings-sec-hdr" onclick="toggleSec(this)"><span class="sec-icon">🎨</span><span class="sec-title">Темы оформления</span><span class="sec-badge" id="themes-badge">0 / 3 своих</span><span class="sec-arrow">▾</span></div>
+      <div class="settings-sec-body">
+        <div class="themes-grid" id="theme-cards-grid"></div>
+        <div id="custom-themes-list" style="margin-bottom:12px"></div>
+        <div id="custom-theme-form" class="custom-theme-area">
+          <div style="font-weight:600;font-size:13px;color:var(--text);margin-bottom:12px">Создать свою тему</div>
+          <div class="color-row"><label>Название</label><input class="input" id="ct-name" placeholder="Моя тема..." style="flex:2;min-height:32px;padding:6px 10px;font-size:13px"/></div>
+          <div class="color-row"><label>Фон основной</label><input type="color" id="ct-bg" value="#1c1208"/></div>
+          <div class="color-row"><label>Фон карточек</label><input type="color" id="ct-bg2" value="#251a0a"/></div>
+          <div class="color-row"><label>Основной текст</label><input type="color" id="ct-text" value="#e8d9a8"/></div>
+          <div class="color-row"><label>Цвет акцента</label><input type="color" id="ct-ac" value="#d4a830"/></div>
+          <div class="color-row"><label>Цвет границ</label><input type="color" id="ct-border" value="#c8a03c"/></div>
+          <button class="btn primary btn-sm" style="margin-top:6px" onclick="saveCustomTheme()">Создать тему</button>
+          <div id="theme-err" class="field-error"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress / Achievements -->
+    <div class="settings-sec collapsed" id="set-progress">
+      <div class="settings-sec-hdr" onclick="toggleSec(this)"><span class="sec-icon">🏆</span><span class="sec-title">Прогресс и достижения</span><span class="sec-arrow">▾</span></div>
+      <div class="settings-sec-body">
+        <div id="progress-body" style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px" id="progress-stats"></div>
+          <div><div style="font-weight:600;font-size:13px;color:var(--text);margin-bottom:8px">Достижения</div><div id="achievements-grid" style="display:flex;flex-direction:column;gap:5px"></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════ CREATE GAME PAGE ══════════ -->
+<div id="create-page" class="page">
+  <div class="topbar">
+    <div class="topbar-logo" onclick="showMenu()">Artist Quest</div>
+    <div class="topbar-group"><span style="font-size:13px;font-weight:600;color:var(--text2);padding:0 8px">Новое приключение</span></div>
+    <div class="topbar-group right"><button class="tb-btn" onclick="showMenu()">✕ Отмена</button></div>
+  </div>
+  <div style="flex:1;overflow-y:auto">
+    <div class="create-body">
+      <!-- Steps -->
+      <div class="wizard-steps" id="wizard-steps">
+        <div class="wizard-step active" onclick="goStep(0)"><span class="wizard-step-num">1</span>Сценарий</div>
+        <div class="wizard-step" onclick="goStep(1)"><span class="wizard-step-num">2</span>Мир</div>
+        <div class="wizard-step" onclick="goStep(2)"><span class="wizard-step-num">3</span>Режим</div>
+        <div class="wizard-step" onclick="goStep(3)"><span class="wizard-step-num">4</span>Герои</div>
+        <div class="wizard-step" onclick="goStep(4)" style="border-color:var(--ac);background:rgba(212,168,48,.06)"><span class="wizard-step-num" style="background:var(--ac);border-color:var(--ac);color:var(--bg)">5</span><span style="color:var(--ac)">Нейросеть</span></div>
+      </div>
+
+      <!-- Step 0: Scenarios -->
+      <div class="wizard-section active" id="step-0">
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+          <div style="font-size:14px;font-weight:600;color:var(--text)">Выберите сценарий или начните с пустого мира</div>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+          <button class="btn btn-sm" onclick="selectPreset(null)">✦ Пустой мир</button>
+          <button class="btn info btn-sm" onclick="generateWorldAI()">🤖 Сгенерировать ИИ</button>
+        </div>
+        <div class="preset-grid" id="preset-grid"></div>
+      </div>
+
+      <!-- Step 1: World -->
+      <div class="wizard-section" id="step-1">
+        <div class="form-group"><label class="field-label">Название мира *</label><input class="input" id="wn" placeholder="Эрмиллион, Пустота, Земля-2189..."/></div>
+        <div class="form-group"><label class="field-label">Описание вселенной</label><textarea class="input" id="wd" rows="5" placeholder="Законы мира, магия или технологии, история, угрозы, культура..."></textarea></div>
+        <div class="form-group">
+          <label class="field-label">Жанр и атмосфера</label>
+          <div class="tag-row" id="genre-tags">
+            <button class="tag" onclick="this.classList.toggle('on')">Тёмное фэнтези</button>
+            <button class="tag" onclick="this.classList.toggle('on')">Высокое фэнтези</button>
+            <button class="tag" onclick="this.classList.toggle('on')">Sci-Fi</button>
+            <button class="tag" onclick="this.classList.toggle('on')">Постапок</button>
+            <button class="tag" onclick="this.classList.toggle('on')">Хоррор</button>
+            <button class="tag" onclick="this.classList.toggle('on')">Стимпанк</button>
+            <button class="tag" onclick="this.classList.toggle('on')">Нуар</button>
+            <button class="tag" onclick="this.classList.toggle('on')">Исторический</button>
+            <button class="tag" onclick="this.classList.toggle('on')">Мифология</button>
+            <button class="tag" onclick="this.classList.toggle('on')">Современность</button>
+            <button class="tag" onclick="this.classList.toggle('on')">Киберпанк</button>
+          </div>
+          <div style="display:flex;gap:6px;margin-top:7px"><input class="input" id="cg" placeholder="Свой жанр..." style="flex:1"/><button class="btn btn-sm" onclick="addCG()">+ Добавить</button></div>
+        </div>
+        <div class="form-group"><label class="field-label">Начальная сцена</label><textarea class="input" id="ws" rows="3" placeholder="С чего начинается история..."></textarea></div>
+        <div class="form-group"><label class="field-label">NPC и фракции мира</label><textarea class="input" id="np" rows="2" placeholder="Важные персонажи, организации..."></textarea></div>
+      </div>
+
+      <!-- Step 2: Characters -->
+      <div class="wizard-section" id="step-3">
+        <div class="form-group">
+          <label class="field-label">Режим игры</label>
           <div class="grid2">
             <div class="mc sel" onclick="selMC(this,'mode')" data-v="game"><div class="mc-title">Приключение <span class="hint-ic" data-tip="Классическая игра: твои действия меняют мир и имеют последствия. Нарратор реагирует на выборы, ведёт сюжет к развязке. Баланс действия, диалогов и исследования.">?</span></div><div class="mc-desc">Действия имеют последствия</div></div>
             <div class="mc" onclick="selMC(this,'mode')" data-v="story"><div class="mc-title">История <span class="hint-ic" data-tip="Упор на повествование и драму. Нарратор ведёт более литературный, насыщенный рассказ, как в романе. Меньше игровой механики, больше атмосферы и характеров.">?</span></div><div class="mc-desc">Совместное творчество</div></div>
@@ -843,14 +1111,10 @@ to{transform:scale(1.12)}}
         </div>
         <div class="form-group">
           <label class="field-label">Игровая система</label>
-          <div class="grid2" id="rules-grid">
-            <div class="mc sel" onclick="selMC(this,'rules')" data-v="free"><div class="mc-title">Свободная <span class="hint-ic" data-tip="Нарратор сам решает, что получится у героя, без кубиков и жёстких правил. Награждает предметами за находки, описывает последствия выборов живо и непредсказуемо. Лучший выбор для чистого повествования и ролевой игры.">?</span></div><div class="mc-desc">Нарратор решает исходы</div></div>
-            <div class="mc" onclick="selMC(this,'rules')" data-v="dnd"><div class="mc-title">⚔ D&D <span class="hint-ic" data-tip="Классическая система D&D 5e. Нарратор просит броски кубика d20 при проверках навыков (учитывая характеристики героя), следит за HP, КБ и уровнями. Можно отключить отдельные механики ниже. Подходит для тактических приключений с числами.">?</span></div><div class="mc-desc">Кубики, проверки навыков</div></div>
-            <div class="mc" onclick="selMC(this,'rules')" data-v="survival"><div class="mc-title">Выживание <span class="hint-ic" data-tip="Нарратор отслеживает шкалы голода, жажды и усталости (0-100). Они снижаются со временем, и герою нужно искать еду, воду и отдых. Игнорируешь — последствия для здоровья. Атмосфера борьбы за жизнь.">?</span></div><div class="mc-desc">Ресурсы, голод, усталость</div></div>
-            <div class="mc" onclick="selMC(this,'rules')" data-v="detective"><div class="mc-title">🔍 Детектив <span class="hint-ic" data-tip="Нарратор ведёт расследование: подбрасывает улики, противоречия в показаниях, ложные следы. Найденные улики записываются в журнал. Разгадку не раскрывает — до правды нужно дойти дедукцией, допрашивая подозреваемых.">?</span></div><div class="mc-desc">Улики, допросы, дедукция</div></div>
-          </div>
-          <!-- Custom user systems appended here by JS -->
+          <div class="grid2" id="setting-templates"></div>
           <div id="custom-rules-systems" style="margin-top:8px;display:flex;flex-direction:column;gap:6px"></div>
+          <button type="button" class="fine-tune-toggle" id="fine-tune-toggle" onclick="toggleFineTune()">⚙ Тонкая настройка механик ▾</button>
+          <div id="mech-fine-tune" style="display:none"></div>
           <!-- D&D механики (показывается при выборе D&D) -->
           <div id="dnd-mechanics" style="display:none;margin-top:10px;padding:12px;background:var(--bg3);border-radius:var(--rad);border:.5px solid var(--border)">
             <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">Механики D&D — выключи ненужные:</div>
@@ -877,12 +1141,7 @@ to{transform:scale(1.12)}}
         <div style="padding:9px 12px;background:var(--bg3);border-radius:var(--rad);font-size:12px;color:var(--text3);border:.5px solid var(--border);line-height:1.5">💡 Свою систему правил можно создать в <b style="color:var(--text2)">Настройках → Мои игровые системы</b> — она появится здесь как карточка.</div>
         <div class="form-group">
           <label class="field-label">Стиль нарратора</label>
-          <div class="grid2" id="narrator-grid">
-            <div class="mc sel" onclick="selMC(this,'narratorStyle')" data-v="classic"><div class="mc-title">Литературный <span class="hint-ic" data-tip="Богатый, образный язык как в хорошем романе. Подробные описания, атмосфера, внимание к деталям. Нейросеть пишет красиво и погружает в мир.">?</span></div><div class="mc-desc">Богатый язык, атмосфера</div></div>
-            <div class="mc" onclick="selMC(this,'narratorStyle')" data-v="gm"><div class="mc-title">Мастер игры <span class="hint-ic" data-tip="Ведущий настольной игры: общается с тобой напрямую, добавляет юмор, иногда подсказывает варианты действий. Живая, игровая подача с лёгким налётом иронии.">?</span></div><div class="mc-desc">С юмором и подсказками</div></div>
-            <div class="mc" onclick="selMC(this,'narratorStyle')" data-v="cold"><div class="mc-title">Хроникёр <span class="hint-ic" data-tip="Сухой, сдержанный стиль без лишних украшений. Чёткие факты, минимум эмоций. Подходит для напряжённых, реалистичных историй — детектив, выживание, нуар.">?</span></div><div class="mc-desc">Сухо, по делу</div></div>
-            <div class="mc" onclick="selMC(this,'narratorStyle')" data-v="poet"><div class="mc-title">Поэт <span class="hint-ic" data-tip="Образный, метафоричный язык с поэтическими оборотами. Каждая сцена как стихотворение в прозе. Для лиричных, мечтательных и сюрреалистичных историй.">?</span></div><div class="mc-desc">Образно и метафорично</div></div>
-          </div>
+          <div class="grid2" id="voice-cards"></div>
           <!-- Custom user narrators appended here -->
           <div id="custom-narrator-pick" style="margin-top:8px;display:flex;flex-direction:column;gap:6px"></div>
         </div>
@@ -1166,65 +1425,115 @@ const QA_DEFAULTS=[{text:'Осматриваюсь вокруг',cat:'examine'},
 
 // Preset scenarios — always fixed
 const PRESETS=[
-  {id:'shadows',name:'Тени Могильника',system:'dnd',icon:'💀',genre:['Тёмное фэнтези','Хоррор'],
-   desc:'Королевство Валдрас умирает. Некромант Морак овладел Кровавой Литанией — ритуалом, что удерживает мёртвых в мире живых: они помнят свои жизни и потому особенно опасны. Церковь Света слала охотников десятками — вернулись единицы, и те поседевшие. Деревни пустеют, кладбища пустеют ещё быстрее. Говорят, в сердце Могильника бьётся чёрное сердце, и пока оно бьётся — мёртвые не лягут.',
-   worldStart:'Вы приходите в себя среди трупов на поле у деревни Горький Брод — не помня, как здесь оказались. Алый свет пульсирует в тумане за деревней, в такт чьему-то сердцу. Рядом стонет раненый — седая женщина в облачении жрицы пытается подняться, опираясь на светящийся посох.',
-   npcs:'Морак Бледный — некромант, держит Кровавую Литанию, прячется в склепе под церковью. Жрица Алва — выжившая охотница, знает обряд упокоения, но ранена. Дух стражника Кеара — помнит тайный ход в склеп, торгуется за упокоение своей души. Староста Виг — прячет жителей в амбаре, не доверяет чужакам.',
-   chars:[{name:'Арвин',cls:'Воин',desc:'Бывший стражник королевской гвардии, изгнанный за то, что отказался казнить невиновных. Ищет искупления.',appearance:'Высокий, широкоплечий, шрам через всю щёку, на месте герба на груди — содранная нашивка',armor:'medium',stats:{STR:15,DEX:13,CON:14,INT:10,WIS:12,CHA:8},
-     skills:[{name:'Фехтование',desc:'Мастерское владение мечом: можно делать рискованные приёмы, парировать, обезоруживать'},{name:'Боевой опыт',desc:'Чутьё на засады и опасность — замечает то, что выдаёт врага заранее'},{name:'Выживание',desc:'Ориентируется в дикой местности, находит еду и укрытие, читает следы'}],
-     charTraits:[{name:'Верен слову',desc:'Дав обещание, не отступит — даже во вред себе'},{name:'Не терпит несправедливости',desc:'Вступится за слабого, даже против превосходящих сил'},{name:'Боится предать снова',desc:'Прошлое давит: в моменты выбора колеблется, когда на кону чужие жизни'}],
-     items:[{name:'Длинный меч',icon:'⚔',desc:'Надёжный гвардейский клинок, чуть зазубрен в боях'},{name:'Кольчуга',icon:'🛡',desc:'Средняя броня, видела лучшие дни, но держит удар'},{name:'Походный мешок',icon:'🎒',desc:'Трут, фляга, вяленое мясо на три дня, моток верёвки'}]}],
-   narratorStyle:'gm',mode:'game'},
+  {id:'shadows',name:'Тени Могильника',icon:'💀',genre:['Тёмное фэнтези','Хоррор'],
+   format:'adventure',voice:'gm',mech:{dice:true,stats:true,hp:true,ac:true,levels:true,inventory:true,skills:true,traits:true},
+   desc:'Королевство Валдрас умирает. Некромант Морак овладел Кровавой Литанией — мёртвые встают, помня свои жизни, и оттого особенно опасны. Церковь Света слала охотников десятками — вернулись единицы. В сердце Могильника бьётся чёрное сердце, и пока оно бьётся — мёртвые не лягут.',
+   worldStart:'Вы приходите в себя среди трупов на поле у деревни Горький Брод, не помня, как здесь оказались. Алый свет пульсирует в тумане за деревней, в такт чьему-то сердцу. Рядом стонет раненая седая женщина в облачении жрицы, опираясь на светящийся посох.',
+   npcs:'Морак Бледный — некромант, держит ритуал, прячется в склепе под церковью. Жрица Алва — раненая охотница, знает обряд упокоения. Дух стражника Кеара — помнит тайный ход, торгуется за упокоение. Староста Виг — прячет жителей, не доверяет чужакам.',
+   chars:[{name:'Арвин',cls:'Воин',desc:'Бывший гвардеец, изгнанный за отказ казнить невиновных. Ищет искупления.',appearance:'Высокий, широкоплечий, шрам через всю щёку, на груди содранная нашивка',armor:'medium',stats:{STR:15,DEX:13,CON:14,INT:10,WIS:12,CHA:8},
+     skills:[{name:'Фехтование',desc:'Мастерское владение мечом: рискованные приёмы, парирование, обезоруживание'},{name:'Боевой опыт',desc:'Чутьё на засады и опасность'},{name:'Выживание',desc:'Ориентируется в глуши, читает следы'}],
+     charTraits:[{name:'Верен слову',desc:'Дав обещание, не отступит'},{name:'Защитник',desc:'Вступится за слабого против любых сил'},{name:'Груз прошлого',desc:'Колеблется, когда на кону чужие жизни'}],
+     items:[{name:'Длинный меч',icon:'⚔',desc:'Надёжный гвардейский клинок'},{name:'Кольчуга',icon:'🛡',desc:'Средняя броня, видела бои'},{name:'Походный мешок',icon:'🎒',desc:'Трут, фляга, вяленое мясо, верёвка'}]}]},
 
-  {id:'dnd_forgotten',name:'Забытые Королевства',system:'dnd',icon:'🏰',genre:['Высокое фэнтези','Мифология'],
-   desc:'Фаэрун — классический мир мечей и магии. Врата Балдура балансируют на грани: культ Драконицы Бездны вербует отчаявшихся, обещая спасение в конце мира, что сами же и приближают. Арфисты — тайное общество защитников — теряют агентов одного за другим. В тавернах шепчут о звезде, что упала на востоке, и о том, кто посмеет к ней пойти.',
-   worldStart:'Таверна «Расплёсканный щит» гудит от голосов. К вашему столу подходит человек в дорожном плаще, кладёт запечатанный конверт со знаком арфы и лютни — печатью Арфистов — и тихо говорит: «Эльминстер сказал, ты не откажешь. Открой, когда останешься один». И растворяется в толпе.',
-   npcs:'Эльминстер — древний маг-арфист, говорит загадками, но всегда по делу. Леди Альда — связная Арфистов в городе, проверяет новичков. Жрец культа Бездны под личиной торговца — вербует и следит. Капитан стражи Зорн — подкуплен культом, но сам того не знает.',
-   chars:[{name:'Адрен',cls:'Следопыт',desc:'Полуэльф из Цитадели Стрел. Брат пропал, отправившись к упавшей звезде. Идёт по его следу.',appearance:'Стройный, острые эльфийские уши, пронзительные зелёные глаза, собранные в хвост тёмные волосы',armor:'light',stats:{STR:12,DEX:15,CON:13,INT:10,WIS:14,CHA:8},
-     skills:[{name:'Стрельба из лука',desc:'Бьёт без промаха на расстоянии, может целить в уязвимые места'},{name:'Следопытство',desc:'Читает следы, определяет давность и количество прошедших, не теряется в глуши'},{name:'Бой двумя клинками',desc:'В ближнем бою сражается парой коротких мечей, быстрые серии ударов'},{name:'Природная магия',desc:'Слабые друидские чары: говорит с животными, чует магию, заживляет лёгкие раны'}],
-     charTraits:[{name:'Наблюдателен',desc:'Замечает детали, что упускают другие — фальшь, скрытую дверь, чужую ложь'},{name:'Осторожен',desc:'Предпочитает разведку лобовой атаке, готовит пути отхода'},{name:'Не доверяет людям',desc:'Эльфийская кровь и горький опыт: к людям относится с холодком'}],
-     items:[{name:'Длинный лук',icon:'🏹',desc:'Эльфийской работы, дальнобойный, колчан на 20 стрел'},{name:'Два коротких меча',icon:'⚔',desc:'Парные клинки для ближнего боя'},{name:'Кожаный доспех',icon:'🛡',desc:'Лёгкая броня, не стесняет движений'},{name:'Сигнальный рог',icon:'📯',desc:'Зов слышен за лигу — на крайний случай'}]}],
-   narratorStyle:'gm',mode:'game'},
+  {id:'forgotten',name:'Забытые Королевства',icon:'🏰',genre:['Высокое фэнтези'],
+   format:'adventure',voice:'gm',mech:{dice:true,stats:true,hp:true,ac:true,levels:true,inventory:true,skills:true,traits:true},
+   desc:'Классический мир мечей и магии. Врата Балдура на грани: культ Драконицы Бездны вербует отчаявшихся, обещая спасение в конце мира, что сами приближают. Арфисты теряют агентов. На востоке упала звезда, и кто-то должен к ней пойти.',
+   worldStart:'Таверна «Расплёсканный щит» гудит от голосов. К вашему столу подходит человек в плаще, кладёт конверт с печатью арфы и лютни и тихо говорит: «Эльминстер сказал, ты не откажешь. Открой, когда останешься один». И растворяется в толпе.',
+   npcs:'Эльминстер — древний маг-арфист, говорит загадками. Леди Альда — связная Арфистов, проверяет новичков. Жрец Бездны под личиной торговца — вербует и следит. Капитан Зорн — подкуплен культом, сам того не зная.',
+   chars:[{name:'Адрен',cls:'Следопыт',desc:'Полуэльф из Цитадели Стрел. Брат пропал у упавшей звезды. Идёт по следу.',appearance:'Стройный, острые эльфийские уши, зелёные глаза, тёмные волосы в хвосте',armor:'light',stats:{STR:12,DEX:15,CON:13,INT:10,WIS:14,CHA:8},
+     skills:[{name:'Стрельба из лука',desc:'Бьёт без промаха на расстоянии, целит в уязвимые места'},{name:'Следопытство',desc:'Читает следы, не теряется в глуши'},{name:'Бой двумя клинками',desc:'Быстрые серии ударов парой мечей'},{name:'Природная магия',desc:'Говорит с животными, чует магию, лечит лёгкие раны'}],
+     charTraits:[{name:'Наблюдателен',desc:'Замечает скрытое — фальшь, дверь, ложь'},{name:'Осторожен',desc:'Разведка вместо лобовой атаки'},{name:'Сдержан с людьми',desc:'К людям относится с холодком'}],
+     items:[{name:'Длинный лук',icon:'🏹',desc:'Эльфийский, дальнобойный, 20 стрел'},{name:'Два коротких меча',icon:'⚔',desc:'Парные клинки'},{name:'Кожаный доспех',icon:'🛡',desc:'Лёгкая броня'},{name:'Сигнальный рог',icon:'📯',desc:'Зов слышен за лигу'}]}]},
 
-  {id:'witcher',name:'Мир Ведьмака',system:'free',icon:'⚔',genre:['Тёмное фэнтези'],
-   desc:'Континент жесток и несправедлив. Люди вытесняют старшие расы, костры пылают для «нелюдей», а чудовища всё равно жрут скот и детей по ночам. Ведьмаки — мутанты-охотники, отвергнутые теми, кого защищают. За работу платят скупо и плюют вслед. Война с Нильфгаардом катится с юга, и в её тени монстры плодятся быстрее, чем ведьмаки успевают их класть.',
-   worldStart:'Деревня Брокилонский Брод встречает вас грязью и косыми взглядами. Ночью кто-то задрал трёх овец и батрака — то, что осталось, лежит под рогожей. Староста мнётся у ворот с тощим кошелём: «Ведьмак, говорят? Разберись с тварью. Только дёшево — мы люди небогатые».',
-   npcs:'Староста Фьорн — скуп, торгуется за каждый грош, что-то недоговаривает о пропавших раньше. Знахарка Лешка — знает повадки тварей и местные легенды, но просит услугу взамен. Стражник Петрок — ненавидит ведьмаков, мешает из принципа. Вдова батрака — видела ночью то, о чём боится сказать при старосте.',
-   chars:[{name:'Геральт',cls:'Ведьмак',desc:'Мутант школы Волка, прошедший Испытание Травами. Циник с кодексом: за деньги убивает чудовищ, но детей не трогает и невиновных не сдаёт.',appearance:'Седые волосы до плеч, кошачьи жёлтые глаза мутанта, паутина старых шрамов на лице и руках',armor:'light',stats:{STR:14,DEX:15,CON:14,INT:12,WIS:13,CHA:10},
-     skills:[{name:'Ведьмачьи знаки',desc:'Аард (телекинетический толчок), Игни (струя огня), Квен (защитный щит), Аксий (внушение), Ирден (магическая ловушка)'},{name:'Алхимия',desc:'Варит эликсиры и масла против конкретных тварей, бомбы; знает яды и противоядия'},{name:'Два меча',desc:'Стальной — против людей и зверей, серебряный — против чудовищ. Танцующий стиль боя'},{name:'Ведьмачье чутьё',desc:'Обострённые чувства: видит следы, чует кровь и магию, идёт по запаху'}],
-     charTraits:[{name:'Циничный профессионал',desc:'Не строит иллюзий о людях, но работу делает на совесть'},{name:'Кодекс ведьмака',desc:'Деньги важны, но есть черта: дети и невиновные — неприкосновенны'},{name:'Нейтралитет',desc:'Старается не лезть в политику и чужие войны — выходит редко'}],
-     items:[{name:'Стальной меч',icon:'⚔',desc:'Против людей, зверей и нежити из плоти'},{name:'Серебряный меч',icon:'🗡',desc:'Против чудовищ — упырей, утопцев, оборотней'},{name:'Доспех ведьмака',icon:'🛡',desc:'Лёгкая броня усиленной кожи, не сковывает в бою'},{name:'Набор алхимика',icon:'⚗',desc:'Колбы, ингредиенты, три готовых эликсира и две бомбы'}]}],
-   narratorStyle:'cold',mode:'game'},
+  {id:'eldoria',name:'Сказания Эльдории',icon:'🗡',genre:['Фэнтези'],
+   format:'novel',voice:'classic',mech:{stats:true,hp:true,inventory:true,skills:true,traits:true},
+   desc:'Светлое фэнтези без сухих правил и кубиков. Королевство Эльдория цветёт, но древнее зло пробуждается в забытых руинах. Здесь важны характер героя и его умения, а не броски костей — история течёт как роман, где каждый выбор имеет вес.',
+   worldStart:'Утренний туман стелется над трактом к городу Сребродол. Вы — странствующий герой, и на перекрёстке вас ждёт запыхавшийся гонец: «Слава богам, путник! Староста сулит золото тому, кто узнает, отчего по ночам светятся Старые Руины».',
+   npcs:'Староста Бертран — встревожен, щедр на награду. Травница Ивелин — знает легенды о Руинах, просит об услуге. Странствующий бард Лук — собирает слухи, весел и болтлив. Тёмная фигура в руинах — наблюдает за пришедшими.',
+   chars:[{name:'Лиара',cls:'Искательница приключений',desc:'Выросла в деревне у руин, с детства мечтала о приключениях. Ловка и любопытна.',appearance:'Рыжие волосы, веснушки, дорожный плащ, живой взгляд',stats:{STR:11,DEX:14,CON:12,INT:13,WIS:12,CHA:13},
+     skills:[{name:'Ловкость рук',desc:'Замки, карманы, ловушки — всё поддаётся её пальцам'},{name:'Знание легенд',desc:'Помнит сказания и приметы древних мест'},{name:'Меткий бросок',desc:'Метает ножи и камни точно в цель'}],
+     charTraits:[{name:'Любопытство',desc:'Не пройдёт мимо тайны'},{name:'Доброе сердце',desc:'Помогает попавшим в беду'},{name:'Упрямство',desc:'Раз решив, идёт до конца'}],
+     items:[{name:'Короткий меч',icon:'⚔',desc:'Лёгкий, удобный клинок'},{name:'Набор отмычек',icon:'🗝',desc:'Для упрямых замков'},{name:'Фонарь',icon:'🏮',desc:'Освещает тёмные руины'}]}]},
 
-  {id:'taiga',name:'Мёртвая Тайга',system:'survival',icon:'🌲',genre:['Постапок'],
-   desc:'Ваш самолёт рухнул в сибирской тайге в разгар зимы. До ближайшего жилья — сотни километров глухого леса. Ночью минус тридцать, днём чуть теплее. Связь молчит, поисковики если и ищут, то не здесь. Из живых после крушения — только вы. Из припасов — то, что успели выхватить из горящего фюзеляжа. А ещё в этом лесу вы не одни: волки уже взяли след, и они терпеливы.',
-   worldStart:'Снег скрипит под ногами, обломки фюзеляжа дымятся за спиной. Час до заката. На вас лётная куртка, в руках — нож и наполовину собранный рюкзак. Холод уже находит щели в одежде, а из глубины леса доносится протяжный вой — и ему отвечают с другой стороны.',
-   npcs:'Старый охотник Игнат — живёт в зимовье где-то на востоке, если до него дойти; нелюдим, но не бросит в беде. Волчья стая — идёт по следу, проверяет вас на слабость. Эфир рации — изредка ловит обрывки чужих переговоров, источник неясен. Замёрзшая заимка — кто-то был здесь до вас и не ушёл.',
-   chars:[{name:'Сергей',cls:'Пилот',desc:'Пилот малой авиации, налетал тысячи часов над тайгой — но впервые оказался внутри неё. Дома ждёт дочь.',appearance:'Лётная куртка на меху, обмороженные щёки, твёрдый взгляд человека, привыкшего решать',stats:{STR:12,DEX:11,CON:13,INT:13,WIS:12,CHA:10},
-     skills:[{name:'Ориентирование',desc:'Читает местность по солнцу, мху и звёздам, не ходит кругами'},{name:'Ремонт техники',desc:'Чинит механизмы из подручного, может оживить рацию или мотор'},{name:'Первая помощь',desc:'Обработает рану, остановит кровь, распознает обморожение и переохлаждение'},{name:'Холодная голова',desc:'Не паникует в кризис, принимает решения быстро и трезво'}],
-     charTraits:[{name:'Не сдаётся',desc:'Чем хуже ситуация, тем упрямее цепляется за жизнь'},{name:'Считает ресурсы',desc:'Рационален до мелочей: бережёт каждую спичку и каждую калорию'},{name:'Говорит сам с собой',desc:'Чтобы не сойти с ума в одиночестве, проговаривает план вслух'}],
-     items:[{name:'Охотничий нож',icon:'🔪',desc:'Прочный, незаменимый: разделать дичь, настрогать щепу, защититься'},{name:'Зажигалка',icon:'🔥',desc:'Газа примерно на десяток розжигов — на вес золота'},{name:'Аптечка',icon:'🩹',desc:'Бинт, жгут, обезболивающее, антисептик'},{name:'Сигнальная ракета',icon:'🧨',desc:'Две штуки. Один выстрел — один шанс быть замеченным'},{name:'Фляга',icon:'🍶',desc:'Пустая. Воду придётся топить из снега'}]}],
-   narratorStyle:'cold',mode:'game'},
+  {id:'witcher',name:'Мир Ведьмака',icon:'⚔',genre:['Тёмное фэнтези'],
+   format:'adventure',voice:'cold',mech:{dice:true,stats:true,hp:true,ac:true,infection:true,inventory:true,skills:true,traits:true},
+   desc:'Континент жесток. Люди вытесняют старшие расы, костры пылают для «нелюдей», а монстры всё равно жрут скот и детей. Ведьмаки — мутанты-охотники, отвергнутые теми, кого защищают. Война с Нильфгаардом катится с юга, и в её тени твари плодятся быстрее, чем их кладут.',
+   worldStart:'Деревня Брокилонский Брод встречает грязью и косыми взглядами. Ночью кто-то задрал трёх овец и батрака. Староста мнётся у ворот с тощим кошелём: «Ведьмак, говорят? Разберись с тварью. Только дёшево — мы люди небогатые».',
+   npcs:'Староста Фьорн — скуп, торгуется, что-то недоговаривает. Знахарка Лешка — знает повадки тварей, просит услугу. Стражник Петрок — ненавидит ведьмаков, мешает. Вдова батрака — видела ночью то, о чём боится сказать.',
+   chars:[{name:'Геральт',cls:'Ведьмак',desc:'Мутант школы Волка. Циник с кодексом: убивает чудовищ за деньги, но детей не трогает.',appearance:'Седые волосы до плеч, кошачьи жёлтые глаза, паутина шрамов',armor:'light',stats:{STR:14,DEX:15,CON:14,INT:12,WIS:13,CHA:10},
+     skills:[{name:'Ведьмачьи знаки',desc:'Аард (толчок), Игни (огонь), Квен (щит), Аксий (внушение), Ирден (ловушка)'},{name:'Алхимия',desc:'Эликсиры и масла против тварей, бомбы, яды'},{name:'Два меча',desc:'Стальной против людей, серебряный против чудовищ'},{name:'Ведьмачье чутьё',desc:'Видит следы, чует кровь и магию'}],
+     charTraits:[{name:'Циничный профессионал',desc:'Без иллюзий о людях, но работу делает честно'},{name:'Кодекс',desc:'Дети и невиновные неприкосновенны'},{name:'Нейтралитет',desc:'Старается не лезть в чужие войны'}],
+     items:[{name:'Стальной меч',icon:'⚔',desc:'Против людей и зверей'},{name:'Серебряный меч',icon:'🗡',desc:'Против чудовищ'},{name:'Доспех ведьмака',icon:'🛡',desc:'Лёгкая усиленная кожа'},{name:'Набор алхимика',icon:'⚗',desc:'Колбы, ингредиенты, эликсиры, бомбы'}]}]},
 
-  {id:'noir',name:'Дело о Полуночи',system:'detective',icon:'🔍',genre:['Нуар'],
-   desc:'Город, что никогда не признаётся в своих грехах. Дочь судьи Гаррисона найдена мёртвой в номере отеля «Полночь» — полиция за сутки закрыла дело как самоубийство и явно торопилась. Мать погибшей не верит ни единому слову и платит вам втрое против обычного. У каждого свидетеля железное алиби. Но алиби — как лёд по весне: надавишь в нужном месте, и пойдут трещины.',
-   worldStart:'Дождь барабанит по стеклу вашей конторы третий час кряду. Женщина в чёрном кладёт на стол толстый конверт и фотографию молодой девушки с грустными глазами: «Мою дочь убили, детектив. Полиции я не верю — они слишком быстро всё закрыли. Найдите того, кто это сделал. Деньги не вопрос».',
-   npcs:'Судья Гаррисон — отец погибшей, неестественно спокоен для убитого горем; что-то скрывает. Портье Лу — видел в ту ночь всех входящих, но рот открывает за деньги или из страха. Певица Вера — была с погибшей в баре отеля незадолго до смерти, нервничает. Детектив Коул — закрыл дело, торопился, на вопросы реагирует агрессивно.',
-   chars:[{name:'Джек Морроу',cls:'Частный детектив',desc:'Бывший коп, ушёл из полиции, когда заставили закрыть дело, которое закрывать было нельзя. С тех пор работает на себя и не берёт грязных денег.',appearance:'Помятый плащ, трёхдневная щетина, усталые серые глаза, что подмечают каждую мелочь',stats:{STR:11,DEX:12,CON:11,INT:15,WIS:14,CHA:13},
-     skills:[{name:'Дедукция',desc:'Складывает разрозненные улики в картину, замечает несостыковки в показаниях'},{name:'Допрос',desc:'Чувствует ложь, давит на болевые точки, развязывает языки'},{name:'Слежка',desc:'Ходит незаметно, читает по поведению, не теряет объект в толпе'},{name:'Меткий стрелок',desc:'С револьвером на «ты», но предпочитает решать дела головой'}],
-     charTraits:[{name:'Не берёт грязных денег',desc:'Принципы дороже гонорара — взятку не возьмёт даже в тупике'},{name:'Доводит до конца',desc:'Вцепившись в дело, не бросит, пока не дойдёт до правды'},{name:'Не верит полиции',desc:'Знает систему изнутри и знает, как легко она прогибается'}],
-     items:[{name:'Револьвер .38',icon:'🔫',desc:'Старый служебный, шесть патронов, на крайний случай'},{name:'Блокнот',icon:'📓',desc:'Записи, наброски схем, имена и противоречия'},{name:'Фотоаппарат',icon:'📷',desc:'Карманный, для улик и слежки'},{name:'Фляжка',icon:'🥃',desc:'Виски. Развязывает чужие языки и греет в дождь'}]}],
-   narratorStyle:'cold',mode:'game'},
+  {id:'taiga',name:'Мёртвая Тайга',icon:'🌲',genre:['Постапокалипсис','Выживание'],
+   format:'adventure',voice:'cold',mech:{hp:true,hunger:true,thirst:true,fatigue:true,inventory:true,skills:true,traits:true},
+   desc:'Ваш самолёт рухнул в сибирской тайге зимой. До жилья сотни километров глухого леса. Ночью минус тридцать. Связь молчит. Из живых — только вы. Из припасов — то, что выхватили из горящего фюзеляжа. А ещё волки уже взяли след.',
+   worldStart:'Снег скрипит под ногами, обломки дымятся за спиной. Час до заката. На вас лётная куртка, в руках нож и полусобранный рюкзак. Холод находит щели в одежде, а из глубины леса доносится протяжный вой — и ему отвечают с другой стороны.',
+   npcs:'Охотник Игнат — живёт в зимовье на востоке, нелюдим, но не бросит в беде. Волчья стая — идёт по следу, проверяет на слабость. Рация — ловит обрывки чужих переговоров. Замёрзшая заимка — кто-то был здесь до вас.',
+   chars:[{name:'Сергей',cls:'Пилот',desc:'Налетал тысячи часов над тайгой, но впервые оказался внутри неё. Дома ждёт дочь.',appearance:'Лётная куртка на меху, обмороженные щёки, твёрдый взгляд',stats:{STR:12,DEX:11,CON:13,INT:13,WIS:12,CHA:10},
+     skills:[{name:'Ориентирование',desc:'Читает местность, не ходит кругами'},{name:'Ремонт техники',desc:'Чинит из подручного, оживит рацию или мотор'},{name:'Первая помощь',desc:'Обработает рану, распознает обморожение'},{name:'Холодная голова',desc:'Не паникует, решает быстро и трезво'}],
+     charTraits:[{name:'Не сдаётся',desc:'Чем хуже, тем упрямее цепляется за жизнь'},{name:'Считает ресурсы',desc:'Бережёт каждую спичку и калорию'},{name:'Говорит сам с собой',desc:'Проговаривает план, чтобы не сойти с ума'}],
+     items:[{name:'Охотничий нож',icon:'🔪',desc:'Разделать дичь, настрогать щепу, защититься'},{name:'Зажигалка',icon:'🔥',desc:'Газа на десяток розжигов'},{name:'Аптечка',icon:'🩹',desc:'Бинт, жгут, обезболивающее'},{name:'Сигнальная ракета',icon:'🧨',desc:'Две штуки, один шанс быть замеченным'}]}]},
 
-  {id:'cyberpunk',name:'Неоновый Город',system:'free',icon:'🌆',genre:['Киберпанк'],
-   desc:'Нео-Шанхай, 2087. Мегакорпорации владеют всем — водой, воздухом, твоими воспоминаниями, если задолжал. Нейроимпланты обязательны для работы, а в трущобах Нижнего Уровня люди без аугментаций мрут молодыми под вечным кислотным дождём. Бегущие по тени — хакеры, курьеры, призраки сети — единственные, кто ещё свободен, потому что их официально не существует.',
-   worldStart:'Звонок в три часа ночи, незашифрованный — уже наглость. Искажённый голос в импланте: «Полста тысяч кредитов за одну работу. Без вопросов. Склад 7, Нижний Уровень, через час. Приходи один — и без хвоста, я проверю». Связь обрывается. За окном неон отражается в лужах, и где-то воет корпоративный дрон.',
-   npcs:'Заказчик с искажённым голосом — платит щедро, личность скрыта, мотивы темны. Инфоброкер Сяо — знает всё и всех, продаёт по двойному тарифу, верность — до следующего предложения. Корпоративный агент «Эшер» — холодный профессионал, идёт по вашему следу. Уличный док Мэй — латает тело и импланты в подсобке лапшичной, без вопросов.',
-   chars:[{name:'Ноль',cls:'Бегущий по тени',desc:'Спец по проникновению — и в системы, и в здания. Прошлое стёрто (может, добровольно), имени настоящего не помнит даже сам.',appearance:'Тёмная куртка с капюшоном, светящиеся биолюм-татуировки, нейроразъём за ухом, глаза с имплантами',stats:{STR:11,DEX:15,CON:12,INT:14,WIS:12,CHA:11},
-     skills:[{name:'Взлом систем',desc:'Проходит сквозь корпоративный лёд (ICE), вскрывает замки, перехватывает камеры и дронов'},{name:'Паркур',desc:'Двигается по вертикалям города, уходит от погони по крышам и вентиляции'},{name:'Социальная инженерия',desc:'Выдаёт себя за другого, разводит охрану, добывает доступ без единого выстрела'},{name:'Стрельба',desc:'Владеет пистолетом-пулемётом, но предпочитает уйти незамеченным'}],
-     charTraits:[{name:'Не оставляет следов',desc:'Профессиональная паранойя: чистит логи, меняет маршруты, не светит лицо'},{name:'Держит слово',desc:'Кто заплатил — того не сдаёт, репутация дороже разовой наживы'},{name:'Призрак системы',desc:'Официально не существует — ни досье, ни импланта-маяка, ни прошлого'}],
-     items:[{name:'Пистолет-пулемёт',icon:'🔫',desc:'Компактный, глушитель, два магазина'},{name:'Дека-взломщик',icon:'💻',desc:'Кастомная, для пробивания корпоративного ICE'},{name:'Стимуляторы',icon:'💉',desc:'Три дозы синтетика — ускоряют реакцию, но бьют по телу'},{name:'Оптический камуфляж',icon:'🌫',desc:'Одноразовая накидка: десять секунд почти полной невидимости'}]}],
-   narratorStyle:'classic',mode:'game'},
+  {id:'wasteland',name:'Пустошь',icon:'☢',genre:['Постапокалипсис'],
+   format:'adventure',voice:'cold',mech:{hp:true,hunger:true,thirst:true,infection:true,radiation:true,inventory:true,skills:true,traits:true},
+   desc:'Через сорок лет после Великой Вспышки мир — выжженная радиоактивная пустошь. Города стали руинами, населёнными мутантами и рейдерами. Вода на вес золота, чистая еда — роскошь. Ты выходишь из убежища впервые, и счётчик Гейгера уже трещит.',
+   worldStart:'Гермоворота Убежища 9 с лязгом закрываются за спиной — назад пути нет. Перед вами ржавая пустошь под бурым небом, вдалеке руины города. Счётчик Гейгера потрескивает, фляга наполовину пуста, а на горизонте поднимается столб пыли — кто-то едет.',
+   npcs:'Торговец Кратер — скупает хлам, продаёт воду втридорога. Банда Гремучих — рейдеры, метят territory. Доктор Соль — лечит лучевую болезнь в обмен на припасы. Голос из радио — зовёт выживших в некое «безопасное место».',
+   chars:[{name:'Вэл',cls:'Сталкер',desc:'Родился в Убежище, изучал старые карты пустоши. Вышел искать чистый источник воды для общины.',appearance:'Залатанный комбинезон, противогаз на поясе, обветренное лицо',stats:{STR:12,DEX:13,CON:14,INT:12,WIS:13,CHA:10},
+     skills:[{name:'Выживание в пустоши',desc:'Находит воду, еду, безопасный путь среди радиации'},{name:'Ремонт',desc:'Чинит оружие и снаряжение из хлама'},{name:'Стрельба',desc:'Метко бьёт из самодельного оружия'}],
+     charTraits:[{name:'Прагматик',desc:'Выживание важнее идеалов'},{name:'Защитник общины',desc:'Помнит, ради кого вышел'},{name:'Недоверчив',desc:'В пустоши доверие стоит жизни'}],
+     items:[{name:'Самопал',icon:'🔫',desc:'Самодельное ружьё, бьёт надёжно'},{name:'Счётчик Гейгера',icon:'📟',desc:'Трещит у источников радиации'},{name:'Противогаз',icon:'😷',desc:'Защита от пыли и спор'},{name:'Антирад',icon:'💉',desc:'Две дозы, снижает радиацию'},{name:'Фляга',icon:'🍶',desc:'Наполовину полна чистой воды'}]}]},
+
+  {id:'noir',name:'Дело о Полуночи',icon:'🔍',genre:['Нуар','Детектив'],
+   format:'dialogue',voice:'cold',mech:{reputation:true,inventory:true,skills:true,traits:true,clues:true,npcRelations:true},
+   desc:'Город, что не признаётся в грехах. Дочь судьи найдена мёртвой в отеле «Полночь» — полиция за сутки закрыла дело как самоубийство, слишком торопясь. Мать не верит и платит втрое. У всех алиби железные. Но алиби — как лёд по весне: надавишь в нужном месте, пойдут трещины.',
+   worldStart:'Дождь барабанит по стеклу конторы третий час. Женщина в чёрном кладёт на стол толстый конверт и фотографию девушки с грустными глазами: «Мою дочь убили, детектив. Полиции я не верю. Найдите того, кто это сделал. Деньги не вопрос».',
+   npcs:'Судья Гаррисон — отец погибшей, неестественно спокоен. Портье Лу — видел всех в ту ночь, говорит за деньги или из страха. Певица Вера — была с погибшей перед смертью, нервничает. Детектив Коул — закрыл дело, торопился, агрессивен.',
+   chars:[{name:'Джек Морроу',cls:'Частный детектив',desc:'Бывший коп, ушёл, когда заставили закрыть нужное дело. Не берёт грязных денег.',appearance:'Помятый плащ, трёхдневная щетина, усталые серые глаза',stats:{STR:11,DEX:12,CON:11,INT:15,WIS:14,CHA:13},
+     skills:[{name:'Дедукция',desc:'Складывает улики в картину, видит несостыковки'},{name:'Допрос',desc:'Чувствует ложь, давит на болевые точки'},{name:'Слежка',desc:'Ходит незаметно, не теряет объект'}],
+     charTraits:[{name:'Принципы',desc:'Не берёт грязных денег даже в тупике'},{name:'Упорство',desc:'Не бросит дело до правды'},{name:'Не верит полиции',desc:'Знает систему изнутри'}],
+     items:[{name:'Револьвер .38',icon:'🔫',desc:'Старый служебный, шесть патронов'},{name:'Блокнот',icon:'📓',desc:'Записи, схемы, противоречия'},{name:'Фляжка',icon:'🥃',desc:'Виски — развязывает языки, греет в дождь'}]}]},
+
+  {id:'deep',name:'Зов из Глубин',icon:'🐙',genre:['Хоррор','Лавкрафт'],
+   format:'novel',voice:'classic',mech:{sanity:true,inventory:true,skills:true,traits:true,clues:true},
+   desc:'Приморский городок Иннсмут-на-Туманах живёт рыбной ловлей и старыми тайнами. Вы приехали расследовать исчезновение коллеги-учёного, но местные молчат, а по ночам из моря доносится пение. Чем глубже копаешь, тем труднее сохранить рассудок перед тем, что не должно существовать.',
+   worldStart:'Дилижанс высаживает вас на промозглой пристани Иннсмута. Воняет тиной и рыбой. Местные провожают вас взглядами слишком больших, немигающих глаз. В кармане — последнее письмо коллеги: «Я нашёл это под церковью. Боже, лучше бы не находил».',
+   npcs:'Старик Зейдок — пьяница, знает страшную правду, говорит обрывками. Хозяин гостиницы Гилман — следит за вами, явно предупреждает «тех». Жрица Ордена Дагона — улыбчива и пугающа. Пропавший коллега — возможно, ещё жив. Или уже не вполне человек.',
+   chars:[{name:'Доктор Эмброуз',cls:'Учёный',desc:'Антрополог, приехал по следам исчезнувшего друга. Рациональный ум перед лицом иррационального.',appearance:'Очки, твидовый пиджак, нервные пальцы, бледное от бессонницы лицо',stats:{STR:9,DEX:11,CON:10,INT:15,WIS:13,CHA:12},
+     skills:[{name:'Эрудиция',desc:'Знает мифологию, языки, древние культы'},{name:'Наблюдательность',desc:'Замечает то, что другие отказываются видеть'},{name:'Хладнокровие',desc:'До поры держит рассудок перед ужасом'}],
+     charTraits:[{name:'Рационалист',desc:'Ищет логичное объяснение даже невозможному'},{name:'Одержим истиной',desc:'Должен узнать, что случилось с другом'},{name:'Хрупкая психика',desc:'Увиденное оставляет шрамы на рассудке'}],
+     items:[{name:'Револьвер',icon:'🔫',desc:'Скорее для храбрости, чем для дела'},{name:'Дневник',icon:'📔',desc:'Записи, зарисовки, обрывки переводов'},{name:'Письмо коллеги',icon:'✉',desc:'Последнее, полное страха'},{name:'Керосиновая лампа',icon:'🏮',desc:'Свет против наступающей тьмы'}]}]},
+
+  {id:'cyberpunk',name:'Неоновый Город',icon:'🌆',genre:['Киберпанк'],
+   format:'adventure',voice:'cinematic',mech:{hp:true,heat:true,inventory:true,skills:true,traits:true},
+   desc:'Нео-Шанхай, 2087. Мегакорпорации владеют всем — водой, воздухом, твоими воспоминаниями, если задолжал. Импланты обязательны для работы, а в трущобах люди без аугментаций мрут молодыми под кислотным дождём. Бегущие по тени — единственные свободные, потому что их официально не существует.',
+   worldStart:'Звонок в три ночи, незашифрованный — уже наглость. Искажённый голос в импланте: «Полста тысяч кредитов за работу. Без вопросов. Склад 7, Нижний Уровень, через час. Один, без хвоста — я проверю». Связь рвётся. Неон отражается в лужах, где-то воет корпоративный дрон.',
+   npcs:'Заказчик с искажённым голосом — платит щедро, мотивы темны. Инфоброкер Сяо — знает всё, продаёт по двойному тарифу. Агент «Эшер» — холодный профи, идёт по следу. Док Мэй — латает тело и импланты в подсобке лапшичной.',
+   chars:[{name:'Ноль',cls:'Бегущий по тени',desc:'Спец по проникновению — в системы и здания. Прошлое стёрто, имени не помнит даже сам.',appearance:'Тёмная куртка с капюшоном, биолюм-татуировки, нейроразъём за ухом, имплант-глаза',stats:{STR:11,DEX:15,CON:12,INT:14,WIS:12,CHA:11},
+     skills:[{name:'Взлом систем',desc:'Проходит сквозь корпоративный лёд, вскрывает замки, перехватывает дронов'},{name:'Паркур',desc:'Уходит по крышам и вентиляции'},{name:'Социальная инженерия',desc:'Выдаёт себя за другого, разводит охрану'}],
+     charTraits:[{name:'Не оставляет следов',desc:'Чистит логи, меняет маршруты'},{name:'Держит слово',desc:'Кто заплатил — того не сдаёт'},{name:'Призрак системы',desc:'Официально не существует'}],
+     items:[{name:'Пистолет-пулемёт',icon:'🔫',desc:'Компактный, с глушителем'},{name:'Дека-взломщик',icon:'💻',desc:'Кастомная, против корпоративного ICE'},{name:'Стимуляторы',icon:'💉',desc:'Три дозы, ускоряют реакцию'},{name:'Оптический камуфляж',icon:'🌫',desc:'Десять секунд невидимости'}]}]},
+
+  {id:'warhammer',name:'Warhammer 40000',icon:'⚙',genre:['Мрачное будущее','Гримдарк'],
+   format:'adventure',voice:'cold',mech:{dice:true,stats:true,hp:true,ac:true,sanity:true,infection:true,inventory:true,skills:true,traits:true},
+   desc:'41-е тысячелетие. Лишь война среди звёзд. Человечество — гниющая Империя триллиона миров, что молится трупу-Императору на Золотом Троне. Из варпа лезут демоны, чужаки грызут границы, а ересь прорастает изнутри. Нет мира. Нет надежды. Только долг и вечная битва.',
+   worldStart:'Сигнал тревоги воет в коридорах имперского крейсера «Меч Возмездия». Сервитор хрипит: «Обнаружено варп-вторжение в трюмном секторе. Всему персоналу — к оружию во имя Императора». Лас-винтовка тяжелеет в руках. За переборкой что-то скребётся, и воздух пахнет озоном и гнилью.',
+   npcs:'Комиссар Драгон — расстреляет за трусость, ведёт в бой. Техножрец Магос-7 — чинит технику молитвами и маслом, говорит на бинарике. Инквизитор Вейл — охотится на ересь, подозревает всех. Шёпот варпа — искушает обещаниями силы.',
+   chars:[{name:'Гвардеец Крон',cls:'Имперский гвардеец',desc:'Рядовой Кадианского полка. Видел ужасы, что сломали бы других. Держится верой и уставом.',appearance:'Потрёпанная флак-броня, выбритый висок, шрамы, упрямо сжатая челюсть',armor:'medium',stats:{STR:13,DEX:12,CON:14,INT:10,WIS:11,CHA:9},
+     skills:[{name:'Лас-винтовка',desc:'Уверенно бьёт очередями, бережёт заряд'},{name:'Дисциплина',desc:'Держит строй и рассудок под огнём'},{name:'Выживание на поле боя',desc:'Окапывается, находит укрытие, чует засаду'}],
+     charTraits:[{name:'Вера в Императора',desc:'Молитва придаёт сил в самый тёмный час'},{name:'Солдатский долг',desc:'Приказ есть приказ, отступление — позор'},{name:'Стойкость',desc:'Варп давит на разум, но он держится'}],
+     items:[{name:'Лас-винтовка',icon:'🔫',desc:'Стандартное оружие Гвардии, надёжна'},{name:'Флак-броня',icon:'🛡',desc:'Средняя защита от осколков и пуль'},{name:'Боевой нож',icon:'🔪',desc:'Для ближнего боя и грязной работы'},{name:'Аптечка',icon:'🩹',desc:'Бинты, стимы, обезболивающее'},{name:'Знак Аквилы',icon:'🦅',desc:'Священный символ, укрепляет дух'}]}]},
+
+  {id:'cards',name:'Карточный Подземельщик',icon:'🃏',genre:['Рогалик','Фэнтези'],
+   format:'adventure',voice:'gm',mech:{fixedDamage:true,hp:true,cards:true,inventory:true,skills:true},
+   desc:'Демонстрация карточной системы. Бесконечное подземелье Гриммхольд меняется каждый раз. У тебя колода карт-способностей: разыгрывай их в бою и на развилках. Урон фиксирован — никакого рандома, только тактика. Спускайся всё глубже, собирай новые карты, не умри.',
+   worldStart:'Тяжёлая дверь захлопывается за спиной — Гриммхольд не выпускает, пока не дойдёшь до дна. Перед вами развилка: три коридора, факелы, запах сырости и металла. В руке колода карт слабо светится. Где-то в темноте звякнул металл — вы здесь не один.',
+   npcs:'Торговец-скелет — меняет карты на золото между этажами. Хранитель этажа — мини-босс на каждом уровне. Загадочный Архитектор — голос, что комментирует твой спуск. Другой узник — может, союзник, может, ловушка.',
+   chars:[{name:'Безымянный',cls:'Подземельщик',desc:'Узник Гриммхольда. Кто он был раньше — неважно. Важно лишь, как глубоко он зайдёт.',appearance:'Капюшон, тлеющие угли глаз, колода карт у пояса',stats:{STR:12,DEX:12,CON:13,INT:12,WIS:11,CHA:10},
+     skills:[{name:'Удар клинка',desc:'Карта атаки: фиксированный урон 4 + бонус оружия'},{name:'Защитная стойка',desc:'Карта защиты: блокирует следующий удар врага'},{name:'Огненный росчерк',desc:'Карта особое: урон по area, тратит ход'}],
+     charTraits:[{name:'Азарт',desc:'Чем глубже риск, тем яснее ум'},{name:'Несломлен',desc:'Не отступает перед подземельем'}],
+     items:[{name:'Зазубренный меч',icon:'⚔',desc:'Бонус +2 к урону карт атаки'},{name:'Колода карт',icon:'🃏',desc:'Атака, защита, особое — разыгрывай каждый ход'},{name:'Зелье лечения',icon:'🧪',desc:'Восстанавливает здоровье, одноразовое'}]}]}
 ];
 
 const GLOBAL_SETTINGS_KEY='aq_global';
@@ -1232,7 +1541,113 @@ const globalSettings=JSON.parse(localStorage.getItem(GLOBAL_SETTINGS_KEY)||'{"de
 
 let token=localStorage.getItem('aq_token')||'';
 let user=null,prices=null;
-let G={worldName:'',worldDesc:'',genres:[],worldStart:'',chars:[],activeChar:0,charMode:'single',mode:'game',detail:3,hardcore:false,lang:'ru',narratorStyle:'classic',narratorExtra:'',rules:'free',customRules:'',npcs:'',slotId:null,useOwnKey:false,gameModel:''};
+let G={worldName:'',worldDesc:'',genres:[],worldStart:'',chars:[],activeChar:0,charMode:'single',mode:'game',detail:3,hardcore:false,lang:'ru',narratorStyle:'classic',narratorExtra:'',rules:'free',customRules:'',npcs:'',slotId:null,useOwnKey:false,gameModel:'',
+  format:'adventure',voice:'classic',
+  mechanics:{dice:false,fixedDamage:false,stats:false,hp:false,ac:false,levels:false,cards:false,
+    hunger:false,thirst:false,fatigue:false,sanity:false,mana:false,infection:false,reputation:false,luck:false,heat:false,radiation:false,
+    inventory:true,skills:true,traits:true,clues:false,npcRelations:false,quests:false}}
+
+// ── Шаблоны сеттинга: выставляют дефолтные механики ──
+var SETTING_TEMPLATES = {
+  roleplay: {name:'Чистый отыгрыш', icon:'🎭', desc:'Только повествование и выборы, без чисел и кубиков',
+    mech:{inventory:true, skills:true, traits:true}},
+  dnd: {name:'Приключение D&D', icon:'⚔', desc:'Кубики, характеристики, HP, броня, уровни — классические правила',
+    mech:{dice:true, stats:true, hp:true, ac:true, levels:true, inventory:true, skills:true, traits:true}},
+  survival: {name:'Выживание', icon:'🏕', desc:'Голод, жажда, усталость, здоровье — борьба за жизнь',
+    mech:{hp:true, hunger:true, thirst:true, fatigue:true, inventory:true, skills:true, traits:true}},
+  detective: {name:'Расследование', icon:'🔍', desc:'Улики, допросы, дедукция — без кубиков',
+    mech:{clues:true, reputation:true, npcRelations:true, inventory:true, skills:true, traits:true}}
+};
+function applyTemplate(tplId){
+  // Сброс всех механик в false, кроме inventory
+  Object.keys(G.mechanics).forEach(function(k){G.mechanics[k]=false;});
+  var tpl=SETTING_TEMPLATES[tplId];
+  if(tpl){Object.keys(tpl.mech).forEach(function(k){G.mechanics[k]=tpl.mech[k];});}
+  G.settingTemplate=tplId;
+}
+// Метаданные всех механик: подпись, иконка, группа, краткая и полная подсказка
+var MECH_DEFS = {
+  dice:        {name:'Проверки кубиком (d20)', icon:'🎲', group:'num', tipShort:'Случайный бросок при проверках навыка', tipLong:'При важных действиях нарратор просит бросить d20. Результат + модификатор характеристики сравнивается со сложностью. Классика D&D.'},
+  fixedDamage: {name:'Фиксированный урон', icon:'🗡', group:'num', tipShort:'Урон без рандома: всегда предсказуем', tipLong:'У героя фиксированное число урона, оружие даёт бонус (меч +2). Никакого рандома — тактический, предсказуемый бой. Несовместимо с кубиком на уроне.'},
+  stats:       {name:'Характеристики', icon:'💪', group:'num', tipShort:'Сила, Ловкость, Телосложение и др.', tipLong:'Шесть характеристик влияют на броски, HP и КБ. Распределяются как в Baldur\'s Gate 3 (point-buy).'},
+  hp:          {name:'Здоровье (HP)', icon:'❤', group:'num', tipShort:'Урон, лечение, смерть', tipLong:'Нарратор отслеживает очки здоровья, сообщает урон и лечение. На нуле — гибель или тяжёлое ранение.'},
+  ac:          {name:'Класс брони (КБ)', icon:'🛡', group:'num', tipShort:'Защита от Ловкости и типа брони', tipLong:'КБ определяет, насколько трудно попасть по герою. Зависит от Ловкости и типа надетой брони (лёгкая/средняя/тяжёлая).'},
+  levels:      {name:'Уровни и опыт', icon:'⬆', group:'num', tipShort:'Рост персонажа за достижения', tipLong:'Герой получает опыт за успехи и растёт в уровнях, становясь сильнее. Нарратор начисляет XP.'},
+  cards:       {name:'Карточная система', icon:'🃏', group:'num', tipShort:'Колода способностей-карт', tipLong:'У героя колода карт-способностей (атака, защита, особое). Каждый ход разыгрываешь карты. Лёгкая рогалик-механика поверх истории.'},
+  hunger:      {name:'Голод', icon:'🍖', group:'scale', tipShort:'Нужно есть, иначе слабеешь', tipLong:'Шкала голода падает со временем. На нуле — потеря сил и здоровья. Ищи и трать еду.'},
+  thirst:      {name:'Жажда', icon:'💧', group:'scale', tipShort:'Нужно пить воду', tipLong:'Шкала жажды падает быстрее голода. Критична в жарком климате и при нагрузке.'},
+  fatigue:     {name:'Усталость', icon:'😴', group:'scale', tipShort:'Нужен отдых и сон', tipLong:'Усталость растёт от действий и нагрузки. Высокая — штрафы к действиям. Снижается отдыхом.'},
+  sanity:      {name:'Рассудок', icon:'🧠', group:'scale', tipShort:'Психика под давлением ужаса', tipLong:'Шкала рассудка падает от столкновения с непостижимым, ужасом, потерями. На нуле — безумие. Хоррор и лавкрафтиана.'},
+  mana:        {name:'Мана', icon:'🔮', group:'scale', tipShort:'Ресурс для заклинаний', tipLong:'Мана тратится на магию и восстанавливается отдыхом. Ограничивает частоту заклинаний.'},
+  infection:   {name:'Заражение', icon:'🦠', group:'scale', tipShort:'Болезнь или мутация растёт', tipLong:'Шкала заражения растёт от ран, укусов, радиации. Достигнув предела — превращение или смерть.'},
+  radiation:   {name:'Радиация', icon:'☢', group:'scale', tipShort:'Накопление излучения', tipLong:'Радиация копится в заражённых зонах. Высокий уровень вредит здоровью и вызывает мутации. Постапокалипсис.'},
+  reputation:  {name:'Репутация', icon:'⭐', group:'scale', tipShort:'Как тебя воспринимают', tipLong:'Общая репутация героя в мире. Влияет на отношение незнакомцев, цены, доступные пути.'},
+  luck:        {name:'Удача', icon:'🍀', group:'scale', tipShort:'Влияет на случайные исходы', tipLong:'Шкала удачи слегка смещает случайные события в пользу героя или против него.'},
+  heat:        {name:'Розыск', icon:'🔥', group:'scale', tipShort:'Внимание властей к тебе', tipLong:'Уровень розыска растёт от преступлений. Высокий — облавы, погони, награда за голову. Криминал и стелс.'},
+  inventory:   {name:'Инвентарь с эффектами', icon:'🎒', group:'special', tipShort:'Предметы дают бонусы', tipLong:'Герой носит предметы, некоторые дают бонусы к характеристикам, HP или КБ. Нарратор выдаёт и забирает вещи по сюжету.'},
+  skills:      {name:'Способности', icon:'💫', group:'special', tipShort:'Активируемые умения героя', tipLong:'У героя список способностей с описанием. Их можно применять в действиях кнопкой. Выключи, если способности не нужны.'},
+  traits:      {name:'Черты характера', icon:'🎭', group:'special', tipShort:'Особенности личности', tipLong:'Черты влияют на отыгрыш и реакции мира. Можно задействовать в действиях. Выключи для упрощённого героя.'},
+  clues:       {name:'Журнал улик', icon:'🔍', group:'special', tipShort:'Улики копятся списком', tipLong:'Для расследований: найденные улики и зацепки собираются в отдельный журнал, помогая раскрыть дело.'},
+  npcRelations:{name:'Отношения NPC', icon:'🤝', group:'special', tipShort:'Отношение ключевых персонажей', tipLong:'Нарратор ведёт шкалу отношения важных NPC к герою — от врага до союзника. Меняется от твоих поступков.'},
+  quests:      {name:'Квесты и цели', icon:'📜', group:'special', tipShort:'Активные задачи списком', tipLong:'Активные цели и задания отображаются списком. Нарратор добавляет новые и отмечает выполненные.'}
+};
+var MECH_GROUPS = {num:'Боевые и ролевые числа', scale:'Шкалы состояния', special:'Особые системы'};
+// ── Форматы: что нейросеть делает с персонажами/инициативой ──
+var FORMAT_DEFS = {
+  adventure: {name:'Приключение', icon:'🗺', tipShort:'Ты управляешь героем, мир реагирует',
+    tipLong:'Классика. Ты ведёшь своего героя, нейросеть описывает мир и реакцию на твои действия. НЕ действует и не говорит за твоего героя без команды. Двигает сюжет к цели.',
+    behavior:'Игрок управляет своим героем. Описывай мир, NPC и последствия действий игрока. НЕ принимай решений и не говори за героя игрока без явной команды.'},
+  sandbox: {name:'Песочница', icon:'🌍', tipShort:'Мир живёт сам, события идут без тебя',
+    tipLong:'Автономный мир. Нейросеть может действовать за вселенную и второстепенных NPC сама: события происходят без участия игрока, персонажи живут по своим целям. Но героя игрока не ведёт.',
+    behavior:'Мир автономен. Можешь сам инициировать события, действия NPC и фракций независимо от игрока. НЕ управляй героем игрока. Создавай ощущение живого мира.'},
+  novel: {name:'Новелла', icon:'📖', tipShort:'Упор на драму, можно вести героя',
+    tipLong:'Соавтор романа. Нейросеть может додумывать реплики и мелкие действия героя ради драмы, пишет длиннее и литературнее. На крупных развилках спрашивает игрока.',
+    behavior:'Это литературная новелла. Можешь додумывать реплики и второстепенные действия героя игрока ради драматургии, писать развёрнуто. На ключевых решениях оставляй выбор игроку.'},
+  dialogue: {name:'Диалог', icon:'💬', tipShort:'Фокус на общении с NPC',
+    tipLong:'Отыгрыш персонажей. Нейросеть глубоко играет NPC от их лица, реплики на первом плане, минимум описаний. За героя игрока не говорит.',
+    behavior:'Фокус на диалогах. Глубоко отыгрывай NPC от первого лица, давай живые реплики. Минимум описаний окружения. НЕ говори за героя игрока.'},
+  coop: {name:'Совместная история', icon:'🤝', tipShort:'Вы с нейросетью соавторы',
+    tipLong:'Максимальная свобода нейросети. Свободно вводит персонажей, повороты сюжета, может вести любых героев включая компаньонов. Вы творите историю вместе.',
+    behavior:'Вы соавторы истории. Свободно вводи новых персонажей, сюжетные повороты, можешь вести компаньонов и даже предлагать действия за героя игрока как соавтор.'}
+};
+// ── Голоса: стиль языка ──
+var VOICE_DEFS = {
+  classic: {name:'Литературный', icon:'✍', tipShort:'Богатый язык, атмосфера',
+    tipLong:'Развёрнутые описания, метафоры, внимание к деталям. Атмосфера важнее темпа. Средняя-большая длина.',
+    instr:'Пиши богатым литературным языком, с метафорами и атмосферными деталями.'},
+  cinematic: {name:'Кинематографичный', icon:'🎬', tipShort:'Короткие ёмкие сцены',
+    tipLong:'Как раскадровка фильма: короткие динамичные сцены, акцент на действие и диалог, визуальность.',
+    instr:'Пиши кинематографично: короткие ёмкие сцены, динамика, визуальные образы, акцент на действие и диалог.'},
+  gm: {name:'Мастер игры', icon:'🎲', tipShort:'С юмором, обращается к игроку',
+    tipLong:'Как ведущий настольной игры: общается напрямую, добавляет юмор, иногда подсказывает варианты.',
+    instr:'Веди как мастер настольной игры: обращайся к игроку, добавляй уместный юмор, изредка подсказывай варианты действий.'},
+  cold: {name:'Хроникёр', icon:'📋', tipShort:'Сухо, по делу',
+    tipLong:'Сдержанный фактичный стиль без украшений. Минимум эмоций. Для нуара, выживания, военных историй.',
+    instr:'Пиши сухо и сдержанно, фактично, без лишних украшений и эмоций.'},
+  poet: {name:'Поэт', icon:'🪶', tipShort:'Образно и метафорично',
+    tipLong:'Поэтичный, ритмичный язык. Каждая сцена как стихотворение в прозе. Для лирики и сюрреализма.',
+    instr:'Пиши поэтично и образно, ритмичным языком, как стихотворение в прозе.'}
+};
+// ── Миграция старых полей в G.mechanics (для старых сейвов и пресетов) ──
+function migrateMechanics(){
+  if(!G.mechanics)G.mechanics={};
+  var dm=G.dndMech||{}, sv=G.survMech||{}, ex=G.extraMech||{};
+  // Если механики ещё не настроены — выведем из старого G.rules
+  var anySet=Object.keys(G.mechanics).some(function(k){return G.mechanics[k];});
+  if(!anySet){
+    if(G.rules==='dnd')applyTemplate('dnd');
+    else if(G.rules==='survival')applyTemplate('survival');
+    else if(G.rules==='detective')applyTemplate('detective');
+    else applyTemplate('roleplay');
+  }
+  // Перенести явные старые флаги
+  ['dice','hp','stats','levels','ac'].forEach(function(k){if(dm[k]!==undefined)G.mechanics[k]=dm[k]!==false;});
+  ['hunger','thirst','fatigue'].forEach(function(k){if(sv[k]!==undefined)G.mechanics[k]=sv[k]!==false;});
+  Object.keys(ex).forEach(function(k){if(ex[k]===true&&G.mechanics[k]!==undefined)G.mechanics[k]=true;});
+  // Формат/голос из старых mode/narratorStyle
+  if(!G.format){var mm={game:'adventure',story:'novel',chat:'dialogue',sim:'sandbox'};G.format=mm[G.mode]||'adventure';}
+  if(!G.voice){G.voice=G.narratorStyle||'classic';}
+};
 let history=[],journal=[],thinking=false,setupChars=[],summaryCache='';
 let qaList=JSON.parse(JSON.stringify(QA_DEFAULTS));
 let sendMode='fill',pendingTopup=null;
@@ -1404,12 +1819,21 @@ function newWorldInSlot(slot){G.slotId=slot;showPage('create-page');initCreatePa
 // ══ CREATE PAGE / WIZARD ══════════════════════════
 function initCreatePage(){currentStep=0;selectedPreset=null;aiChoice='server';setupChars=[];MC_GROUPS.charMode=null;MC_GROUPS.mode=null;MC_GROUPS.narratorStyle=null;MC_GROUPS.rules=null;MC_GROUPS.hardcore=null;// Reset form
 ['wn','wd','ws','np','ne','cr'].forEach(id=>{const e=el(id);if(e)e.value='';});document.querySelectorAll('#genre-tags .tag').forEach(t=>t.classList.remove('on'));window._autoCharMode=true;['mode','charMode','hardcore','narratorStyle','rules'].forEach(g=>{MC_GROUPS[g]=null;const first=document.querySelector(`[onclick*="selMC(this,'${g}')"]`);if(first)selMC(first,g);});window._autoCharMode=false;document.querySelector('[data-lang="ru"]')?.classList.add('on');el('det').value=globalSettings.detail||3;el('dv').textContent=detLabels[(globalSettings.detail||3)-1];
+  applyTemplate('roleplay');G.format='adventure';G.voice='classic';
+  renderSettingTemplates();renderMechFineTune();renderFormatCards();renderVoiceCards();
+  var ft=el('mech-fine-tune');if(ft)ft.style.display='none';
+  var ftb=el('fine-tune-toggle');if(ftb)ftb.innerHTML='⚙ Тонкая настройка механик ▾';
   renderSetupChars();buildPresetGrid();buildNarratorPick();buildRulesPick();updateAIPicker();goStep(0);}
-function buildPresetGrid(){const g=el('preset-grid');if(!g)return;g.innerHTML='';PRESETS.forEach(p=>{const c=document.createElement('div');c.className='preset-card'+(selectedPreset===p.id?' sel':'');c.innerHTML=`<div class="preset-icon">${p.icon}</div><div class="preset-name">${p.name}</div><div class="preset-system">${p.system==='dnd'?'⚔ D&D':p.system==='survival'?'🌲 Выживание':p.system==='detective'?'🔍 Детектив':'Свободная система'}</div><div class="preset-desc">${esc(p.desc.slice(0,100))}...</div>`;c.onclick=()=>selectPreset(p.id);g.appendChild(c);});}
+function buildPresetGrid(){const g=el('preset-grid');if(!g)return;g.innerHTML='';PRESETS.forEach(p=>{const c=document.createElement('div');c.className='preset-card'+(selectedPreset===p.id?' sel':'');c.innerHTML=`<div class="preset-icon">${p.icon}</div><div class="preset-name">${p.name}</div><div class="preset-system">${(p.genre&&p.genre[0])||''}</div><div class="preset-desc">${esc(p.desc.slice(0,100))}...</div>`;c.onclick=()=>selectPreset(p.id);g.appendChild(c);});}
 function selectPreset(id){selectedPreset=id;document.querySelectorAll('.preset-card').forEach(c=>c.classList.remove('sel'));if(id){const p=PRESETS.find(x=>x.id===id);if(p){const cards=document.querySelectorAll('.preset-card');PRESETS.forEach((x,i)=>{if(x.id===id)cards[i]?.classList.add('sel');});// Fill form
-el('wn').value=p.worldName;el('wd').value=p.desc;el('ws').value=p.worldStart;el('np').value=p.npcs||'';document.querySelectorAll('#genre-tags .tag').forEach(t=>t.classList.toggle('on',p.genre.includes(t.textContent.trim())));setupChars=JSON.parse(JSON.stringify(p.chars||[]));renderSetupChars();// Set system
-MC_GROUPS.rules=null;const rscard=document.querySelector(`[onclick*="selMC(this,'rules')"][data-v="${p.system}"]`);if(rscard)selMC(rscard,'rules');// Set narrator
-MC_GROUPS.narratorStyle=null;const nscard=document.querySelector(`[onclick*="selMC(this,'narratorStyle')"][data-v="${p.narratorStyle}"]`);if(nscard)selMC(nscard,'narratorStyle');notif('Сценарий «'+p.name+'» загружен!');}}else{el('wn').value='';el('wd').value='';el('ws').value='';el('np').value='';document.querySelectorAll('#genre-tags .tag').forEach(t=>t.classList.remove('on'));setupChars=[];renderSetupChars();notif('Пустой мир — заполните сами');}}
+el('wn').value=p.name;el('wd').value=p.desc;el('ws').value=p.worldStart;el('np').value=p.npcs||'';document.querySelectorAll('#genre-tags .tag').forEach(t=>t.classList.toggle('on',(p.genre||[]).includes(t.textContent.trim())));setupChars=JSON.parse(JSON.stringify(p.chars||[]));
+      // Применяем механики/формат/голос пресета
+      if(p.mech){Object.keys(G.mechanics).forEach(function(k){G.mechanics[k]=false;});Object.keys(p.mech).forEach(function(k){if(G.mechanics[k]!==undefined)G.mechanics[k]=p.mech[k];});G.mechanics.inventory=true;}
+      G.format=p.format||'adventure';
+      G.voice=p.voice||'classic';
+      G.settingTemplate=null;
+      renderSettingTemplates();renderMechFineTune();renderFormatCards();renderVoiceCards();renderSetupChars();
+      notif('Сценарий «'+p.name+'» загружен!');}}else{el('wn').value='';el('wd').value='';el('ws').value='';el('np').value='';document.querySelectorAll('#genre-tags .tag').forEach(t=>t.classList.remove('on'));setupChars=[];renderSetupChars();notif('Пустой мир — заполните сами');}}
 async function generateWorldAI(){
   if(!user?.own_api_key&&parseInt(user?.tokens_balance||0)<200){notif('Недостаточно токенов для генерации','err');return;}
   notif('Генерирую мир...','info');
@@ -1478,7 +1902,8 @@ var METER_DEFS = {
   mana:      {name:'Мана',      icon:'🔮', color:'#4080e0', start:100, good:'high'},
   infection: {name:'Заражение', icon:'🦠', color:'#60c060', start:0,   good:'low'},
   luck:      {name:'Удача',     icon:'🍀', color:'#50c080', start:50,  good:'high'},
-  heat:      {name:'Розыск',    icon:'🔥', color:'#e05040', start:0,   good:'low'}
+  heat:      {name:'Розыск',    icon:'🔥', color:'#e05040', start:0,   good:'low'},
+  radiation: {name:'Радиация',  icon:'☢', color:'#a0c040', start:0,   good:'low'}
 };
 function statMod(v){ return Math.floor((parseInt(v)||10 - 10)/2); }
 function abilityMod(v){ return Math.floor(((parseInt(v)||10) - 10)/2); }
@@ -1628,6 +2053,80 @@ function entityListHtml(c, ci, kind, label, icon, placeholder){
   html+='</div>';
   return html;
 }
+function renderFormatCards(){
+  var c=el('format-cards');if(!c)return;c.innerHTML='';
+  Object.keys(FORMAT_DEFS).forEach(function(fid){
+    var f=FORMAT_DEFS[fid];var on=G.format===fid;
+    var d=document.createElement('div');
+    d.className='mc fmt-card'+(on?' sel':'');
+    d.innerHTML='<div class="mc-title">'+f.icon+' '+f.name+' <span class="hint-ic" data-tip="'+f.tipShort+'">?</span></div>'
+      +'<div class="mc-desc">'+f.tipLong+'</div>';
+    d.onclick=function(){G.format=fid;renderFormatCards();};
+    c.appendChild(d);
+  });
+}
+function renderVoiceCards(){
+  var c=el('voice-cards');if(!c)return;c.innerHTML='';
+  Object.keys(VOICE_DEFS).forEach(function(vid){
+    var v=VOICE_DEFS[vid];var on=G.voice===vid;
+    var d=document.createElement('div');
+    d.className='mc voice-card'+(on?' sel':'');
+    d.innerHTML='<div class="mc-title">'+v.icon+' '+v.name+' <span class="hint-ic" data-tip="'+v.tipShort+'">?</span></div>'
+      +'<div class="mc-desc">'+v.tipLong+'</div>';
+    d.onclick=function(){G.voice=vid;renderVoiceCards();};
+    c.appendChild(d);
+  });
+}
+function renderSettingTemplates(){
+  var c=el('setting-templates');if(!c)return;
+  c.innerHTML='';
+  Object.keys(SETTING_TEMPLATES).forEach(function(tid){
+    var t=SETTING_TEMPLATES[tid];
+    var on=G.settingTemplate===tid;
+    var d=document.createElement('div');
+    d.className='mc setting-card'+(on?' sel':'');
+    d.innerHTML='<div class="mc-title">'+t.icon+' '+t.name+'</div><div class="mc-desc">'+t.desc+'</div>';
+    d.onclick=function(){applyTemplate(tid);renderSettingTemplates();renderMechFineTune();renderFormatCards();renderVoiceCards();if(typeof renderSetupChars==='function')renderSetupChars();};
+    c.appendChild(d);
+  });
+}
+function toggleFineTune(){
+  var ft=el('mech-fine-tune'), btn=el('fine-tune-toggle');
+  if(!ft)return;
+  var open=ft.style.display!=='none';
+  ft.style.display=open?'none':'block';
+  if(btn)btn.innerHTML='⚙ Тонкая настройка механик '+(open?'▾':'▴');
+  if(!open)renderMechFineTune();
+}
+function renderMechFineTune(){
+  var c=el('mech-fine-tune');if(!c)return;
+  if(!G.mechanics)return;
+  var html='';
+  Object.keys(MECH_GROUPS).forEach(function(grp){
+    html+='<div class="mech-group"><div class="mech-group-title">'+MECH_GROUPS[grp]+'</div>';
+    Object.keys(MECH_DEFS).forEach(function(mk){
+      var def=MECH_DEFS[mk];
+      if(def.group!==grp)return;
+      var on=G.mechanics[mk]===true;
+      html+='<div class="mech-row">';
+      html+='<div class="mech-row-head">';
+      html+='<label class="mech-toggle"><input type="checkbox" '+(on?'checked':'')+' data-mk="'+mk+'" onchange="toggleMech(this.dataset.mk,this.checked)"/>';
+      html+='<span class="mech-label">'+def.icon+' '+def.name+'</span>';
+      html+='<span class="hint-ic" data-tip="'+def.tipShort+'">?</span>';
+      html+='</label></div>';
+      html+='<div class="mech-tiplong">'+def.tipLong+'</div>';
+      html+='</div>';
+    });
+    html+='</div>';
+  });
+  c.innerHTML=html;
+}
+function toggleMech(mk,on){
+  if(!G.mechanics)G.mechanics={};
+  G.mechanics[mk]=on;
+  // fixedDamage и dice-урон взаимоисключимы — но dice как проверки оставляем; просто инфо
+  if(typeof renderSetupChars==='function')renderSetupChars();
+}
 function renderSetupChars(){
   const e=el('ch-list');if(!e)return;e.innerHTML='';
   const isDnd=document.querySelectorAll('.mc.sel[data-v="dnd"]').length>0;
@@ -1648,13 +2147,19 @@ function renderSetupChars(){
     e.appendChild(r);
   });
 }
-function collectSetup(){G.worldName=el('wn').value.trim()||'Безымянный мир';G.worldDesc=el('wd').value.trim();G.worldStart=el('ws').value.trim();G.narratorExtra=el('ne').value.trim();G.customRules=el('cr').value.trim();G.npcs=el('np').value.trim();G.detail=parseInt(el('det').value);G.genres=[];document.querySelectorAll('#genre-tags .tag.on').forEach(t=>G.genres.push(t.textContent.trim()));const gv=g=>document.querySelector(`[onclick*="selMC(this,'${g}')"].sel`)?.dataset.v;G.mode=gv('mode')||'game';G.charMode=gv('charMode')||'single';G.hardcore=gv('hardcore')==='1';const nsVal=gv('narratorStyle')||'classic';G.narratorStyle=nsVal.startsWith('custom_')?'custom':nsVal;G.narratorCustomId=nsVal.startsWith('custom_')?nsVal.replace('custom_',''):null;const rsVal=gv('rules')||'free';G.rules=rsVal.startsWith('custom_')?'custom':rsVal;G.rulesCustomId=rsVal.startsWith('custom_')?rsVal.replace('custom_',''):null;G.lang=document.querySelector('[data-lang].on')?.dataset.lang||globalSettings.lang||'ru';G.chars=setupChars.filter(c=>c.name.trim());if(G.activeChar>=G.chars.length)G.activeChar=0;G.useOwnKey=aiChoice==='own';G.gameModel=el('game-model-sel')?.value||user?.own_model||'';
-  // Шкалы выживания
-  G.survMech={};
-  document.querySelectorAll('#survival-info [data-surv]').forEach(function(b){G.survMech[b.dataset.surv]=b.classList.contains('on');});
-  // Механики D&D
-  G.dndMech={};
-  document.querySelectorAll('#dnd-mechanics [data-mech]').forEach(function(b){G.dndMech[b.dataset.mech]=b.classList.contains('on');});
+function collectSetup(){G.worldName=el('wn').value.trim()||'Безымянный мир';G.worldDesc=el('wd').value.trim();G.worldStart=el('ws').value.trim();G.narratorExtra=el('ne').value.trim();G.customRules=el('cr').value.trim();G.npcs=el('np').value.trim();G.detail=parseInt(el('det').value);G.genres=[];document.querySelectorAll('#genre-tags .tag.on').forEach(t=>G.genres.push(t.textContent.trim()));const gv=g=>document.querySelector(`[onclick*="selMC(this,'${g}')"].sel`)?.dataset.v;
+  G.charMode=gv('charMode')||'single';
+  G.hardcore=gv('hardcore')==='1';
+  // Формат, голос, механики уже выставлены в G при кликах по карточкам
+  if(!G.format)G.format='adventure';
+  if(!G.voice)G.voice='classic';
+  G.narratorStyle=G.voice; // совместимость
+  // Производный G.rules из шаблона (для веток, что ещё на него смотрят)
+  G.rules=G.settingTemplate||'free';
+  G.lang=document.querySelector('[data-lang].on')?.dataset.lang||globalSettings.lang||'ru';
+  G.chars=setupChars.filter(c=>c.name.trim());if(G.activeChar>=G.chars.length)G.activeChar=0;
+  G.useOwnKey=aiChoice==='own';G.gameModel=el('game-model-sel')?.value||user?.own_model||'';
+  // (механики берутся из G.mechanics)
   const tierVal=document.querySelector(`[onclick*="selMC(this,'serverTier')"].sel`)?.dataset.v||'haiku';
   G.serverTier=tierVal; // 'haiku' | 'sonnet'
   if(!G.useOwnKey){G.gameModel=tierVal==='sonnet'?'claude-sonnet-4-20250514':'claude-haiku-4-5-20251001';}}
@@ -1678,7 +2183,7 @@ G.chars.forEach(c=>{
       charTraits:JSON.parse(JSON.stringify(c.charTraits||[])),
       hp:hpVal, hpCur:c.hpCur||hpVal, ac:acVal, armor:armor,
       stats:cs2, level:parseInt(c.level)||1, xp:parseInt(c.xp)||0,
-      hunger:100, thirst:100, fatigue:0, sanity:100, reputation:50, mana:100, infection:0, luck:50, heat:0
+      hunger:100, thirst:100, fatigue:0, sanity:100, reputation:50, mana:100, infection:0, luck:50, heat:0, radiation:0
     };
     inventory[c.name]=JSON.parse(JSON.stringify(c.items||[]));
   });
@@ -1691,7 +2196,7 @@ function beginStory(){
   var msg=G.worldStart||('Начни историю в мире "'+G.worldName+'". '+(G.chars.length?'Главный герой: '+(G.chars[G.activeChar]?G.chars[G.activeChar].name:'')+'. '+(G.chars[G.activeChar]?G.chars[G.activeChar].desc:''):''));
   sendAI(msg,true);
 }
-function enterGame(isNew){showPage('game-page');
+function enterGame(isNew){migrateMechanics();showPage('game-page');
   // Onboarding hint for first-timers
   const p=getProgress();
   if((p.games||0)<=1&&isNew&&globalSettings.hints!==false){setTimeout(()=>{notif('💡 Пишите действия внизу. Наведите на текст нарратора — появятся кнопки «Изменить» и «Другой ответ»','info');},3000);}el('g-wn').textContent=G.worldName;el('g-wt').textContent=G.genres.join(' · ')||G.mode;el('hcb').classList.toggle('hidden',!G.hardcore);el('game-uname').textContent=user?.username||'';const provLabel=G.useOwnKey&&user?.own_api_key?(PROVIDERS_INFO[user.own_provider]?.name||'Свой ключ'):'Встроенная нейросеть';el('g-prov').textContent='🤖 '+provLabel+(G.rules==='dnd'?' · ⚔ D&D':'');updateGameBal();if(prices)buildPkgMini('pkg-grid-game');partyMode='single';activeParty=[0];blockVariants={};renderGChars();renderJournal();renderQA();switchRightTab('journal');// Notes restore
@@ -1783,39 +2288,21 @@ function renderCharPanel(){
   var char=G.chars[G.activeChar];
   if(!char){c.innerHTML='<p style="font-size:12px;color:var(--text3);padding:8px">Нет персонажей</p>';return;}
   var cs=charStats[char.name]||{};
-  var isDnd=G.rules==='dnd';
-  var isSurvival=G.rules==='survival';
-  var mech=G.dndMech||{};
-  var surv=G.survMech||{};
-  // Для кастомных систем — их механики
-  if(G.rules==='custom'&&G.rulesCustomId){
-    var csys=customSystems.find(function(s){return s.id===G.rulesCustomId;});
-    if(csys&&csys.mech){mech=csys.mech;surv=csys.mech;isDnd=!!(csys.mech.dice||csys.mech.hp||csys.mech.stats||csys.mech.levels||csys.mech.ac);isSurvival=!!(csys.mech.hunger||csys.mech.thirst||csys.mech.fatigue);}
-  }
+  var M=G.mechanics||{};
+  // Совместимость со старым телом функции: mech.* и surv.* читают G.mechanics
+  var mech={dice:M.dice,hp:M.hp,stats:M.stats,levels:M.levels,ac:M.ac};
+  var surv={hunger:M.hunger,thirst:M.thirst,fatigue:M.fatigue};
+  var isDnd=!!(M.dice||M.stats||M.hp||M.ac||M.levels);
+  var isSurvival=!!(M.hunger||M.thirst||M.fatigue);
   var html='<div style="padding:8px">';
   html+='<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:10px">';
   html+='<div style="font-family:Cinzel,serif;font-size:13px;color:var(--ac);font-weight:500;flex:1">'+esc(char.name)+'</div>';
   if(cs.cls)html+='<div style="font-size:11px;color:var(--text3)">'+esc(cs.cls)+'</div>';
   html+='</div>';
 
-  // Универсальные шкалы режима (выживание + кастомные механики)
+  // Шкалы из G.mechanics
   var activeMeters=[];
-  if(G.rules==='survival'){
-    var sv=G.survMech||{};
-    if(sv.hunger!==false)activeMeters.push('hunger');
-    if(sv.thirst!==false)activeMeters.push('thirst');
-    if(sv.fatigue!==false)activeMeters.push('fatigue');
-  }
-  if(G.rules==='custom'&&G.rulesCustomId){
-    var csys=customSystems.find(function(s){return s.id===G.rulesCustomId;});
-    if(csys&&csys.mech){
-      Object.keys(METER_DEFS).forEach(function(mk){if(csys.mech[mk])activeMeters.push(mk);});
-    }
-  }
-  // Механики добавленные в настройках мира (extraMech) — для любого режима
-  if(G.extraMech){
-    Object.keys(METER_DEFS).forEach(function(mk){if(G.extraMech[mk]===true&&activeMeters.indexOf(mk)<0)activeMeters.push(mk);});
-  }
+  Object.keys(METER_DEFS).forEach(function(mk){if(M[mk])activeMeters.push(mk);});
   if(activeMeters.length){
     activeMeters.forEach(function(key){
       var def=METER_DEFS[key];if(!def)return;
@@ -1932,8 +2419,9 @@ function renderCharPanel(){
 
   // Способности — структурированные, с кнопкой Использовать
   var skills=cs.skills||[];
-  var showUseButtons=(G.rules==='dnd')||(G.rules==='custom'&&(function(){var cs2=customSystems.find(function(s){return s.id===G.rulesCustomId;});return cs2&&cs2.mech&&cs2.mech.dice;})());
-  // Способности
+  var showUseButtons=!!(M.dice||M.cards||M.fixedDamage);
+  // Способности (если включены)
+  if(M.skills){
   html+='<div class="char-stat-group"><div class="char-stat-label">💪 Способности</div>';
   skills.forEach(function(sk,si){
     html+='<div class="entity-card">';
@@ -1950,9 +2438,12 @@ function renderCharPanel(){
   });
   if(canEdit)html+='<button class="btn btn-sm" style="margin-top:4px" data-cn="'+esc(char.name)+'" data-k="skills" onclick="addCharEntity(this.dataset.cn,this.dataset.k)">+ Способность</button>';
   html+='</div>';
+  }
   if(cs.appearance)html+='<div class="char-stat-group"><div class="char-stat-label">Внешность</div><div class="char-stat-val">'+esc(cs.appearance)+'</div></div>';
   // Черты — структурированные
+  // Черты (если включены)
   var traits=cs.charTraits||[];
+  if(M.traits){
   html+='<div class="char-stat-group"><div class="char-stat-label">🎭 Черты</div>';
   traits.forEach(function(tr,ti){
     html+='<div class="entity-card">';
@@ -1969,6 +2460,7 @@ function renderCharPanel(){
   });
   if(canEdit)html+='<button class="btn btn-sm" style="margin-top:4px" data-cn="'+esc(char.name)+'" data-k="charTraits" onclick="addCharEntity(this.dataset.cn,this.dataset.k)">+ Черта</button>';
   html+='</div>';
+  }
   if(char.desc)html+='<div class="char-stat-group"><div class="char-stat-label">История</div><div class="char-stat-val">'+esc(char.desc)+'</div></div>';
   html+='</div>';
   c.innerHTML=html;
@@ -2110,79 +2602,67 @@ function renderQA(){const e=el('qa-btns');if(!e)return;e.innerHTML='';qaList.for
 
 // ── AI CORE ──────────────────────────────────────
 function buildSys(){
-  // Компактные коды режимов/стилей — экономим токены
-  var mD={game:'Приключение: действия имеют последствия.',story:'Совместная история.',chat:'Диалоги с NPC.',sim:'Симуляция мира.'};
-  var nD={classic:'Литературный, богатый язык.',gm:'Мастер игры, с юмором.',cold:'Сухо, по делу.',poet:'Поэтично.'};
-  var dD={1:'1-2 предложения.',2:'2-3 предложения.',3:'3-5 предложений.',4:'1-2 абзаца.',5:'2-4 абзаца.'};
-  var actingNames=(activeParty||[]).map(function(i){return G.chars[i]?G.chars[i].name:'';}).filter(Boolean);
-  var partyNote=(actingNames.length>1)?(' Сейчас действуют вместе: '+actingNames.join(', ')+'. Опиши действия и исход для каждого из них.'):'';
+  var M=G.mechanics||{};
+  var dD={1:'1-2 предлож.',2:'2-3 предлож.',3:'3-5 предлож.',4:'1-2 абзаца.',5:'2-4 абзаца.'};
+  var acting=(activeParty||[]).map(function(i){return G.chars[i]?G.chars[i].name:'';}).filter(Boolean);
 
-  // Персонажи: полное описание шлём ТОЛЬКО когда статы реально нужны нарратору.
-  // В обычном режиме — только имена + активный, остальное модель помнит из истории.
+  // Герои: компактно. Полные статы — только если включены характеристики.
   var chars;
-  if(G.rules==='dnd'&&(G.dndMech||{}).stats!==false){
+  if(M.stats){
     chars=G.chars.map(function(c,i){
       var cs=charStats[c.name]||{};var st=cs.stats||{};
-      var mods=STAT_ORDER.map(function(s){var v=parseInt(st[s])||10;var m=abilityMod(v);return STAT_RU[s].slice(0,3)+(m>=0?'+':'')+m;}).join(',');
-      return ((activeParty||[]).indexOf(i)>=0?'▸':'')+c.name+(cs.cls?'/'+cs.cls:'')+' ['+mods+']'+((G.dndMech||{}).hp!==false&&cs.hp?' HP'+(cs.hpCur||cs.hp)+'/'+cs.hp:'')+((G.dndMech||{}).ac!==false&&cs.ac?' КБ'+cs.ac:'');
+      var mods=STAT_ORDER.map(function(s){var v=parseInt(st[s])||10;var m=abilityMod(v);return s+(m>=0?'+':'')+m;}).join('');
+      return ((activeParty||[]).indexOf(i)>=0?'>':'')+c.name+(cs.cls?'/'+cs.cls:'')+'['+mods+']'+(M.hp&&cs.hp?' HP'+(cs.hpCur||cs.hp)+'/'+cs.hp:'')+(M.ac&&cs.ac?' КБ'+cs.ac:'');
     }).join(' | ');
   } else {
-    chars=G.chars.length?G.chars.map(function(c,i){return ((activeParty||[]).indexOf(i)>=0?'▸':'')+c.name+(charStats[c.name]&&charStats[c.name].cls?'/'+charStats[c.name].cls:'');}).join(', '):'нет героя';
+    chars=G.chars.length?G.chars.map(function(c,i){return ((activeParty||[]).indexOf(i)>=0?'>':'')+c.name+(charStats[c.name]&&charStats[c.name].cls?'/'+charStats[c.name].cls:'');}).join(', '):'нет';
   }
 
-  var narratorInstr=nD[G.narratorStyle]||nD.classic;
-  if(G.narratorStyle==='custom'&&G.narratorCustomId){var cn=customNarrators.find(function(n){return n.id===G.narratorCustomId;});if(cn)narratorInstr=cn.desc.slice(0,120);}
+  // Голос (язык стиля) — короткая инструкция
+  var voiceInstr=(VOICE_DEFS[G.voice]||VOICE_DEFS.classic).instr;
+  if(G.voice==='custom'&&G.narratorCustomId){var cn=customNarrators.find(function(n){return n.id===G.narratorCustomId;});if(cn)voiceInstr=cn.desc.slice(0,100);}
+  // Формат (поведение) — короткая инструкция
+  var fmtInstr=(FORMAT_DEFS[G.format]||FORMAT_DEFS.adventure).behavior;
 
-  var rulesInstr='';
-  if(G.rules==='dnd'){
-    var mech=G.dndMech||{};var mp=[];
-    if(mech.dice!==false)mp.push('Для проверок: {"dice":true,"dc":5-25,"skill":"...","hideDC":false}. Перед кубиком кратко укажи только модификатор (напр. "Скрытность: Ловкость+2, итого +2"). Не описывай исходы заранее, не спрашивай выбор — исход опишешь после броска.');
-    if(mech.hp!==false)mp.push('Следи за HP, сообщай урон.');
-    if(mech.levels!==false)mp.push('XP за успехи: {"xp":{"char":"имя","amount":N}}.');
-    rulesInstr='D&D 5e. '+mp.join(' ');
-  }else if(G.rules==='survival'){
-    var sv=G.survMech||{};var sc=[];
-    if(sv.hunger!==false)sc.push('голод');if(sv.thirst!==false)sc.push('жажда');if(sv.fatigue!==false)sc.push('усталость');
-    rulesInstr='Выживание. Шкалы 0-100: '+(sc.join(', ')||'—')+'. Меняй через {"survival":{"char":"имя"'+(sv.hunger!==false?',"hunger":N':'')+(sv.thirst!==false?',"thirst":N':'')+(sv.fatigue!==false?',"fatigue":N':'')+'}}.';
-  }else if(G.rules==='detective'){
-    rulesInstr='Детектив: веди расследование. Подбрасывай улики и противоречия в показаниях, ложные следы. Каждую найденную улику записывай: {"note":"Улика: ..."}. Можешь вести шкалу доверия NPC через {"scale":{"char":"имя","name":"reputation","value":N}}. Не раскрывай разгадку — пусть игрок дойдёт сам через дедукцию.';
-  }else if(G.rules==='custom'&&G.rulesCustomId){
-    var csd=customSystems.find(function(s){return s.id===G.rulesCustomId;});
-    if(csd){
-      rulesInstr=csd.desc.slice(0,200);
-      if(csd.mech){
-        var mp2=[];
-        if(csd.mech.dice)mp2.push('проверки кубиком: {"dice":true,"dc":5-25,"skill":"..."}');
-        if(csd.mech.hp)mp2.push('следи за HP');
-        // Активные шкалы
-        var scales2=Object.keys(METER_DEFS).filter(function(k){return csd.mech[k];});
-        if(scales2.length){
-          var scNames=scales2.map(function(k){return METER_DEFS[k].name+' ('+k+')';}).join(', ');
-          mp2.push('шкалы 0-100: '+scNames+'. Меняй любую через {"scale":{"char":"имя","name":"код","value":N}} (коды: '+scales2.join(', ')+')');
-        }
-        if(mp2.length)rulesInstr+=' Механики: '+mp2.join('; ')+'.';
-      }
-    }
-  }else if(G.customRules){rulesInstr='Правила: '+G.customRules.slice(0,120);}else{rulesInstr='Свободный режим: гибкое повествование без жёстких правил. Награждай героя предметами за находки и достижения, описывай последствия выбора живо и непредсказуемо.';}
+  // Инструкции по механикам — ТОЛЬКО включённые (экономия токенов)
+  var mech=[];
+  if(M.dice)mech.push('Проверки: {"dice":true,"dc":5-25,"skill":"..."}. Перед броском только модификатор кратко, без описания исходов.');
+  if(M.fixedDamage)mech.push('Урон фиксирован (без рандома): базовый героя + бонус оружия, всегда предсказуем.');
+  if(M.hp)mech.push('Следи за HP, сообщай урон/лечение.');
+  if(M.levels)mech.push('Опыт: {"xp":{"char":"имя","amount":N}}.');
+  if(M.cards)mech.push('Карты-способности: герой разыгрывает карты из колоды каждый ход.');
+  // Шкалы — одной строкой
+  var scales=[];
+  ['hunger','thirst','fatigue','sanity','mana','infection','radiation','reputation','luck','heat'].forEach(function(k){if(M[k])scales.push(k);});
+  if(scales.length)mech.push('Шкалы 0-100 ('+scales.join(',')+'): меняй {"scale":{"char":"имя","name":"код","value":N}}.');
+  if(M.clues)mech.push('Улики: {"note":"Улика: ..."}. Разгадку не выдавай.');
+  if(M.npcRelations)mech.push('Отношение NPC: {"npc_rel":{"name":"имя","value":-100..100}}.');
+  if(M.quests)mech.push('Цели: {"quest":{"text":"...","done":false}}.');
 
-  // Сборка. worldDesc/npcs/narratorExtra сильно урезаны — детали модель помнит из истории.
-  var p='Ты нарратор Artist Quest. '+(G.lang==='en'?'Reply ONLY in English.':'Отвечай ТОЛЬКО по-русски.')+partyNote
-    +'\nМир: '+G.worldName+'. '+G.worldDesc.slice(0,250)
-    +(G.genres.length?'\nЖанр: '+G.genres.join(', '):'')
+  // Команды предметов — только если инвентарь включён
+  var itemCmd=M.inventory?' Предметы: выдать {"item":"назв","icon":"эмодзи","char":"имя","desc":"...","effects":{"hp":5,"STR":1}}; убрать {"remove_item":"назв","char":"имя"}.':'';
+
+  var p='Ты нарратор Artist Quest. '+(G.lang==='en'?'Reply ONLY in English.':'Только по-русски.')
+    +(acting.length>1?' Действуют вместе: '+acting.join(', ')+'.':'')
+    +' '+fmtInstr+' '+voiceInstr+' '+(dD[G.detail]||dD[3])
+    +'\nМир: '+G.worldName+'. '+G.worldDesc.slice(0,220)
+    +(G.genres.length?' ['+G.genres.join(',')+']':'')
     +'\nГерои: '+chars
-    +'\n'+(mD[G.mode]||mD.game)+' '+narratorInstr+' '+(dD[G.detail]||dD[3])
-    +(G.npcs?'\nNPC: '+G.npcs.slice(0,150):'')
-    +(rulesInstr?'\n'+rulesInstr:'')
-    +(G.hardcore?' Хардкор: напряжение максимальное.':'')
-    +(G.narratorExtra?'\n'+G.narratorExtra.slice(0,150):'')
-    +'\nКоманды: {"note":"факт"} в журнал; ВЫДАЧА ПРЕДМЕТА (когда герой находит/получает): {"item":"название","icon":"эмодзи","char":"имя","desc":"описание","effects":{"hp":5,"STR":1,"ac":1}} — effects опционально, для магических вещей (hp=макс.HP, ac=КБ, или код характеристики STR/DEX/CON/INT/WIS/CHA). УДАЛЕНИЕ (израсходован/сломан/отдан): {"remove_item":"название","char":"имя"}. ОБЯЗАТЕЛЬНО выдавай и убирай предметы по ходу сюжета. Игрок может присылать: [Событие в мире] — опиши это как происходящее окружение/NPC, без привязки к герою; [РЕЖИССЁРСКАЯ ИНСТРУКЦИЯ] — выполни скрытно (смени тон, введи персонажа, направь сюжет), НЕ упоминая саму инструкцию в тексте.'
-    +(summaryCache?'\nПРЕДЫСТОРИЯ: '+summaryCache.slice(0,700):'');
+    +(G.npcs?'\nNPC: '+G.npcs.slice(0,130):'')
+    +(mech.length?'\n'+mech.join(' '):'')
+    +itemCmd
+    +'\n{"note":"факт"}=журнал.'
+    +(G.hardcore?' Хардкор: высокое напряжение.':'')
+    +(G.narratorExtra?'\n'+G.narratorExtra.slice(0,120):'')
+    +' Команды игрока: [Событие в мире]=опиши без героя; [РЕЖИССЁРСКАЯ ИНСТРУКЦИЯ]=выполни скрытно.'
+    +(summaryCache?'\nРАНЕЕ: '+summaryCache.slice(0,450):'');
   return p;
 }
+
 function buildMsgs(msg,isSys){
   if(isSys)return [{role:'user',content:msg}];
   // Шлём только последние 10 сообщений — предыстория в системном промпте
-  return history.slice(-10);
+  return history.slice(-8);
 }
 
 async function sendAI(msg,isSystem=false,inputType){if(thinking)return;if(!G.useOwnKey&&user&&!user.own_api_key&&parseInt(user.tokens_balance)<500){addError('Недостаточно токенов',`У вас ${parseInt(user.tokens_balance||0)} токенов, нужно минимум 500.`,'Нажмите 💎 в верхней панели, или добавьте API ключ в Настройках.');return;}if(G.useOwnKey&&!user?.own_api_key){addError('Ключ не настроен','Свой ключ не добавлен.','Настройки → Мои нейросети.');return;}thinking=true;el('send-btn').disabled=true;if(!isSystem){
@@ -2200,7 +2680,7 @@ async function sendAI(msg,isSystem=false,inputType){if(thinking)return;if(!G.use
       addBlock(msg,true,null,actor);
       history.push({role:'user',content:'['+actor+']: '+msg});
     }
-  }showThink();try{const resp=await apiFetch('/api/ai/chat',{method:'POST',body:JSON.stringify({system:buildSys(),messages:buildMsgs(msg,isSystem),max_tokens:700,model:G.gameModel||undefined})});hideThink();if(resp.error){addError('Ошибка нейросети',resp.message||resp.error,resp.action||'Попробуйте ещё раз.');thinking=false;el('send-btn').disabled=false;return;}const reply=resp.content?.map(c=>c.text||'').join('')||'...';const blockId=addBlock(reply,false);blockVariants[blockId]={v0:reply,versions:[reply],current:0};if(isSystem)history.push({role:'user',content:msg,_sys:true});history.push({role:'assistant',content:reply});if(history.length>60)history=history.slice(-60);if(resp._meta?.tokens_balance!==null&&resp._meta?.tokens_balance!==undefined&&user){user.tokens_balance=resp._meta.tokens_balance;updateGameBal();}trackMessage();await maybeSummarize();autoSave();}catch(e){hideThink();addError('Ошибка соединения','Не удалось связаться с сервером.','Проверьте интернет и попробуйте снова.');}thinking=false;el('send-btn').disabled=false;}
+  }showThink();try{const resp=await apiFetch('/api/ai/chat',{method:'POST',body:JSON.stringify({system:buildSys(),messages:buildMsgs(msg,isSystem),max_tokens:600,model:G.gameModel||undefined})});hideThink();if(resp.error){addError('Ошибка нейросети',resp.message||resp.error,resp.action||'Попробуйте ещё раз.');thinking=false;el('send-btn').disabled=false;return;}const reply=resp.content?.map(c=>c.text||'').join('')||'...';const blockId=addBlock(reply,false);blockVariants[blockId]={v0:reply,versions:[reply],current:0};if(isSystem)history.push({role:'user',content:msg,_sys:true});history.push({role:'assistant',content:reply});if(history.length>60)history=history.slice(-60);if(resp._meta?.tokens_balance!==null&&resp._meta?.tokens_balance!==undefined&&user){user.tokens_balance=resp._meta.tokens_balance;updateGameBal();}trackMessage();await maybeSummarize();autoSave();}catch(e){hideThink();addError('Ошибка соединения','Не удалось связаться с сервером.','Проверьте интернет и попробуйте снова.');}thinking=false;el('send-btn').disabled=false;}
 
 // ── STORY BLOCKS ──────────────────────────────────
 function parseNarratorMeta(text){
@@ -2284,6 +2764,20 @@ function handleMetaObject(o){
     charStats[xc].xp=(parseInt(charStats[xc].xp)||0)+(parseInt(o.xp.amount)||0);
     if(rightTab==='chars')renderCharPanel();
     notif('+'+(o.xp.amount||0)+' XP — '+xc,'info');
+    return true;
+  }
+  if(o.npc_rel&&o.npc_rel.name){
+    if(!G.npcRels)G.npcRels={};
+    G.npcRels[o.npc_rel.name]=Math.max(-100,Math.min(100,parseInt(o.npc_rel.value)||0));
+    if(rightTab==='chars')renderCharPanel();
+    return true;
+  }
+  if(o.quest&&o.quest.text){
+    if(!G.quests)G.quests=[];
+    var ex=G.quests.find(function(q){return q.text===o.quest.text;});
+    if(ex){ex.done=!!o.quest.done;}
+    else{G.quests.unshift({text:String(o.quest.text).slice(0,100),done:!!o.quest.done});if(G.quests.length>15)G.quests.pop();}
+    if(rightTab==='journal')renderJournal();
     return true;
   }
   if(o.meter&&o.meter.char){
@@ -2400,7 +2894,7 @@ function startInlineEdit(blockId,isPlayer){if(G.hardcore)return;const ie=el('ied
 function cancelInlineEdit(blockId){const ie=el('iedit_'+blockId);if(ie)ie.classList.remove('open');}
 function saveInlineEdit(blockId,isPlayer){if(G.hardcore)return;const ta=el('ieta_'+blockId);if(!ta)return;const newText=ta.value.trim();if(!newText)return;if(isPlayer){const el2=el('ptxt_'+blockId);if(el2)el2.textContent=newText;const blk=document.querySelector(`.story-block[data-id="${blockId}"]`);if(blk){const actorEl=blk.querySelector('.player-name');const actor=actorEl?actorEl.textContent:'Путник';const idx=history.findLastIndex(m=>m.role==='user'&&!m._sys);if(idx>=0)history[idx]={...history[idx],content:`[${actor}]: ${newText}`};}}else{const ntxt=el('ntxt_'+blockId);if(ntxt)ntxt.innerHTML=`<p>${fmt(newText)}</p>`;const idx=history.findLastIndex(m=>m.role==='assistant');if(idx>=0)history[idx]={role:'assistant',content:newText};if(blockVariants[blockId]){blockVariants[blockId].versions[blockVariants[blockId].current]=newText;}}cancelInlineEdit(blockId);autoSave();notif('Изменено');}
 
-async function regenBlock(blockId){if(G.hardcore||thinking){notif(G.hardcore?'Хардкор — нельзя':'Подождите...','err');return;}const ntxt=el('ntxt_'+blockId);if(!ntxt)return;const lastAssIdx=history.findLastIndex(m=>m.role==='assistant');if(lastAssIdx<0)return;const curText=blockVariants[blockId]?.versions[blockVariants[blockId]?.current]||history[lastAssIdx]?.content||'';history.splice(lastAssIdx,1);ntxt.style.opacity='0.4';thinking=true;el('send-btn').disabled=true;try{const resp=await apiFetch('/api/ai/chat',{method:'POST',body:JSON.stringify({system:buildSys(),messages:buildMsgs('',false),max_tokens:700})});if(resp.error){notif('Ошибка','err');ntxt.style.opacity='1';thinking=false;el('send-btn').disabled=false;return;}const reply=resp.content?.map(c=>c.text||'').join('')||'...';history.push({role:'assistant',content:reply});let clean=reply.replace(/\{"note":[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.note){journal.unshift(o.note.slice(0,120));renderJournal();}}catch(e){}return '';}).replace(/\{"item":[^}]+\}/g,'').replace(/\{"dice":[^}]+\}/g,'').trim();ntxt.innerHTML=`<p>${fmt(clean)}</p>`;ntxt.style.opacity='1';if(!blockVariants[blockId])blockVariants[blockId]={v0:curText,versions:[curText],current:0};blockVariants[blockId].versions.push(reply);blockVariants[blockId].current=blockVariants[blockId].versions.length-1;const vBtn=el('vbtn_'+blockId);if(vBtn&&blockVariants[blockId].versions.length>=2)vBtn.style.display='';if(resp._meta?.tokens_balance!==null&&resp._meta?.tokens_balance!==undefined&&user){user.tokens_balance=resp._meta.tokens_balance;updateGameBal();}autoSave();}catch(e){notif('Ошибка соединения','err');ntxt.style.opacity='1';}thinking=false;el('send-btn').disabled=false;}
+async function regenBlock(blockId){if(G.hardcore||thinking){notif(G.hardcore?'Хардкор — нельзя':'Подождите...','err');return;}const ntxt=el('ntxt_'+blockId);if(!ntxt)return;const lastAssIdx=history.findLastIndex(m=>m.role==='assistant');if(lastAssIdx<0)return;const curText=blockVariants[blockId]?.versions[blockVariants[blockId]?.current]||history[lastAssIdx]?.content||'';history.splice(lastAssIdx,1);ntxt.style.opacity='0.4';thinking=true;el('send-btn').disabled=true;try{const resp=await apiFetch('/api/ai/chat',{method:'POST',body:JSON.stringify({system:buildSys(),messages:buildMsgs('',false),max_tokens:600})});if(resp.error){notif('Ошибка','err');ntxt.style.opacity='1';thinking=false;el('send-btn').disabled=false;return;}const reply=resp.content?.map(c=>c.text||'').join('')||'...';history.push({role:'assistant',content:reply});let clean=reply.replace(/\{"note":[^}]+\}/g,m=>{try{const o=JSON.parse(m);if(o.note){journal.unshift(o.note.slice(0,120));renderJournal();}}catch(e){}return '';}).replace(/\{"item":[^}]+\}/g,'').replace(/\{"dice":[^}]+\}/g,'').trim();ntxt.innerHTML=`<p>${fmt(clean)}</p>`;ntxt.style.opacity='1';if(!blockVariants[blockId])blockVariants[blockId]={v0:curText,versions:[curText],current:0};blockVariants[blockId].versions.push(reply);blockVariants[blockId].current=blockVariants[blockId].versions.length-1;const vBtn=el('vbtn_'+blockId);if(vBtn&&blockVariants[blockId].versions.length>=2)vBtn.style.display='';if(resp._meta?.tokens_balance!==null&&resp._meta?.tokens_balance!==undefined&&user){user.tokens_balance=resp._meta.tokens_balance;updateGameBal();}autoSave();}catch(e){notif('Ошибка соединения','err');ntxt.style.opacity='1';}thinking=false;el('send-btn').disabled=false;}
 
 function toggleVariants(blockId){const wrap=document.querySelector(`.story-block[data-id="${blockId}"] .narrator-wrap`);if(!wrap)return;const existing=wrap.querySelector('.variants-panel');if(existing){existing.remove();return;}const bv=blockVariants[blockId];if(!bv||bv.versions.length<2)return;const panel=document.createElement('div');panel.className='variants-panel';const label=document.createElement('div');label.className='variants-label';label.textContent=`${bv.versions.length} вариант(а) — выберите:`;panel.appendChild(label);const list=document.createElement('div');list.className='variants-list';bv.versions.forEach((v,i)=>{let clean=v.replace(/\{[^}]+\}/g,'').trim();const card=document.createElement('div');card.className='variant-card'+(i===bv.current?' chosen':'');card.innerHTML=`<div class="variant-num">${i===0?'Оригинал':'Вариант '+i}</div><div class="variant-text">${fmt(clean.slice(0,200))}...</div>`;card.onclick=()=>{bv.current=i;const ntxt=el('ntxt_'+blockId);if(ntxt)ntxt.innerHTML=`<p>${fmt(clean)}</p>`;const idx=history.findLastIndex(m=>m.role==='assistant');if(idx>=0)history[idx]={role:'assistant',content:v};list.querySelectorAll('.variant-card').forEach((c,j)=>c.classList.toggle('chosen',j===i));autoSave();notif(i===0?'Оригинал выбран':'Вариант '+i+' выбран');};list.appendChild(card);});panel.appendChild(list);wrap.appendChild(panel);}
 
@@ -2413,31 +2907,28 @@ function showGameSettings(){el('gs-wn').value=G.worldName;el('gs-wd').value=G.wo
 function renderGSMechanics(){
   var c=el('gs-mech-tags');if(!c)return;
   c.innerHTML='';
-  var mechs, store;
-  if(G.rules==='dnd'){
-    mechs=[['dice','🎲 Кубики'],['hp','❤ HP'],['stats','💪 Характеристики'],['levels','⬆ Уровни'],['ac','🛡 КБ']];
-    if(!G.dndMech)G.dndMech={};store=G.dndMech;
-  } else if(G.rules==='survival'){
-    mechs=[['hunger','🍖 Голод'],['thirst','💧 Жажда'],['fatigue','😴 Усталость'],['hp','❤ HP']];
-    if(!G.survMech)G.survMech={};store=G.survMech;
-  } else {
-    mechs=[['hp','❤ HP'],['dice','🎲 Кубики'],['stats','💪 Характеристики'],['hunger','🍖 Голод'],['thirst','💧 Жажда'],['fatigue','😴 Усталость'],['sanity','🧠 Рассудок'],['reputation','⭐ Репутация'],['mana','🔮 Мана'],['infection','🦠 Заражение'],['luck','🍀 Удача'],['heat','🔥 Розыск']];
-    if(!G.extraMech)G.extraMech={};store=G.extraMech;
-  }
-  var defaultOn=(G.rules==='dnd'||G.rules==='survival'); // в D&D/выживании механики по умолчанию вкл
-  mechs.forEach(function(m){
-    var key=m[0], label=m[1];
-    var on=(store[key]!==undefined)?(store[key]!==false):defaultOn;
-    var b=document.createElement('button');
-    b.className='tag'+(on?' on':'');
-    b.textContent=label;
-    b.dataset.k=key;
-    b.onclick=function(){
-      var cur=this.classList.contains('on');
-      store[this.dataset.k]=!cur;
-      this.classList.toggle('on');
-    };
-    c.appendChild(b);
+  if(!G.mechanics)G.mechanics={};
+  // Все механики из MECH_DEFS, сгруппированы
+  Object.keys(MECH_GROUPS).forEach(function(grp){
+    var any=Object.keys(MECH_DEFS).some(function(mk){return MECH_DEFS[mk].group===grp;});
+    if(!any)return;
+    var gl=document.createElement('div');
+    gl.style.cssText='font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;width:100%;margin:6px 0 2px';
+    gl.textContent=MECH_GROUPS[grp];
+    c.appendChild(gl);
+    Object.keys(MECH_DEFS).forEach(function(mk){
+      var def=MECH_DEFS[mk];if(def.group!==grp)return;
+      var on=G.mechanics[mk]===true;
+      var b=document.createElement('button');
+      b.className='tag'+(on?' on':'');
+      b.textContent=def.icon+' '+def.name;
+      b.dataset.mk=mk;
+      b.onclick=function(){
+        G.mechanics[this.dataset.mk]=!this.classList.contains('on');
+        this.classList.toggle('on');
+      };
+      c.appendChild(b);
+    });
   });
 }
 function saveGameSettings(){G.worldName=el('gs-wn').value.trim()||G.worldName;G.worldDesc=el('gs-wd').value.trim();G.worldStart=el('gs-ws').value.trim();G.npcs=el('gs-np').value.trim();G.narratorExtra=el('gs-ne').value.trim();var se=el('gs-stats-edit');if(se)G.statsEditable=se.checked;el('g-wn').textContent=G.worldName;cm('gsettings-modal');if(rightTab==='chars')renderCharPanel();autoSave();notif('Настройки обновлены');}
@@ -2446,15 +2937,15 @@ function saveGameSettings(){G.worldName=el('gs-wn').value.trim()||G.worldName;G.
 async function maybeSummarize(){
   // Умная компрессия: когда история > 18 сообщений, сжимаем старые 10 в резюме
   // Резюме ЗАМЕНЯЕТСЯ целиком (не растёт бесконечно)
-  if(history.length<=14)return;
+  if(history.length<=12)return;
   const toCompress=history.slice(0,history.length-8); // всё кроме последних 8
   const keepRecent=history.slice(-8);
   try{
-    const prevSummary=summaryCache?('Прошлое резюме: '+summaryCache.slice(0,600)+'\n\n'):'';
+    const prevSummary=summaryCache?('Прошлое резюме: '+summaryCache.slice(0,450)+'\n\n'):'';
     const r=await apiFetch('/api/ai/chat',{method:'POST',body:JSON.stringify({
-      system:'Ты сжимаешь историю RPG в компактное резюме. Сохрани: ключевые события, имена персонажей и NPC, важные предметы, текущие цели, состояние мира. Максимум 150 слов. Отвечай ТОЛЬКО резюме без вступлений.',
-      messages:[{role:'user',content:prevSummary+toCompress.map(m=>(m.role==='user'?'Игрок':'Мастер')+': '+String(m.content).slice(0,300)).join('\n')}],
-      max_tokens:220,
+      system:'Ты сжимаешь историю RPG в компактное резюме. Сохрани: ключевые события, имена персонажей и NPC, важные предметы, текущие цели, состояние мира. Максимум 100 слов. Только резюме, без вступлений.',
+      messages:[{role:'user',content:prevSummary+toCompress.map(m=>(m.role==='user'?'Игрок':'Мастер')+': '+String(m.content).slice(0,200)).join('\n')}],
+      max_tokens:180,
       model:'claude-haiku-4-5-20251001'
     })});
     const s=r.content?.map(c=>c.text||'').join('');
