@@ -30,7 +30,7 @@ body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.6;col
 
 .hidden{display:none!important}
 .page{display:none;width:100%;height:100%}
-.page.active{display:flex;flex-direction:column}
+.page.active{display:flex;flex-direction:column;height:100%;overflow:hidden}
 
 /* ─── BUTTONS ─── */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:40px;padding:0 18px;background:var(--bg2);border:.5px solid var(--border2);border-radius:var(--rad);font-family:'Inter',sans-serif;font-size:14px;font-weight:500;cursor:pointer;color:var(--text2);transition:all .15s;white-space:nowrap}
@@ -164,7 +164,7 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
 
 /* ─── SETTINGS PAGE ─── */
 #settings-page{background:var(--bg);overflow-y:auto}
-.settings-body{max-width:760px;margin:0 auto;padding:20px;display:flex;flex-direction:column;gap:14px;width:100%;overflow-y:auto;flex:1}
+.settings-body{max-width:760px;margin:0 auto;padding:20px;display:flex;flex-direction:column;gap:14px;width:100%;overflow-y:auto;flex:1 1 auto;min-height:0;height:calc(100vh - 46px)}
 .settings-sec{border:.5px solid var(--border2);border-radius:var(--rad);overflow:hidden}
 .settings-sec-hdr{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--bg2);cursor:pointer;transition:background .15s;min-height:48px}
 .settings-sec-hdr:hover{background:var(--bg3)}
@@ -581,6 +581,7 @@ body.in-game .theme-float{display:none}
 .gameover-title{font-family:'Cinzel',serif;font-size:28px;font-weight:700;color:var(--ac);margin-bottom:12px}
 .gameover-text{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:8px}
 .gameover-stats{font-size:12px;color:var(--text3);margin-top:8px}
+.menu-version{font-size:11px;color:var(--text3);margin-top:4px;letter-spacing:.05em;opacity:.7}
 /* ─── STAT BUTTONS (единый стиль, реагирует на тему) ─── */
 .stat-pm{width:22px;height:22px;border-radius:5px;border:.5px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;font-size:13px;font-weight:600;line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:0;transition:all .12s;flex-shrink:0}
 .stat-pm:hover{border-color:var(--ac);color:var(--ac);background:var(--bg3)}
@@ -609,7 +610,7 @@ to{transform:scale(1.12)}}
 <!-- ══════════ MAIN MENU ══════════ -->
 <div id="menu-page" class="page active">
   <div class="menu-wrap" style="margin:0 auto">
-    <div class="menu-logo-area"><div class="menu-logo">Artist Quest</div><div class="menu-tagline">Интерактивный нарратив на нейросетях</div></div>
+    <div class="menu-logo-area"><div class="menu-logo">Artist Quest</div><div class="menu-tagline">Интерактивный нарратив на нейросетях</div><div class="menu-version">Альфа 0.3.1</div></div>
     <div id="menu-guest">
       <div class="menu-actions">
         <div class="menu-item featured" onclick="openAuth('login')"><div class="menu-item-icon">⚔</div><div class="menu-item-body"><div class="menu-item-title">Начать приключение</div><div class="menu-item-desc">Вход или регистрация</div></div><div class="menu-item-arrow">→</div></div>
@@ -826,7 +827,7 @@ to{transform:scale(1.12)}}
           
         </div>
         <input type="hidden" id="cr" value=""/>
-        <div style="padding:9px 12px;background:var(--bg3);border-radius:var(--rad);font-size:12px;color:var(--text3);border:.5px solid var(--border);line-height:1.5">💡 Свою систему правил можно создать в <b style="color:var(--text2)">Настройках → Мои игровые системы</b> — она появится здесь как карточка.</div>
+        
         <div class="form-group">
           <label class="field-label">Сложность</label>
           <div class="grid2" id="difficulty-cards"></div>
@@ -838,7 +839,7 @@ to{transform:scale(1.12)}}
           <!-- Custom user narrators appended here -->
           <div id="custom-narrator-pick" style="margin-top:8px;display:flex;flex-direction:column;gap:6px"></div>
         </div>
-        <div style="padding:9px 12px;background:var(--bg3);border-radius:var(--rad);font-size:12px;color:var(--text3);border:.5px solid var(--border);line-height:1.5;margin-bottom:4px">💡 Своего нарратора можно создать в <b style="color:var(--text2)">Настройках → Мои нарраторы</b>.</div>
+        
         <div class="form-group"><label class="field-label">Доп. инструкции нарратору</label><textarea class="input" id="ne" rows="2" placeholder="Описывай запахи и звуки, добавляй диалоги NPC..."></textarea></div>
         <div class="form-group">
           <label class="field-label">Хардкор режим</label>
@@ -1257,7 +1258,15 @@ var SETTING_TEMPLATES = {
   detective: {name:'Расследование', icon:'🔍', desc:'Улики, допросы, дедукция',
     tip:'Ведёшь расследование: собираешь улики в журнал, допрашиваешь подозреваемых, ищешь противоречия. Нарратор подбрасывает зацепки и ложные следы, но разгадку не раскрывает — до неё нужно дойти самому.',
     genres:['Детектив','Нуар'],
-    mech:{clues:true, reputation:true, npcRelations:true, inventory:true, skills:true, traits:true}}
+    mech:{clues:true, reputation:true, npcRelations:true, inventory:true, skills:true, traits:true}},
+  hero: {name:'Героика', icon:'🛡', desc:'Характеристики и навыки, без кубиков',
+    tip:'Лёгкая ролевая система: у героя есть характеристики и способности, влияющие на исход, но без бросков кубика и сложных правил. Баланс отыгрыша и механики — золотая середина между чистой историей и полным D&D.',
+    genres:['Фэнтези','Приключения'],
+    mech:{stats:true, hp:true, levels:true, inventory:true, skills:true, traits:true}},
+  horror: {name:'Хоррор', icon:'🕯', desc:'Рассудок, страх, выживание',
+    tip:'Психологический ужас: шкала рассудка падает от столкновения с непостижимым. Здоровье, напряжение, атмосфера страха. Подходит для лавкрафтианских и мистических историй, где главная угроза — потерять разум.',
+    genres:['Хоррор','Мистика'],
+    mech:{hp:true, sanity:true, inventory:true, skills:true, traits:true}}
 };
 function applyTemplate(tplId){
   Object.keys(G.mechanics).forEach(function(k){G.mechanics[k]=false;});
@@ -1855,13 +1864,14 @@ function renderVoiceCards(){
   });
 }
 function openCustomBuilder(kind){
-  if(kind==='system'){
-    if(typeof renderCustomSystems==='function')renderCustomSystems();
-    om('sysbuilder-modal');
-  } else {
-    if(typeof renderCustomNarrators==='function')renderCustomNarrators();
-    om('narrbuilder-modal');
-  }
+  var modalId=kind==='system'?'sysbuilder-modal':'narrbuilder-modal';
+  var m=el(modalId);
+  if(!m){notif('Окно конструктора не найдено','err');return;}
+  try{
+    if(kind==='system'&&typeof renderCustomSystems==='function')renderCustomSystems();
+    if(kind==='narrator'&&typeof renderCustomNarrators==='function')renderCustomNarrators();
+  }catch(e){}
+  m.classList.add('open');
 }
 function renderSettingTemplates(){
   if(typeof buildRulesPick==='function')buildRulesPick();
