@@ -16,11 +16,13 @@ body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.6;col
 
 /* ─── THEMES ─── */
 :root{--bg:#1c1208;--bg2:#251a0a;--bg3:#30200c;--border:rgba(200,160,60,.14);--border2:rgba(200,160,60,.30);--border3:rgba(200,160,60,.62);--text:#e8d9a8;--text2:#c4a060;--text3:#8a7040;--ac:#d4a830;--ac2:#f0c448;--danger:#e05050;--success:#50b870;--info:#5090e0;--rad:6px;--mo:rgba(10,6,2,.93)}
-[data-theme=blood]{--bg:#1a0808;--bg2:#230d0d;--bg3:#2e1212;--border:rgba(200,50,50,.14);--border2:rgba(200,50,50,.30);--border3:rgba(200,50,50,.62);--text:#f0d0cc;--text2:#c47070;--text3:#8a4040;--ac:#cc3333;--ac2:#e85050}
-[data-theme=ocean]{--bg:#080e1c;--bg2:#0d1628;--bg3:#122035;--border:rgba(50,120,210,.14);--border2:rgba(50,120,210,.30);--border3:rgba(50,120,210,.62);--text:#c8dcf0;--text2:#6090c4;--text3:#406080;--ac:#2880cc;--ac2:#44aaee}
-[data-theme=forest]{--bg:#090f06;--bg2:#101a09;--bg3:#18260e;--border:rgba(60,150,40,.14);--border2:rgba(60,150,40,.30);--border3:rgba(60,150,40,.62);--text:#d0eccb;--text2:#70aa60;--text3:#407035;--ac:#3ea030;--ac2:#60cc48}
-[data-theme=void]{--bg:#0c0910;--bg2:#12101c;--bg3:#1c1830;--border:rgba(130,80,220,.14);--border2:rgba(130,80,220,.30);--border3:rgba(130,80,220,.62);--text:#d8c8f8;--text2:#9070cc;--text3:#604888;--ac:#8855cc;--ac2:#aa77ee}
-[data-theme=ash]{--bg:#0e0e0e;--bg2:#181818;--bg3:#222222;--border:rgba(150,140,110,.14);--border2:rgba(150,140,110,.30);--border3:rgba(150,140,110,.62);--text:#d8d4c4;--text2:#908870;--text3:#585648;--ac:#b8a870;--ac2:#d8c888}
+[data-theme=ocean]{--bg:#080e1c;--bg2:#0d1628;--bg3:#122035;--border:rgba(50,120,200,.16);--border2:rgba(50,120,200,.32);--border3:rgba(80,150,230,.62);--text:#c8dcf0;--text2:#7ba8d8;--text3:#4a6a90;--ac:#2880cc;--ac2:#48a8f0}
+[data-theme=ash]{--bg:#0e0e0e;--bg2:#181818;--bg3:#222222;--border:rgba(150,140,110,.16);--border2:rgba(150,140,110,.32);--border3:rgba(180,168,130,.60);--text:#d8d4c4;--text2:#a09878;--text3:#6a6450;--ac:#b8a870;--ac2:#d8c890}
+[data-theme=ember]{--bg:#160a06;--bg2:#22100a;--bg3:#301810;--border:rgba(224,104,44,.16);--border2:rgba(224,104,44,.34);--border3:rgba(240,130,70,.62);--text:#f0d0b8;--text2:#d09060;--text3:#906040;--ac:#e0682c;--ac2:#ff8848}
+[data-theme=jade]{--bg:#06120e;--bg2:#0a1d16;--bg3:#0f2a20;--border:rgba(46,196,136,.16);--border2:rgba(46,196,136,.32);--border3:rgba(70,220,160,.60);--text:#c4ecd8;--text2:#70b896;--text3:#3e7058;--ac:#2ec488;--ac2:#48e8a8}
+[data-theme=amethyst]{--bg:#0e0816;--bg2:#170e24;--bg3:#221634;--border:rgba(152,88,224,.16);--border2:rgba(152,88,224,.34);--border3:rgba(180,120,240,.62);--text:#dcc8f4;--text2:#a880d0;--text3:#705090;--ac:#9858e0;--ac2:#b878f8}
+[data-theme=rose]{--bg:#1a0a10;--bg2:#260e18;--bg3:#341424;--border:rgba(224,72,124,.16);--border2:rgba(224,72,124,.34);--border3:rgba(240,100,150,.62);--text:#f4ccd8;--text2:#d080a0;--text3:#904060;--ac:#e0487c;--ac2:#f868a0}
+[data-theme=steel]{--bg:#0a0d10;--bg2:#11161c;--bg3:#1a222c;--border:rgba(106,144,184,.16);--border2:rgba(106,144,184,.32);--border3:rgba(140,175,210,.60);--text:#cdd8e4;--text2:#8aa0b8;--text3:#566678;--ac:#6a90b8;--ac2:#90b8e0}
 
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:var(--bg2)}
@@ -562,6 +564,17 @@ body.no-hints .hint-ic{display:none}
 .mech-toggle input{width:16px;height:16px;accent-color:var(--ac);cursor:pointer;flex-shrink:0}
 .mech-label{font-size:13px;color:var(--text);font-weight:500}
 .mech-tiplong{font-size:11px;color:var(--text3);line-height:1.5;margin-top:3px;margin-left:24px}
+.theme-float{position:fixed;left:14px;bottom:14px;z-index:9000;display:flex;align-items:center;gap:8px}
+.theme-float-toggle{width:38px;height:38px;border-radius:50%;background:var(--bg2);border:.5px solid var(--border2);color:var(--text2);font-size:17px;cursor:pointer;transition:all .15s;box-shadow:0 3px 12px rgba(0,0,0,.4)}
+.theme-float-toggle:hover{border-color:var(--ac);transform:scale(1.08)}
+.theme-float-dots{display:none;gap:6px;background:var(--bg2);border:.5px solid var(--border2);border-radius:22px;padding:7px 11px;box-shadow:0 3px 16px rgba(0,0,0,.5)}
+.theme-float-dots.open{display:flex}
+.theme-float .theme-dot{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s}
+.theme-float .theme-dot:hover{transform:scale(1.15)}
+.theme-float .theme-dot.on{border-color:var(--ac2)}
+body.in-game .theme-float{display:none}
+.create-custom-btn{margin-top:8px;width:100%;padding:9px;background:transparent;border:.5px dashed var(--border2);border-radius:var(--rad);color:var(--text3);cursor:pointer;font-size:12px;transition:all .15s}
+.create-custom-btn:hover{border-color:var(--ac);color:var(--ac)}
 /* ─── STAT BUTTONS (единый стиль, реагирует на тему) ─── */
 .stat-pm{width:22px;height:22px;border-radius:5px;border:.5px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;font-size:13px;font-weight:600;line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:0;transition:all .12s;flex-shrink:0}
 .stat-pm:hover{border-color:var(--ac);color:var(--ac);background:var(--bg3)}
@@ -842,6 +855,7 @@ to{transform:scale(1.12)}}
           <div id="custom-rules-systems" style="margin-top:8px;display:flex;flex-direction:column;gap:6px"></div>
           <button type="button" class="fine-tune-toggle" id="fine-tune-toggle" onclick="toggleFineTune()">⚙ Тонкая настройка механик ▾</button>
           <div id="mech-fine-tune" style="display:none"></div>
+          <button type="button" class="create-custom-btn" onclick="openCustomBuilder('system')">➕ Создать свою игровую систему</button>
           <!-- D&D механики (показывается при выборе D&D) -->
           
           <!-- Выживание (показывается при выборе Выживания) -->
@@ -852,6 +866,7 @@ to{transform:scale(1.12)}}
         <div class="form-group">
           <label class="field-label">Стиль нарратора</label>
           <div class="grid2" id="voice-cards"></div>
+          <button type="button" class="create-custom-btn" onclick="openCustomBuilder('narrator')">➕ Создать своего нарратора</button>
           <!-- Custom user narrators appended here -->
           <div id="custom-narrator-pick" style="margin-top:8px;display:flex;flex-direction:column;gap:6px"></div>
         </div>
@@ -1128,7 +1143,7 @@ to{transform:scale(1.12)}}
 
 // ══ CONSTANTS ════════════════════════════════════
 const PROVIDERS_INFO={aitunnel:{name:'AITunnel (РФ)',models:['claude-sonnet-4.5','claude-haiku-4.5','gpt-4o','gpt-4o-mini'],hint:'sk-aitunnel-...'},claude:{name:'Claude (Anthropic)',models:['claude-sonnet-4-20250514','claude-haiku-4-5-20251001'],hint:'sk-ant-...'},openai:{name:'OpenAI (GPT)',models:['gpt-4o','gpt-4o-mini','gpt-4-turbo','gpt-3.5-turbo'],hint:'sk-...'},gemini:{name:'Google Gemini',models:['gemini-1.5-pro','gemini-1.5-flash','gemini-2.0-flash'],hint:'AIza...'},mistral:{name:'Mistral AI',models:['mistral-large-latest','mistral-small-latest','open-mistral-7b'],hint:'...'}};
-const THEMES=[{id:'',name:'Пергамент',bg:'#1c1208',bg2:'#251a0a',text:'#e8d9a8',ac:'#d4a830',desc:'Свитки'},{id:'blood',name:'Кровь',bg:'#1a0808',bg2:'#230d0d',text:'#f0d0cc',ac:'#cc3333',desc:'Руины'},{id:'ocean',name:'Океан',bg:'#080e1c',bg2:'#0d1628',text:'#c8dcf0',ac:'#2880cc',desc:'Глубины'},{id:'forest',name:'Лес',bg:'#090f06',bg2:'#101a09',text:'#d0eccb',ac:'#3ea030',desc:'Бор'},{id:'void',name:'Пустота',bg:'#0c0910',bg2:'#12101c',text:'#d8c8f8',ac:'#8855cc',desc:'Межмирье'},{id:'ash',name:'Пепел',bg:'#0e0e0e',bg2:'#181818',text:'#d8d4c4',ac:'#b8a870',desc:'Пепел'}];
+const THEMES=[{id:'',name:'Пергамент',bg:'#1c1208',bg2:'#251a0a',text:'#e8d9a8',ac:'#d4a830',desc:'Тёплое золото'},{id:'ocean',name:'Океан',bg:'#080e1c',bg2:'#0d1628',text:'#c8dcf0',ac:'#2880cc',desc:'Глубины'},{id:'ash',name:'Пепел',bg:'#0e0e0e',bg2:'#181818',text:'#d8d4c4',ac:'#b8a870',desc:'Серый камень'},{id:'ember',name:'Уголь',bg:'#160a06',bg2:'#22100a',text:'#f0d0b8',ac:'#e0682c',desc:'Тлеющий жар'},{id:'jade',name:'Нефрит',bg:'#06120e',bg2:'#0a1d16',text:'#c4ecd8',ac:'#2ec488',desc:'Изумруд'},{id:'amethyst',name:'Аметист',bg:'#0e0816',bg2:'#170e24',text:'#dcc8f4',ac:'#9858e0',desc:'Колдовство'},{id:'rose',name:'Закат',bg:'#1a0a10',bg2:'#260e18',text:'#f4ccd8',ac:'#e0487c',desc:'Багрянец'},{id:'steel',name:'Сталь',bg:'#0a0d10',bg2:'#11161c',text:'#cdd8e4',ac:'#6a90b8',desc:'Холодный металл'}];
 const detLabels=['Кратко','Немного','Среднее','Подробно','Эпично'];
 const MC_GROUPS={};
 const QA_DEFAULTS=[{text:'Осматриваюсь вокруг',cat:'examine'},{text:'Говорю с ближайшим NPC',cat:'talk'},{text:'Иду вперёд',cat:'move'},{text:'Проверяю инвентарь',cat:'examine'},{text:'Атакую!',cat:'move'}];
@@ -1394,11 +1409,31 @@ const ACHIEVEMENTS=[
   {id:'world_builder',name:'Создатель миров',desc:'Создать 5 разных миров',icon:'🌍'},
   {id:'hardcore',name:'Хардкорщик',desc:'Завершить хардкор сессию',icon:'💀'},
   {id:'party',name:'Командный игрок',desc:'Создать группу из 3+ персонажей',icon:'👥'},
+  {id:'survivor',name:'Выживший',desc:'Сыграть в режиме выживания',icon:'🏕'},
+  {id:'detective',name:'Сыщик',desc:'Раскрыть дело в режиме расследования',icon:'🔍'},
+  {id:'explorer',name:'Исследователь',desc:'Попробовать 4 разных сеттинга',icon:'🧭'},
+  {id:'collector',name:'Коллекционер',desc:'Собрать 10 предметов в инвентаре',icon:'🎒'},
+  {id:'leveler',name:'Восхождение',desc:'Достичь 5 уровня персонажем',icon:'⬆'},
+  {id:'gambler',name:'Игрок',desc:'Бросить кубик 20 раз',icon:'🎲'},
+  {id:'director',name:'Режиссёр',desc:'Использовать режим Режиссёра',icon:'🎬'},
+  {id:'tactician',name:'Тактик',desc:'Сыграть с карточной системой',icon:'🃏'},
+  {id:'marathoner',name:'Марафонец',desc:'Написать 500 сообщений',icon:'🔥'},
+  {id:'curator',name:'Куратор',desc:'Создать свою тему оформления',icon:'🎨'},
 ];
 function getProgress(){return JSON.parse(localStorage.getItem('aq_progress')||'{"messages":0,"games":0,"dndGames":0,"worlds":[],"unlocked":[]}');}
 function saveProgress(p){localStorage.setItem('aq_progress',JSON.stringify(p));}
 function trackMessage(){const p=getProgress();p.messages=(p.messages||0)+1;checkAchievements(p);saveProgress(p);}
-function trackGameStart(){const p=getProgress();p.games=(p.games||0)+1;if(G.rules==='dnd')p.dndGames=(p.dndGames||0)+1;if(G.worldName&&!p.worlds?.includes(G.worldName)){p.worlds=p.worlds||[];p.worlds.push(G.worldName);}p.maxParty=Math.max(p.maxParty||0,(G.chars||[]).length);if(G.hardcore)p.hardcorePlayed=true;checkAchievements(p);saveProgress(p);}
+function trackGameStart(){const p=getProgress();p.games=(p.games||0)+1;
+  if(G.rules==='dnd')p.dndGames=(p.dndGames||0)+1;
+  if(G.worldName&&!(p.worlds||[]).includes(G.worldName)){p.worlds=p.worlds||[];p.worlds.push(G.worldName);}
+  p.maxParty=Math.max(p.maxParty||0,(G.chars||[]).length);
+  if(G.hardcore)p.hardcorePlayed=true;
+  var M=G.mechanics||{};
+  if(M.hunger||M.thirst||M.fatigue)p.survivalPlayed=true;
+  if(M.clues)p.detectivePlayed=true;
+  if(M.cards)p.cardsPlayed=true;
+  if(G.settingTemplate){p.settingsTried=p.settingsTried||[];if(p.settingsTried.indexOf(G.settingTemplate)<0)p.settingsTried.push(G.settingTemplate);}
+  checkAchievements(p);saveProgress(p);}
 function showAchievement(a){
   var old=document.querySelector('.ach-popup'); if(old)old.remove();
   var d=document.createElement('div');
@@ -1476,12 +1511,29 @@ function setGlobalLang(lang){globalSettings.lang=lang;saveGlobalSettings();el('l
 function saveGlobalSettings(){localStorage.setItem(GLOBAL_SETTINGS_KEY,JSON.stringify(globalSettings));}
 
 // ══ THEMES ═══════════════════════════════════════
+function toggleThemeFloat(){
+  var d=el('theme-float-dots');if(d)d.classList.toggle('open');
+  if(d&&d.classList.contains('open'))renderThemeFloat();
+}
+function renderThemeFloat(){
+  var c=el('theme-float-dots');if(!c)return;c.innerHTML='';
+  var saved=localStorage.getItem('aq_theme')||'';
+  [].concat(THEMES, customThemes||[]).forEach(function(t){
+    var dot=document.createElement('div');
+    dot.className='theme-dot'+(saved===t.id?' on':'');
+    dot.style.background=t.bg2||t.bg;
+    dot.style.borderColor=saved===t.id?(t.ac):'transparent';
+    dot.title=t.name;
+    dot.onclick=function(){setTheme(t.id);renderThemeFloat();};
+    c.appendChild(dot);
+  });
+}
 function buildThemeDots(containerId){const c=el(containerId);if(!c)return;c.innerHTML='';const saved=localStorage.getItem('aq_theme')||'';const all=[...THEMES,...customThemes];all.forEach(t=>{const wrap=document.createElement('div');wrap.className='theme-dot-wrap';const dot=document.createElement('div');dot.className='theme-dot'+(saved===t.id?' on':'');dot.style.cssText=`background:${t.bg};border-color:${saved===t.id?t.ac:'transparent'}`;dot.title=t.name;dot.onclick=()=>{setTheme(t.id);document.querySelectorAll('.theme-dot').forEach(d=>{d.classList.remove('on');d.style.borderColor='transparent';});dot.classList.add('on');dot.style.borderColor=t.ac;};const lbl=document.createElement('div');lbl.className='theme-dot-label';lbl.textContent=t.name;wrap.appendChild(dot);wrap.appendChild(lbl);c.appendChild(wrap);});}
 function buildThemeCards(){const g=el('theme-cards-grid');if(!g)return;g.innerHTML='';const saved=localStorage.getItem('aq_theme')||'';[...THEMES].forEach(t=>{const c=document.createElement('div');c.className='theme-card'+(saved===t.id?' on':'');c.innerHTML=`<div class="theme-preview" style="background:${t.bg};color:${t.ac}">${t.name}</div><div class="theme-card-name" style="background:${t.bg2};color:${t.text}">${t.desc}</div>`;c.onclick=()=>{setTheme(t.id);buildThemeCards();buildCustomThemesList();buildThemeDots('theme-dots-guest');buildThemeDots('theme-dots-user');};g.appendChild(c);});}
 function buildCustomThemesList(){const c=el('custom-themes-list');if(!c)return;c.innerHTML='';const saved=localStorage.getItem('aq_theme')||'';customThemes.forEach(t=>{const d=document.createElement('div');d.style.cssText='display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--bg3);border-radius:var(--rad);margin-bottom:5px;border:.5px solid var(--border)'+(saved===t.id?';border-color:var(--ac)':'');d.innerHTML=`<div style="width:22px;height:22px;border-radius:50%;background:${t.bg};border:.5px solid ${t.border};flex-shrink:0"></div><div style="font-size:13px;font-weight:500;color:var(--text);flex:1">${esc(t.name)}</div>${saved===t.id?'<span style="font-size:10px;color:var(--success)">✓ Активна</span>':''}<button class="btn btn-xs" onclick="setTheme('${t.id}')">Применить</button><button class="btn danger btn-xs" onclick="deleteCustomTheme('${t.id}')">🗑</button>`;c.appendChild(d);});el('themes-badge').textContent=`${customThemes.length} / 3 своих`;}
 function setTheme(id){const ct=customThemes.find(t=>t.id===id);if(ct){applyCustomTheme(ct);}else{document.body.removeAttribute('data-theme');if(id)document.body.dataset.theme=id;}localStorage.setItem('aq_theme',id);}
 function applyCustomTheme(t){document.body.dataset.theme='_custom';let s=document.getElementById('custom-theme-style');if(!s){s=document.createElement('style');s.id='custom-theme-style';document.head.appendChild(s);}s.textContent=`[data-theme="_custom"]{--bg:${t.bg};--bg2:${t.bg2};--bg3:${t.bg2};--text:${t.text};--text2:${t.ac}aa;--text3:${t.ac}66;--ac:${t.ac};--ac2:${t.ac};--border:${t.border}22;--border2:${t.border}44;--border3:${t.border}}`;}
-function saveCustomTheme(){if(customThemes.length>=3){el('theme-err').textContent='Лимит: 3 своих темы';return;}const name=el('ct-name').value.trim()||'Своя тема';const id='_c_'+Date.now();const t={id,name,bg:el('ct-bg').value,bg2:el('ct-bg2').value,text:el('ct-text').value,ac:el('ct-ac').value,border:el('ct-border').value};customThemes.push(t);localStorage.setItem('aq_custom_themes',JSON.stringify(customThemes));el('theme-err').textContent='';buildThemeCards();buildCustomThemesList();buildThemeDots('theme-dots-guest');buildThemeDots('theme-dots-user');setTheme(id);notif('Тема создана!');}
+function saveCustomTheme(){if(customThemes.length>=3){el('theme-err').textContent='Лимит: 3 своих темы';return;}const name=el('ct-name').value.trim()||'Своя тема';const id='_c_'+Date.now();const t={id,name,bg:el('ct-bg').value,bg2:el('ct-bg2').value,text:el('ct-text').value,ac:el('ct-ac').value,border:el('ct-border').value};customThemes.push(t);localStorage.setItem('aq_custom_themes',JSON.stringify(customThemes));el('theme-err').textContent='';buildThemeCards();buildCustomThemesList();buildThemeDots('theme-dots-guest');buildThemeDots('theme-dots-user');setTheme(id);try{var pt=getProgress();pt.customThemeMade=true;checkAchievements(pt);saveProgress(pt);}catch(e){}notif('Тема создана!');}
 function deleteCustomTheme(id){if(!confirm('Удалить тему?'))return;customThemes=customThemes.filter(t=>t.id!==id);localStorage.setItem('aq_custom_themes',JSON.stringify(customThemes));if(localStorage.getItem('aq_theme')===id){setTheme('');}buildThemeCards();buildCustomThemesList();buildThemeDots('theme-dots-guest');buildThemeDots('theme-dots-user');}
 try{
   (()=>{const saved=localStorage.getItem('aq_theme');if(!saved&&saved!==null)return;const ct=customThemes.find(t=>t.id===saved);if(ct)applyCustomTheme(ct);else if(saved)document.body.dataset.theme=saved;})();
@@ -1501,7 +1553,7 @@ function deleteSystem(i){customSystems.splice(i,1);localStorage.setItem('aq_syst
 async function apiFetch(path,opts={}){const headers={'Content-Type':'application/json',...(token?{'Authorization':'Bearer '+token}:{})};const res=await fetch(path,{...opts,headers:{...headers,...opts.headers}});return res.json();}
 
 // ══ NAVIGATION ═══════════════════════════════════
-function showMenu(){showPage('menu-page');if(user){el('menu-guest').style.display='none';el('menu-user').style.display='block';el('menu-uname').textContent=user.username;}else{el('menu-guest').style.display='block';el('menu-user').style.display='none';}}
+function showMenu(){document.body.classList.remove('in-game');showPage('menu-page');if(user){el('menu-guest').style.display='none';el('menu-user').style.display='block';el('menu-uname').textContent=user.username;}else{el('menu-guest').style.display='block';el('menu-user').style.display='none';}}
 
 // ══ AUTH ═════════════════════════════════════════
 function openAuth(tab='login'){om('auth-overlay');switchAuthTab(tab);}
@@ -1542,7 +1594,7 @@ async function delSave(slot){if(!confirm('Удалить слот '+(slot+1)+'?'
 function newWorldInSlot(slot){G.slotId=slot;showPage('create-page');initCreatePage();}
 
 // ══ CREATE PAGE / WIZARD ══════════════════════════
-function initCreatePage(){currentStep=0;selectedPreset=null;aiChoice='server';setupChars=[];MC_GROUPS.charMode=null;MC_GROUPS.mode=null;MC_GROUPS.narratorStyle=null;MC_GROUPS.rules=null;MC_GROUPS.hardcore=null;// Reset form
+function initCreatePage(){document.body.classList.remove('in-game');currentStep=0;selectedPreset=null;aiChoice='server';setupChars=[];MC_GROUPS.charMode=null;MC_GROUPS.mode=null;MC_GROUPS.narratorStyle=null;MC_GROUPS.rules=null;MC_GROUPS.hardcore=null;// Reset form
 ['wn','wd','ws','np','ne','cr'].forEach(id=>{const e=el(id);if(e)e.value='';});document.querySelectorAll('#genre-tags .tag').forEach(t=>t.classList.remove('on'));window._autoCharMode=true;['mode','charMode','hardcore','narratorStyle','rules'].forEach(g=>{MC_GROUPS[g]=null;const first=document.querySelector(`[onclick*="selMC(this,'${g}')"]`);if(first)selMC(first,g);});window._autoCharMode=false;document.querySelector('[data-lang="ru"]')?.classList.add('on');el('det').value=globalSettings.detail||3;el('dv').textContent=detLabels[(globalSettings.detail||3)-1];
   applyTemplate('roleplay');G.format='adventure';G.voice='classic';
   renderSettingTemplates();renderMechFineTune();renderFormatCards();renderVoiceCards();
@@ -1802,6 +1854,21 @@ function renderVoiceCards(){
     c.appendChild(d);
   });
 }
+function openCustomBuilder(kind){
+  // Сохраняем черновик создания и идём в настройки к конструктору
+  openSettingsFromGame ? null : null;
+  showPage('settings-page');
+  if(typeof loadSettingsData==='function')loadSettingsData();
+  setTimeout(function(){
+    var secId=kind==='system'?'set-systems':'set-narrators';
+    var sec=el(secId);
+    if(sec){
+      sec.classList.remove('collapsed');
+      sec.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+    notif(kind==='system'?'Создайте систему — она появится в выборе':'Создайте нарратора','info');
+  },200);
+}
 function renderSettingTemplates(){
   var c=el('setting-templates');if(!c)return;
   c.innerHTML='';
@@ -1921,7 +1988,7 @@ function beginStory(){
   var msg=G.worldStart||('Начни историю в мире "'+G.worldName+'". '+(G.chars.length?'Главный герой: '+(G.chars[G.activeChar]?G.chars[G.activeChar].name:'')+'. '+(G.chars[G.activeChar]?G.chars[G.activeChar].desc:''):''));
   sendAI(msg,true);
 }
-function enterGame(isNew){migrateMechanics();showPage('game-page');
+function enterGame(isNew){migrateMechanics();document.body.classList.add('in-game');showPage('game-page');
   // Onboarding hint for first-timers
   const p=getProgress();
   if((p.games||0)<=1&&isNew&&globalSettings.hints!==false){setTimeout(()=>{notif('💡 Пишите действия внизу. Наведите на текст нарратора — появятся кнопки «Изменить» и «Другой ответ»','info');},3000);}el('g-wn').textContent=G.worldName;el('g-wt').textContent=G.genres.join(' · ')||G.mode;el('hcb').classList.toggle('hidden',!G.hardcore);el('game-uname').textContent=user?.username||'';const provLabel=G.useOwnKey&&user?.own_api_key?(PROVIDERS_INFO[user.own_provider]?.name||'Свой ключ'):'Встроенная нейросеть';el('g-prov').textContent='🤖 '+provLabel+(G.rules==='dnd'?' · ⚔ D&D':'');updateGameBal();if(prices)buildPkgMini('pkg-grid-game');partyMode='single';activeParty=[0];blockVariants={};renderGChars();renderJournal();renderQA();switchRightTab('journal');// Notes restore
@@ -2597,6 +2664,7 @@ function rollDice(did, dc) {
   if (btn) btn.disabled = true;
   // Случайное число генерируется ЛОКАЛЬНО в браузере — никакой нейросети
   var roll = Math.floor(Math.random() * 20) + 1;
+  try{var pr=getProgress();pr.diceRolls=(pr.diceRolls||0)+1;checkAchievements(pr);saveProgress(pr);}catch(e){}
   var count = 0;
   var interval = setInterval(function() {
     numEl.textContent = Math.floor(Math.random() * 20) + 1;
@@ -2718,6 +2786,7 @@ async function doSend(){
   if(inputMode==='world'){
     await sendAI(t,false,'world');
   } else if(inputMode==='direct'){
+    try{var pd=getProgress();pd.directorUsed=true;checkAchievements(pd);saveProgress(pd);}catch(e){}
     await sendAI(t,false,'direct');
   } else {
     await sendAI(t);
@@ -2777,7 +2846,7 @@ function isOn(id){try{var f=getFlags();return f[id]!==false;}catch(e){return tru
 function toggleHints(on){
   globalSettings.hints=on;
   localStorage.setItem(GLOBAL_SETTINGS_KEY,JSON.stringify(globalSettings));
-  applyHintsVisibility();
+  applyHintsVisibility();renderThemeFloat();
 }
 function applyHintsVisibility(){
   document.body.classList.toggle('no-hints', globalSettings.hints===false);
@@ -2828,5 +2897,9 @@ function renderFeaturesList(){
 applyHintsVisibility();
 (async()=>{if(location.search.includes('payment=success')){history.replaceState(null,'','/');notif('✓ Оплата прошла! Баланс обновляется...');}if(token){const me=await apiFetch('/api/auth/me');if(me.user){user=me.user;showMenu();await loadUserData();}else{token='';localStorage.removeItem('aq_token');}}})();
 </script>
+<div id="theme-float" class="theme-float">
+  <button class="theme-float-toggle" onclick="toggleThemeFloat()" title="Сменить оформление">🎨</button>
+  <div class="theme-float-dots" id="theme-float-dots"></div>
+</div>
 </body>
 </html>
