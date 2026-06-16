@@ -164,7 +164,7 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
 
 /* ─── SETTINGS PAGE ─── */
 #settings-page{background:var(--bg);overflow-y:auto}
-.settings-body{max-width:760px;margin:0 auto;padding:20px;display:flex;flex-direction:column;gap:14px}
+.settings-body{max-width:760px;margin:0 auto;padding:20px;display:flex;flex-direction:column;gap:14px;width:100%;overflow-y:auto;flex:1}
 .settings-sec{border:.5px solid var(--border2);border-radius:var(--rad);overflow:hidden}
 .settings-sec-hdr{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--bg2);cursor:pointer;transition:background .15s;min-height:48px}
 .settings-sec-hdr:hover{background:var(--bg3)}
@@ -443,7 +443,7 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
 
 /* ─── PAGE TRANSITIONS ─── */
 .page{transition:opacity .18s ease}
-.page.active{animation:pageIn .22s ease}
+
 @keyframes pageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
 /* Right panel tab transitions */
@@ -536,7 +536,7 @@ to{transform:scale(1.12)}}
 .char-check{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:4px;border:.5px solid var(--border3);font-size:9px;color:var(--bg);background:transparent;vertical-align:middle;transition:all .15s}
 .char-check.on{background:var(--ac);border-color:var(--ac)}
 body.no-hints .hint-ic{display:none}
-
+.hint-ic{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:var(--bg3);border:.5px solid var(--border2);color:var(--text3);font-size:10px;font-weight:700;cursor:help;position:relative;vertical-align:middle;margin-left:3px;transition:all .15s}
 .hint-ic:hover{background:var(--ac);color:var(--bg);border-color:var(--ac)}
 .hint-ic:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);width:230px;background:var(--bg2);border:.5px solid var(--ac);border-radius:8px;padding:9px 11px;font-size:11px;font-weight:400;line-height:1.5;color:var(--text2);text-align:left;z-index:9999;box-shadow:0 6px 24px rgba(0,0,0,.5);white-space:normal;pointer-events:none}
 .hint-ic:hover::before{content:'';position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--ac);z-index:9999}
@@ -719,52 +719,10 @@ to{transform:scale(1.12)}}
     </div>
 
     <!-- Custom Narrators -->
-    <div class="settings-sec collapsed" id="set-narrators">
-      <div class="settings-sec-hdr" onclick="toggleSec(this)"><span class="sec-icon">🪶</span><span class="sec-title">Мои нарраторы</span><span class="sec-badge" id="narrators-badge">0 / 4</span><span class="sec-arrow">▾</span></div>
-      <div class="settings-sec-body">
-        <p style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6">Создайте собственные стили повествования. Они появятся при выборе нарратора в настройках игры. Лимит: 4 нарратора.</p>
-        <div id="custom-narrators-list" style="margin-bottom:12px"></div>
-        <div id="narrator-form" style="background:var(--bg3);border:.5px solid var(--border);border-radius:var(--rad);padding:14px;display:flex;flex-direction:column;gap:10px">
-          <div class="form-group"><label class="field-label">Название нарратора</label><input class="input" id="nar-name" placeholder="Мой стиль..."/></div>
-          <div class="form-group"><label class="field-label">Описание стиля (инструкция для нейросети)</label><textarea class="input" id="nar-desc" rows="3" placeholder="Повествуй в стиле Говарда Лавкрафта — мрачно, атмосферно, с нагнетанием ужаса..."></textarea></div>
-          <button class="btn primary btn-sm" onclick="saveCustomNarrator()" style="align-self:flex-start">Сохранить нарратора</button>
-          <div id="nar-err" class="field-error"></div>
-        </div>
-      </div>
-    </div>
+    
 
     <!-- Custom Game Systems -->
-    <div class="settings-sec collapsed" id="set-systems">
-      <div class="settings-sec-hdr" onclick="toggleSec(this)"><span class="sec-icon">📜</span><span class="sec-title">Мои игровые системы</span><span class="sec-badge" id="systems-badge">0 / 4</span><span class="sec-arrow">▾</span></div>
-      <div class="settings-sec-body">
-        <p style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6">Создайте собственные правила и механики. Лимит: 4 системы.</p>
-        <div id="custom-systems-list" style="margin-bottom:12px"></div>
-        <div style="background:var(--bg3);border:.5px solid var(--border);border-radius:var(--rad);padding:14px;display:flex;flex-direction:column;gap:10px">
-          <div class="form-group"><label class="field-label">Название системы</label><input class="input" id="sys-name" placeholder="Моя система..."/></div>
-          <div class="form-group"><label class="field-label">Правила (инструкция для нейросети)</label><textarea class="input" id="sys-desc" rows="3" placeholder="Используй систему очков судьбы: каждые 3 хода игрок может потратить 1 очко судьбы чтобы изменить исход..."></textarea></div>
-          <div class="form-group"><label class="field-label">Механики системы — включи нужные</label>
-            <div style="display:flex;flex-wrap:wrap;gap:6px" id="sys-mech-tags">
-              <button class="tag" data-m="dice" onclick="this.classList.toggle('on')">🎲 Кубики</button>
-              <button class="tag" data-m="hp" onclick="this.classList.toggle('on')">❤ HP</button>
-              <button class="tag" data-m="stats" onclick="this.classList.toggle('on')">💪 Характеристики</button>
-              <button class="tag" data-m="levels" onclick="this.classList.toggle('on')">⬆ Уровни</button>
-              <button class="tag" data-m="ac" onclick="this.classList.toggle('on')">🛡 КБ</button>
-              <button class="tag" data-m="hunger" onclick="this.classList.toggle('on')">🍖 Голод</button>
-              <button class="tag" data-m="thirst" onclick="this.classList.toggle('on')">💧 Жажда</button>
-              <button class="tag" data-m="fatigue" onclick="this.classList.toggle('on')">😴 Усталость</button>
-              <button class="tag" data-m="sanity" onclick="this.classList.toggle('on')">🧠 Рассудок</button>
-              <button class="tag" data-m="reputation" onclick="this.classList.toggle('on')">⭐ Репутация</button>
-              <button class="tag" data-m="mana" onclick="this.classList.toggle('on')">🔮 Мана</button>
-              <button class="tag" data-m="infection" onclick="this.classList.toggle('on')">🦠 Заражение</button>
-              <button class="tag" data-m="luck" onclick="this.classList.toggle('on')">🍀 Удача</button>
-              <button class="tag" data-m="heat" onclick="this.classList.toggle('on')">🔥 Розыск</button>
-            </div>
-          </div>
-          <button class="btn primary btn-sm" onclick="saveCustomSystem()" style="align-self:flex-start">Сохранить систему</button>
-          <div id="sys-err" class="field-error"></div>
-        </div>
-      </div>
-    </div>
+    
 
     <!-- Themes -->
     <div class="settings-sec collapsed" id="set-themes">
@@ -1190,7 +1148,7 @@ const PRESETS=[
      charTraits:[{name:'Циничный профессионал',desc:'Без иллюзий о людях, но работу делает честно'},{name:'Кодекс',desc:'Дети и невиновные неприкосновенны'},{name:'Нейтралитет',desc:'Старается не лезть в чужие войны'}],
      items:[{name:'Стальной меч',icon:'⚔',desc:'Против людей и зверей'},{name:'Серебряный меч',icon:'🗡',desc:'Против чудовищ'},{name:'Доспех ведьмака',icon:'🛡',desc:'Лёгкая усиленная кожа'},{name:'Набор алхимика',icon:'⚗',desc:'Колбы, ингредиенты, эликсиры, бомбы'}]}]},
 
-  {id:'taiga',name:'Мёртвая Тайга',icon:'🌲',genre:['Постапокалипсис','Выживание'],
+  {id:'taiga',name:'Мёртвая Тайга',icon:'🌲',genre:['Постапок','Выживание'],
    format:'adventure',voice:'cold',mech:{hp:true,hunger:true,thirst:true,fatigue:true,inventory:true,skills:true,traits:true},
    desc:'Ваш самолёт рухнул в сибирской тайге зимой. До жилья сотни километров глухого леса. Ночью минус тридцать. Связь молчит. Из живых — только вы. Из припасов — то, что выхватили из горящего фюзеляжа. А ещё волки уже взяли след.',
    worldStart:'Снег скрипит под ногами, обломки дымятся за спиной. Час до заката. На вас лётная куртка, в руках нож и полусобранный рюкзак. Холод находит щели в одежде, а из глубины леса доносится протяжный вой — и ему отвечают с другой стороны.',
@@ -1200,7 +1158,7 @@ const PRESETS=[
      charTraits:[{name:'Не сдаётся',desc:'Чем хуже, тем упрямее цепляется за жизнь'},{name:'Считает ресурсы',desc:'Бережёт каждую спичку и калорию'},{name:'Говорит сам с собой',desc:'Проговаривает план, чтобы не сойти с ума'}],
      items:[{name:'Охотничий нож',icon:'🔪',desc:'Разделать дичь, настрогать щепу, защититься'},{name:'Зажигалка',icon:'🔥',desc:'Газа на десяток розжигов'},{name:'Аптечка',icon:'🩹',desc:'Бинт, жгут, обезболивающее'},{name:'Сигнальная ракета',icon:'🧨',desc:'Две штуки, один шанс быть замеченным'}]}]},
 
-  {id:'wasteland',name:'Пустошь',icon:'☢',genre:['Постапокалипсис'],
+  {id:'wasteland',name:'Пустошь',icon:'☢',genre:['Постапок'],
    format:'adventure',voice:'cold',mech:{hp:true,hunger:true,thirst:true,infection:true,radiation:true,inventory:true,skills:true,traits:true},
    desc:'Через сорок лет после Великой Вспышки мир — выжженная радиоактивная пустошь. Города стали руинами, населёнными мутантами и рейдерами. Вода на вес золота, чистая еда — роскошь. Ты выходишь из убежища впервые, и счётчик Гейгера уже трещит.',
    worldStart:'Гермоворота Убежища 9 с лязгом закрываются за спиной — назад пути нет. Перед вами ржавая пустошь под бурым небом, вдалеке руины города. Счётчик Гейгера потрескивает, фляга наполовину пуста, а на горизонте поднимается столб пыли — кто-то едет.',
@@ -1240,7 +1198,7 @@ const PRESETS=[
      charTraits:[{name:'Не оставляет следов',desc:'Чистит логи, меняет маршруты'},{name:'Держит слово',desc:'Кто заплатил — того не сдаёт'},{name:'Призрак системы',desc:'Официально не существует'}],
      items:[{name:'Пистолет-пулемёт',icon:'🔫',desc:'Компактный, с глушителем'},{name:'Дека-взломщик',icon:'💻',desc:'Кастомная, против корпоративного ICE'},{name:'Стимуляторы',icon:'💉',desc:'Три дозы, ускоряют реакцию'},{name:'Оптический камуфляж',icon:'🌫',desc:'Десять секунд невидимости'}]}]},
 
-  {id:'warhammer',name:'Warhammer 40000',icon:'⚙',genre:['Мрачное будущее','Гримдарк'],
+  {id:'warhammer',name:'Warhammer 40000',icon:'⚙',genre:['Гримдарк','Sci-Fi'],
    format:'adventure',voice:'cold',mech:{dice:true,stats:true,hp:true,ac:true,sanity:true,infection:true,inventory:true,skills:true,traits:true},
    desc:'41-е тысячелетие. Лишь война среди звёзд. Человечество — гниющая Империя триллиона миров, что молится трупу-Императору на Золотом Троне. Из варпа лезут демоны, чужаки грызут границы, а ересь прорастает изнутри. Нет мира. Нет надежды. Только долг и вечная битва.',
    worldStart:'Сигнал тревоги воет в коридорах имперского крейсера «Меч Возмездия». Сервитор хрипит: «Обнаружено варп-вторжение в трюмном секторе. Всему персоналу — к оружию во имя Императора». Лас-винтовка тяжелеет в руках. За переборкой что-то скребётся, и воздух пахнет озоном и гнилью.',
@@ -1250,7 +1208,7 @@ const PRESETS=[
      charTraits:[{name:'Вера в Императора',desc:'Молитва придаёт сил в самый тёмный час'},{name:'Солдатский долг',desc:'Приказ есть приказ, отступление — позор'},{name:'Стойкость',desc:'Варп давит на разум, но он держится'}],
      items:[{name:'Лас-винтовка',icon:'🔫',desc:'Стандартное оружие Гвардии, надёжна'},{name:'Флак-броня',icon:'🛡',desc:'Средняя защита от осколков и пуль'},{name:'Боевой нож',icon:'🔪',desc:'Для ближнего боя и грязной работы'},{name:'Аптечка',icon:'🩹',desc:'Бинты, стимы, обезболивающее'},{name:'Знак Аквилы',icon:'🦅',desc:'Священный символ, укрепляет дух'}]}]},
 
-  {id:'cards',name:'Карточный Подземельщик',icon:'🃏',genre:['Рогалик','Фэнтези'],
+  {id:'cards',name:'Карточный Подземельщик',icon:'🃏',genre:['Приключения','Фэнтези'],
    format:'adventure',voice:'gm',mech:{fixedDamage:true,hp:true,cards:true,inventory:true,skills:true},
    desc:'Демонстрация карточной системы. Бесконечное подземелье Гриммхольд меняется каждый раз. У тебя колода карт-способностей: разыгрывай их в бою и на развилках. Урон фиксирован — никакого рандома, только тактика. Спускайся всё глубже, собирай новые карты, не умри.',
    worldStart:'Тяжёлая дверь захлопывается за спиной — Гриммхольд не выпускает, пока не дойдёшь до дна. Перед вами развилка: три коридора, факелы, запах сырости и металла. В руке колода карт слабо светится. Где-то в темноте звякнул металл — вы здесь не один.',
@@ -1543,10 +1501,10 @@ try{
 
 // ══ CUSTOM NARRATORS & SYSTEMS ════════════════════
 function renderCustomNarrators(){const c=el('custom-narrators-list');if(!c)return;c.innerHTML='';customNarrators.forEach((n,i)=>{const d=document.createElement('div');d.className='custom-list-item';d.innerHTML=`<div><div class="custom-list-name">${esc(n.name)}</div><div class="custom-list-desc">${esc(n.desc.slice(0,60))}...</div></div><button class="btn danger btn-xs" onclick="deleteNarrator(${i})">🗑</button>`;c.appendChild(d);});el('narrators-badge').textContent=`${customNarrators.length} / 4`;}
-function saveCustomNarrator(){if(customNarrators.length>=4){el('nar-err').textContent='Лимит: 4 нарратора';return;}const name=el('nar-name').value.trim();const desc=el('nar-desc').value.trim();if(!name||!desc){el('nar-err').textContent='Заполните все поля';return;}customNarrators.push({id:'nar_'+Date.now(),name,desc});localStorage.setItem('aq_narrators',JSON.stringify(customNarrators));el('nar-name').value='';el('nar-desc').value='';el('nar-err').textContent='';renderCustomNarrators();notif('Нарратор сохранён!');}
+function saveCustomNarrator(){if(customNarrators.length>=4){el('nar-err').textContent='Лимит: 4 нарратора';return;}const name=el('nar-name').value.trim();const desc=el('nar-desc').value.trim();if(!name||!desc){el('nar-err').textContent='Заполните все поля';return;}customNarrators.push({id:'nar_'+Date.now(),name,desc});localStorage.setItem('aq_narrators',JSON.stringify(customNarrators));el('nar-name').value='';el('nar-desc').value='';el('nar-err').textContent='';renderCustomNarrators();if(typeof renderVoiceCards==='function')renderVoiceCards();cm('narrbuilder-modal');notif('Нарратор сохранён!');}
 function deleteNarrator(i){customNarrators.splice(i,1);localStorage.setItem('aq_narrators',JSON.stringify(customNarrators));renderCustomNarrators();}
 function renderCustomSystems(){const c=el('custom-systems-list');if(!c)return;c.innerHTML='';customSystems.forEach((s,i)=>{const d=document.createElement('div');d.className='custom-list-item';d.innerHTML=`<div><div class="custom-list-name">${esc(s.name)}</div><div class="custom-list-desc">${esc(s.desc.slice(0,60))}...</div></div><button class="btn danger btn-xs" onclick="deleteSystem(${i})">🗑</button>`;c.appendChild(d);});el('systems-badge').textContent=`${customSystems.length} / 4`;}
-function saveCustomSystem(){if(customSystems.length>=4){el('sys-err').textContent='Лимит: 4 системы';return;}const name=el('sys-name').value.trim();const desc=el('sys-desc').value.trim();if(!name||!desc){el('sys-err').textContent='Заполните все поля';return;}var mech={};document.querySelectorAll('#sys-mech-tags [data-m]').forEach(function(b){mech[b.dataset.m]=b.classList.contains('on');});customSystems.push({id:'sys_'+Date.now(),name,desc,mech});localStorage.setItem('aq_systems',JSON.stringify(customSystems));el('sys-name').value='';el('sys-desc').value='';el('sys-err').textContent='';renderCustomSystems();notif('Система сохранена!');}
+function saveCustomSystem(){if(customSystems.length>=4){el('sys-err').textContent='Лимит: 4 системы';return;}const name=el('sys-name').value.trim();const desc=el('sys-desc').value.trim();if(!name||!desc){el('sys-err').textContent='Заполните все поля';return;}var mech={};document.querySelectorAll('#sys-mech-tags [data-m]').forEach(function(b){mech[b.dataset.m]=b.classList.contains('on');});customSystems.push({id:'sys_'+Date.now(),name,desc,mech});localStorage.setItem('aq_systems',JSON.stringify(customSystems));el('sys-name').value='';el('sys-desc').value='';el('sys-err').textContent='';renderCustomSystems();if(typeof renderSettingTemplates==='function')renderSettingTemplates();cm('sysbuilder-modal');notif('Система сохранена! Выберите её в списке.');}
 function deleteSystem(i){customSystems.splice(i,1);localStorage.setItem('aq_systems',JSON.stringify(customSystems));renderCustomSystems();}
 
 // ══ API ══════════════════════════════════════════
@@ -1648,12 +1606,26 @@ async function generateWorldAI(){
   if(btn)btn.disabled=false;
 }
 function buildNarratorPick(){const c=el('custom-narrator-pick');if(!c)return;c.innerHTML='';customNarrators.forEach(n=>{const d=document.createElement('div');d.className='mc';d.setAttribute('onclick',`selMC(this,'narratorStyle')`);d.dataset.v='custom_'+n.id;d.innerHTML=`<div class="mc-title">✦ ${esc(n.name)}</div><div class="mc-desc">${esc(n.desc.slice(0,60))}...</div>`;c.appendChild(d);});}
-function buildRulesPick(){const c=el('custom-rules-systems');if(!c)return;c.innerHTML='';customSystems.forEach(s=>{const d=document.createElement('div');d.className='mc';d.setAttribute('onclick',`selMC(this,'rules')`);d.dataset.v='custom_'+s.id;d.innerHTML=`<div class="mc-title">✦ ${esc(s.name)}</div><div class="mc-desc">${esc(s.desc.slice(0,60))}...</div>`;c.appendChild(d);});}
+function buildRulesPick(){
+  var c=el('custom-rules-systems');if(!c)return;c.innerHTML='';
+  (customSystems||[]).forEach(function(s){
+    var d=document.createElement('div');
+    d.className='mc'+(G.customSystemId===s.id?' sel':'');
+    d.innerHTML='<div class="mc-title">✦ '+esc(s.name)+'</div><div class="mc-desc">'+esc((s.desc||'').slice(0,60))+'</div>';
+    d.onclick=function(){
+      // Применяем механики кастомной системы
+      if(s.mech){Object.keys(G.mechanics).forEach(function(k){G.mechanics[k]=false;});Object.keys(s.mech).forEach(function(k){if(G.mechanics[k]!==undefined)G.mechanics[k]=s.mech[k];});G.mechanics.inventory=true;}
+      G.settingTemplate=null;G.customSystemId=s.id;
+      renderSettingTemplates();renderMechFineTune();buildRulesPick();
+    };
+    c.appendChild(d);
+  });
+}
 function selAI(card,choice){aiChoice=choice;document.querySelectorAll('.ai-card').forEach(c=>c.classList.remove('sel'));card.classList.add('sel');el('ai-own-warn').style.display=(choice==='own'&&!user?.own_api_key)?'block':'none';el('ai-own-model-wrap').style.display=(choice==='own'&&user?.own_api_key)?'block':'none';el('server-tier-wrap').style.display=choice==='server'?'block':'none';}
 function updateAIPicker(){const balEl=el('ai-server-bal');if(balEl)balEl.textContent=`Баланс: ${Number(user?.tokens_balance||0).toLocaleString('ru')} токенов`;const ownEl=el('ai-own-status');if(ownEl)ownEl.textContent=user?.own_api_key?`✓ ${PROVIDERS_INFO[user.own_provider]?.name||'Ключ активен'}`:'Не настроен';if(ownEl)ownEl.className='ai-card-status '+(user?.own_api_key?'ok':'');// Fill model dropdown
 if(user?.own_api_key&&user?.own_provider){const models=PROVIDERS_INFO[user.own_provider]?.models||[];const sel=el('game-model-sel');if(sel){sel.innerHTML='<option value="">— из настроек ключа —</option>';models.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;sel.appendChild(o);});if(user.own_model)sel.value=user.own_model;}}}
 // Wizard navigation
-function goStep(s){currentStep=s;document.querySelectorAll('.wizard-section').forEach((sec,i)=>sec.classList.toggle('active',i===s));document.querySelectorAll('.wizard-step').forEach((st,i)=>{st.classList.toggle('active',i===s);if(i<s)st.classList.add('done');else st.classList.remove('done');});el('prev-btn').style.display=s>0?'':'none';el('next-btn').style.display=s<totalSteps-1?'':'none';el('start-game-btn').style.display=s===totalSteps-1?'':'none';}
+function goStep(s){currentStep=s;document.querySelectorAll('.wizard-section').forEach((sec,i)=>sec.classList.toggle('active',i===s));document.querySelectorAll('.wizard-step').forEach((st,i)=>{st.classList.toggle('active',i===s);if(i<s)st.classList.add('done');else st.classList.remove('done');});el('prev-btn').style.display=s>0?'':'none';el('next-btn').style.display=s<totalSteps-1?'':'none';el('start-game-btn').style.display=s===totalSteps-1?'':'none';if(typeof renderSetupChars==='function')renderSetupChars();}
 function nextStep(){if(currentStep===1&&!el('wn').value.trim()){notif('Введите название мира','err');return;}goStep(Math.min(currentStep+1,totalSteps-1));}
 function prevStep(){goStep(Math.max(currentStep-1,0));}
 function addCG(){const i=el('cg'),v=i.value.trim();if(!v)return;const b=document.createElement('button');b.className='tag on';b.onclick=()=>b.classList.toggle('on');b.textContent=v;el('genre-tags').appendChild(b);i.value='';}
@@ -1855,21 +1827,16 @@ function renderVoiceCards(){
   });
 }
 function openCustomBuilder(kind){
-  // Сохраняем черновик создания и идём в настройки к конструктору
-  openSettingsFromGame ? null : null;
-  showPage('settings-page');
-  if(typeof loadSettingsData==='function')loadSettingsData();
-  setTimeout(function(){
-    var secId=kind==='system'?'set-systems':'set-narrators';
-    var sec=el(secId);
-    if(sec){
-      sec.classList.remove('collapsed');
-      sec.scrollIntoView({behavior:'smooth',block:'start'});
-    }
-    notif(kind==='system'?'Создайте систему — она появится в выборе':'Создайте нарратора','info');
-  },200);
+  if(kind==='system'){
+    if(typeof renderCustomSystems==='function')renderCustomSystems();
+    om('sysbuilder-modal');
+  } else {
+    if(typeof renderCustomNarrators==='function')renderCustomNarrators();
+    om('narrbuilder-modal');
+  }
 }
 function renderSettingTemplates(){
+  if(typeof buildRulesPick==='function')buildRulesPick();
   var c=el('setting-templates');if(!c)return;
   c.innerHTML='';
   Object.keys(SETTING_TEMPLATES).forEach(function(tid){
@@ -1932,9 +1899,9 @@ function renderSetupChars(){
       +'<div class="form-group"><label class="field-label">Класс / роль</label><input class="input" value="'+esc(c.cls||'')+'" placeholder="Воин, маг, следопыт..." oninput="setupChars['+i+'].cls=this.value"/></div>'
       +'<div class="form-group char-sheet-full"><label class="field-label">Описание и история</label><textarea class="input" rows="2" placeholder="Откуда, почему здесь..." oninput="setupChars['+i+'].desc=this.value">'+esc(c.desc||'')+'</textarea></div>'
       +'<div class="form-group"><label class="field-label">Внешность</label><input class="input" value="'+esc(c.appearance||'')+'" placeholder="Рост, волосы, особые черты..." oninput="setupChars['+i+'].appearance=this.value"/></div>'
-      +entityListHtml(c, i, 'skills', '💪 Способности и навыки', '', 'Добавить способность')
-      +entityListHtml(c, i, 'items', '🎒 Снаряжение и предметы', '📦', 'Добавить предмет')
-      +entityListHtml(c, i, 'charTraits', '🎭 Черты характера', '', 'Добавить черту')
+      +((G.mechanics&&G.mechanics.skills)?entityListHtml(c, i, 'skills', '💪 Способности и навыки <span class="hint-ic" data-tip="Активируемые умения героя. Можно отключить в шаге Режим → Тонкая настройка механик, если не нужны.">?</span>', '', 'Добавить способность'):'')
+      +((G.mechanics&&G.mechanics.inventory)?entityListHtml(c, i, 'items', '🎒 Снаряжение и предметы', '📦', 'Добавить предмет'):'')
+      +((G.mechanics&&G.mechanics.traits)?entityListHtml(c, i, 'charTraits', '🎭 Черты характера <span class="hint-ic" data-tip="Особенности личности, влияют на отыгрыш. Можно отключить в шаге Режим → Тонкая настройка механик.">?</span>', '', 'Добавить черту'):'')
       +dndStats+'</div>';
     e.appendChild(r);
   });
@@ -2897,6 +2864,58 @@ function renderFeaturesList(){
 applyHintsVisibility();
 (async()=>{if(location.search.includes('payment=success')){history.replaceState(null,'','/');notif('✓ Оплата прошла! Баланс обновляется...');}if(token){const me=await apiFetch('/api/auth/me');if(me.user){user=me.user;showMenu();await loadUserData();}else{token='';localStorage.removeItem('aq_token');}}})();
 </script>
+<div class="modal" id="sysbuilder-modal">
+  <div class="modal-box" style="max-width:520px">
+    <div class="modal-header"><div class="modal-title">➕ Своя игровая система</div><button class="modal-x" onclick="cm('sysbuilder-modal')">✕</button></div>
+    <div class="modal-body" style="max-height:70vh;overflow-y:auto">
+      <div class="settings-sec-body">
+        <p style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6">Создайте собственные правила и механики. Лимит: 4 системы.</p>
+        <div id="custom-systems-list" style="margin-bottom:12px"></div>
+        <div style="background:var(--bg3);border:.5px solid var(--border);border-radius:var(--rad);padding:14px;display:flex;flex-direction:column;gap:10px">
+          <div class="form-group"><label class="field-label">Название системы</label><input class="input" id="sys-name" placeholder="Моя система..."/></div>
+          <div class="form-group"><label class="field-label">Правила (инструкция для нейросети)</label><textarea class="input" id="sys-desc" rows="3" placeholder="Используй систему очков судьбы: каждые 3 хода игрок может потратить 1 очко судьбы чтобы изменить исход..."></textarea></div>
+          <div class="form-group"><label class="field-label">Механики системы — включи нужные</label>
+            <div style="display:flex;flex-wrap:wrap;gap:6px" id="sys-mech-tags">
+              <button class="tag" data-m="dice" onclick="this.classList.toggle('on')">🎲 Кубики</button>
+              <button class="tag" data-m="hp" onclick="this.classList.toggle('on')">❤ HP</button>
+              <button class="tag" data-m="stats" onclick="this.classList.toggle('on')">💪 Характеристики</button>
+              <button class="tag" data-m="levels" onclick="this.classList.toggle('on')">⬆ Уровни</button>
+              <button class="tag" data-m="ac" onclick="this.classList.toggle('on')">🛡 КБ</button>
+              <button class="tag" data-m="hunger" onclick="this.classList.toggle('on')">🍖 Голод</button>
+              <button class="tag" data-m="thirst" onclick="this.classList.toggle('on')">💧 Жажда</button>
+              <button class="tag" data-m="fatigue" onclick="this.classList.toggle('on')">😴 Усталость</button>
+              <button class="tag" data-m="sanity" onclick="this.classList.toggle('on')">🧠 Рассудок</button>
+              <button class="tag" data-m="reputation" onclick="this.classList.toggle('on')">⭐ Репутация</button>
+              <button class="tag" data-m="mana" onclick="this.classList.toggle('on')">🔮 Мана</button>
+              <button class="tag" data-m="infection" onclick="this.classList.toggle('on')">🦠 Заражение</button>
+              <button class="tag" data-m="luck" onclick="this.classList.toggle('on')">🍀 Удача</button>
+              <button class="tag" data-m="heat" onclick="this.classList.toggle('on')">🔥 Розыск</button>
+            </div>
+          </div>
+          <button class="btn primary btn-sm" onclick="saveCustomSystem()" style="align-self:flex-start">Сохранить систему</button>
+          <div id="sys-err" class="field-error"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal" id="narrbuilder-modal">
+  <div class="modal-box" style="max-width:520px">
+    <div class="modal-header"><div class="modal-title">➕ Свой нарратор</div><button class="modal-x" onclick="cm('narrbuilder-modal')">✕</button></div>
+    <div class="modal-body" style="max-height:70vh;overflow-y:auto">
+      <div class="settings-sec-body">
+        <p style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6">Создайте собственные стили повествования. Они появятся при выборе нарратора в настройках игры. Лимит: 4 нарратора.</p>
+        <div id="custom-narrators-list" style="margin-bottom:12px"></div>
+        <div id="narrator-form" style="background:var(--bg3);border:.5px solid var(--border);border-radius:var(--rad);padding:14px;display:flex;flex-direction:column;gap:10px">
+          <div class="form-group"><label class="field-label">Название нарратора</label><input class="input" id="nar-name" placeholder="Мой стиль..."/></div>
+          <div class="form-group"><label class="field-label">Описание стиля (инструкция для нейросети)</label><textarea class="input" id="nar-desc" rows="3" placeholder="Повествуй в стиле Говарда Лавкрафта — мрачно, атмосферно, с нагнетанием ужаса..."></textarea></div>
+          <button class="btn primary btn-sm" onclick="saveCustomNarrator()" style="align-self:flex-start">Сохранить нарратора</button>
+          <div id="nar-err" class="field-error"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <div id="theme-float" class="theme-float">
   <button class="theme-float-toggle" onclick="toggleThemeFloat()" title="Сменить оформление">🎨</button>
   <div class="theme-float-dots" id="theme-float-dots"></div>
