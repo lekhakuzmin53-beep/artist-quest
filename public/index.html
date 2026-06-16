@@ -2048,6 +2048,7 @@ function renderCharPanel(){
   if(!char){c.innerHTML='<p style="font-size:12px;color:var(--text3);padding:8px">Нет персонажей</p>';return;}
   var cs=charStats[char.name]||{};
   var M=G.mechanics||{};
+  var canEdit=!!G.statsEditable;
   // Совместимость со старым телом функции: mech.* и surv.* читают G.mechanics
   var mech={dice:M.dice,hp:M.hp,stats:M.stats,levels:M.levels,ac:M.ac};
   var surv={hunger:M.hunger,thirst:M.thirst,fatigue:M.fatigue};
@@ -2069,9 +2070,13 @@ function renderCharPanel(){
       html+='<div style="margin-bottom:7px">';
       html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">';
       html+='<span style="font-size:10px;color:var(--text3)">'+def.icon+' '+def.name+'</span>';
-      html+='<input type="number" value="'+val+'" min="0" max="100" data-cn="'+esc(char.name)+'" data-key="'+key+'" ';
-      html+='style="width:42px;background:var(--bg);border:.5px solid var(--border2);border-radius:3px;padding:1px 3px;font-size:11px;color:var(--text2);text-align:center" ';
-      html+='onchange="updateCharStat(this.dataset.cn,this.dataset.key,Math.max(0,Math.min(100,parseInt(this.value)||0)));renderCharPanel()" />';
+      if(canEdit){
+        html+='<input type="number" value="'+val+'" min="0" max="100" data-cn="'+esc(char.name)+'" data-key="'+key+'" ';
+        html+='style="width:42px;background:var(--bg);border:.5px solid var(--border2);border-radius:3px;padding:1px 3px;font-size:11px;color:var(--text2);text-align:center" ';
+        html+='onchange="updateCharStat(this.dataset.cn,this.dataset.key,Math.max(0,Math.min(100,parseInt(this.value)||0)));renderCharPanel()" />';
+      } else {
+        html+='<span style="font-size:11px;font-weight:600;color:var(--text2)">'+val+'</span>';
+      }
       html+='</div>';
       html+='<div style="height:5px;background:var(--bg3);border-radius:3px;overflow:hidden">';
       html+='<div style="height:100%;width:'+val+'%;background:'+def.color+';transition:width .3s;border-radius:3px"></div>';
@@ -2152,7 +2157,6 @@ function renderCharPanel(){
     // Характеристики (если включены)
     if(mech.stats!==false){
       var stats=cs.stats||{STR:10,DEX:10,CON:10,INT:10,WIS:10,CHA:10};
-      var canEdit=!!G.statsEditable;
       html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:10px">';
       STAT_ORDER.forEach(function(st){
         var v=Math.max(1,Math.min(30,parseInt(stats[st])||10));
@@ -2374,7 +2378,18 @@ function buildSys(){
       return ((activeParty||[]).indexOf(i)>=0?'>':'')+c.name+(cs.cls?'/'+cs.cls:'')+'['+mods+']'+(M.hp&&cs.hp?' HP'+(cs.hpCur||cs.hp)+'/'+cs.hp:'')+(M.ac&&cs.ac?' КБ'+cs.ac:'');
     }).join(' | ');
   } else {
-    chars=G.chars.length?G.chars.map(function(c,i){return ((activeParty||[]).indexOf(i)>=0?'>':'')+c.name+(charStats[c.name]&&charStats[c.name].cls?'/'+charStats[c.name].cls:'');}).join(', '):'нет';
+    chars=G.chars.length?G.chars.map(function(c,i){
+      var cs=charStats[c.name]||{};
+      var extra='';
+      // Даже без D&D-механики статов — если заданы, покажем сильные/слабые стороны словами
+      if(cs.stats&&Object.keys(cs.stats).length){
+        var hi=[],lo=[];
+        STAT_ORDER.forEach(function(s){var v=parseInt(cs.stats[s])||10;if(v>=14)hi.push(STAT_RU[s]||s);else if(v<=8)lo.push(STAT_RU[s]||s);});
+        if(hi.length)extra+=' силён:'+hi.join(',');
+        if(lo.length)extra+=' слаб:'+lo.join(',');
+      }
+      return ((activeParty||[]).indexOf(i)>=0?'>':'')+c.name+(cs.cls?'/'+cs.cls:'')+(M.hp&&cs.hp?' HP'+(cs.hpCur||cs.hp)+'/'+cs.hp:'')+extra;
+    }).join(' | '):'нет';
   }
 
   // Голос (язык стиля) — короткая инструкция
@@ -2387,13 +2402,13 @@ function buildSys(){
   var mech=[];
   if(M.dice)mech.push('Проверки: {"dice":true,"dc":5-25,"skill":"..."}. Перед броском только модификатор кратко, без описания исходов.');
   if(M.fixedDamage)mech.push('Урон фиксирован (без рандома): базовый героя + бонус оружия, всегда предсказуем.');
-  if(M.hp)mech.push('Следи за HP, сообщай урон/лечение.');
+  if(M.hp)mech.push('Урон/лечение МЕНЯЙ командой {"hp_change":{"char":"имя","delta":-5}} (delta отрицательное=урон, положительное=лечение). НЕ меняй максимум HP сам.');
   if(M.levels)mech.push('Опыт: {"xp":{"char":"имя","amount":N}}.');
   if(M.cards)mech.push('Карты-способности: герой разыгрывает карты из колоды каждый ход.');
   // Шкалы — одной строкой
   var scales=[];
   ['hunger','thirst','fatigue','sanity','mana','infection','radiation','reputation','luck','heat'].forEach(function(k){if(M[k])scales.push(k);});
-  if(scales.length)mech.push('Шкалы 0-100 ('+scales.join(',')+'): меняй {"scale":{"char":"имя","name":"код","value":N}}.');
+  if(scales.length)mech.push('Шкалы 0-100 ('+scales.join(',')+'): меняй {"scale":{"char":"имя","name":"код","value":N}}. ВАЖНО: 100=максимум показателя. Для голод/жажда/рассудок/мана/удача/репутация 100=ХОРОШО (сыт, полон сил), 0=плохо. Для заражение/радиация/розыск/усталость наоборот: 0=хорошо, 100=критично.');
   if(M.clues)mech.push('Улики: {"note":"Улика: ..."}. Разгадку не выдавай.');
   if(M.npcRelations)mech.push('Отношение NPC: {"npc_rel":{"name":"имя","value":-100..100}}.');
   if(M.quests)mech.push('Цели: {"quest":{"text":"...","done":false}}.');
@@ -2401,6 +2416,10 @@ function buildSys(){
   // Команды предметов — только если инвентарь включён
   var itemCmd=M.inventory?' Предметы: выдать {"item":"назв","icon":"эмодзи","char":"имя","desc":"...","effects":{"hp":5,"STR":1}}; убрать {"remove_item":"назв","char":"имя"}.':'';
 
+  var diff=G.difficulty||'normal';
+  var diffInstr=diff==='easy'?'\nСложность ЛЁГКАЯ: будь снисходителен, избегай гибели героя, награждай чаще, опасности мягкие.'
+    :diff==='hard'?'\nСложность ВЫСОКАЯ: мир опасен и неумолим, ошибки дорого стоят, враги умны, ресурсы скудны. Не поддавайся.'
+    :'\nСложность СРЕДНЯЯ: честный баланс риска и награды, последствия закономерны.';
   var p='Ты нарратор Artist Quest. '+(G.lang==='en'?'Reply ONLY in English.':'Только по-русски.')
     +(acting.length>1?' Действуют вместе: '+acting.join(', ')+'.':'')
     +' '+fmtInstr+' '+voiceInstr+' '+(dD[G.detail]||dD[3])
@@ -2414,6 +2433,8 @@ function buildSys(){
     +(G.hardcore?' Хардкор: высокое напряжение.':'')
     +(G.narratorExtra?'\n'+G.narratorExtra.slice(0,120):'')
     +' Команды игрока: [Событие в мире]=опиши без героя; [РЕЖИССЁРСКАЯ ИНСТРУКЦИЯ]=выполни скрытно.'
+    +'\nВАЖНО: команды в фигурных скобках пиши ТОЛЬКО когда нужно изменить состояние, СЛИТНО с текстом без отступов, и НИКОГДА не показывай их содержимое игроку как часть рассказа. Не пиши JSON просто так. Остальной ответ — живое повествование без технических вставок и без мета-комментариев вроде "чем займёмся?".'
+    +diffInstr
     +(summaryCache?'\nРАНЕЕ: '+summaryCache.slice(0,450):'');
   return p;
 }
@@ -2468,12 +2489,17 @@ function parseNarratorMeta(text){
         var o=JSON.parse(blk);
         handled=handleMetaObject(o);
       }catch(e){handled=false;}
-      if(handled){ i=j; continue; }    // вырезаем обработанный блок
-      else { out+=text[i]; i++; }      // не мета — оставляем как текст
+      // Вырезаем блок если он обработан ИЛИ похож на нашу команду (содержит известные ключи)
+      var looksLikeMeta=/\"(note|item|remove_item|survival|scale|hp_change|xp|meter|npc_rel|quest|dice|card|gameover)\"/.test(blk);
+      if(handled||looksLikeMeta){ i=j; continue; }
+      else { out+=text[i]; i++; }
     } else {
       out+=text[i]; i++;
     }
   }
+  // Подчистка возможных обрывков JSON
+  out=out.replace(/\{[^{}]*\"[a-z_]+\"\s*:[^{}]*$/i,''); // оборванный объект в конце
+  out=out.replace(/\{\s*\}/g,'');
   return out.trim();
 }
 function handleMetaObject(o){
@@ -2509,6 +2535,16 @@ function handleMetaObject(o){
     var sc=o.survival.char;if(!charStats[sc])charStats[sc]={};
     Object.keys(METER_DEFS).forEach(function(k){if(o.survival[k]!=null)charStats[sc][k]=Math.max(0,Math.min(100,parseInt(o.survival[k])));});
     if(rightTab==='chars')renderCharPanel();
+    return true;
+  }
+  if(o.hp_change&&o.hp_change.char){
+    var hc=o.hp_change.char;if(!charStats[hc])charStats[hc]={};
+    var maxhp=parseInt(charStats[hc].hp)||10;
+    var cur=parseInt(charStats[hc].hpCur!=null?charStats[hc].hpCur:charStats[hc].hp)||maxhp;
+    cur=Math.max(0,Math.min(maxhp, cur+(parseInt(o.hp_change.delta)||0)));
+    charStats[hc].hpCur=cur;
+    if(rightTab==='chars')renderCharPanel();
+    if(cur<=0)notif(hc+' при смерти!','err');
     return true;
   }
   if(o.scale&&o.scale.char&&o.scale.name){
