@@ -575,6 +575,12 @@ body.no-hints .hint-ic{display:none}
 body.in-game .theme-float{display:none}
 .create-custom-btn{margin-top:8px;width:100%;padding:9px;background:transparent;border:.5px dashed var(--border2);border-radius:var(--rad);color:var(--text3);cursor:pointer;font-size:12px;transition:all .15s}
 .create-custom-btn:hover{border-color:var(--ac);color:var(--ac)}
+.gameover-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:99999;padding:20px;animation:fadeIn .4s ease}
+.gameover-box{background:var(--bg2);border:1px solid var(--ac);border-radius:16px;padding:32px;max-width:440px;text-align:center;box-shadow:0 20px 80px rgba(0,0,0,.7)}
+.gameover-icon{font-size:64px;margin-bottom:8px}
+.gameover-title{font-family:'Cinzel',serif;font-size:28px;font-weight:700;color:var(--ac);margin-bottom:12px}
+.gameover-text{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:8px}
+.gameover-stats{font-size:12px;color:var(--text3);margin-top:8px}
 /* ─── STAT BUTTONS (единый стиль, реагирует на тему) ─── */
 .stat-pm{width:22px;height:22px;border-radius:5px;border:.5px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;font-size:13px;font-weight:600;line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:0;transition:all .12s;flex-shrink:0}
 .stat-pm:hover{border-color:var(--ac);color:var(--ac);background:var(--bg3)}
@@ -821,6 +827,10 @@ to{transform:scale(1.12)}}
         </div>
         <input type="hidden" id="cr" value=""/>
         <div style="padding:9px 12px;background:var(--bg3);border-radius:var(--rad);font-size:12px;color:var(--text3);border:.5px solid var(--border);line-height:1.5">💡 Свою систему правил можно создать в <b style="color:var(--text2)">Настройках → Мои игровые системы</b> — она появится здесь как карточка.</div>
+        <div class="form-group">
+          <label class="field-label">Сложность</label>
+          <div class="grid2" id="difficulty-cards"></div>
+        </div>
         <div class="form-group">
           <label class="field-label">Стиль нарратора</label>
           <div class="grid2" id="voice-cards"></div>
@@ -1295,8 +1305,8 @@ var FORMAT_DEFS = {
   adventure: {name:'Приключение', icon:'🗺', tipShort:'Ты управляешь героем, мир реагирует',
     tipLong:'Классика. Ты ведёшь своего героя, нейросеть описывает мир и реакцию на твои действия. НЕ действует и не говорит за твоего героя без команды. Двигает сюжет к цели.',
     behavior:'Игрок управляет своим героем. Описывай мир, NPC и последствия действий игрока. НЕ принимай решений и не говори за героя игрока без явной команды.'},
-  sandbox: {name:'Песочница', icon:'🌍', tipShort:'Мир живёт сам, события идут без тебя',
-    tipLong:'Автономный мир. Нейросеть может действовать за вселенную и второстепенных NPC сама: события происходят без участия игрока, персонажи живут по своим целям. Но героя игрока не ведёт.',
+  sandbox: {name:'Песочница', icon:'🌍', tipShort:'Живой мир со своей жизнью',
+    tipLong:'Мир развивается сам: пока ты думаешь, NPC заняты своими делами, происходят события, фракции действуют. Нейросеть оживляет окружение, но твоим героем управляешь только ты. Больше свободы и непредсказуемости.',
     behavior:'Мир автономен. Можешь сам инициировать события, действия NPC и фракций независимо от игрока. НЕ управляй героем игрока. Создавай ощущение живого мира.'},
   novel: {name:'Новелла', icon:'📖', tipShort:'Упор на драму, можно вести героя',
     tipLong:'Соавтор романа. Нейросеть может додумывать реплики и мелкие действия героя ради драмы, пишет длиннее и литературнее. На крупных развилках спрашивает игрока.',
@@ -1377,6 +1387,7 @@ const ACHIEVEMENTS=[
   {id:'tactician',name:'Тактик',desc:'Сыграть с карточной системой',icon:'🃏'},
   {id:'marathoner',name:'Марафонец',desc:'Написать 500 сообщений',icon:'🔥'},
   {id:'curator',name:'Куратор',desc:'Создать свою тему оформления',icon:'🎨'},
+  {id:'finisher',name:'Эпилог',desc:'Довести историю до финала',icon:'🎬'},
 ];
 function getProgress(){return JSON.parse(localStorage.getItem('aq_progress')||'{"messages":0,"games":0,"dndGames":0,"worlds":[],"unlocked":[]}');}
 function saveProgress(p){localStorage.setItem('aq_progress',JSON.stringify(p));}
@@ -1555,7 +1566,7 @@ function newWorldInSlot(slot){G.slotId=slot;showPage('create-page');initCreatePa
 function initCreatePage(){document.body.classList.remove('in-game');currentStep=0;selectedPreset=null;aiChoice='server';setupChars=[];MC_GROUPS.charMode=null;MC_GROUPS.mode=null;MC_GROUPS.narratorStyle=null;MC_GROUPS.rules=null;MC_GROUPS.hardcore=null;// Reset form
 ['wn','wd','ws','np','ne','cr'].forEach(id=>{const e=el(id);if(e)e.value='';});document.querySelectorAll('#genre-tags .tag').forEach(t=>t.classList.remove('on'));window._autoCharMode=true;['mode','charMode','hardcore','narratorStyle','rules'].forEach(g=>{MC_GROUPS[g]=null;const first=document.querySelector(`[onclick*="selMC(this,'${g}')"]`);if(first)selMC(first,g);});window._autoCharMode=false;document.querySelector('[data-lang="ru"]')?.classList.add('on');el('det').value=globalSettings.detail||3;el('dv').textContent=detLabels[(globalSettings.detail||3)-1];
   applyTemplate('roleplay');G.format='adventure';G.voice='classic';
-  renderSettingTemplates();renderMechFineTune();renderFormatCards();renderVoiceCards();
+  renderSettingTemplates();renderMechFineTune();renderFormatCards();renderVoiceCards();renderDifficultyCards();
   var ft=el('mech-fine-tune');if(ft)ft.style.display='none';
   var ftb=el('fine-tune-toggle');if(ftb)ftb.innerHTML='⚙ Тонкая настройка механик ▾';
   renderSetupChars();buildPresetGrid();buildNarratorPick();buildRulesPick();updateAIPicker();goStep(0);}
@@ -1567,7 +1578,7 @@ el('wn').value=p.name;el('wd').value=p.desc;el('ws').value=p.worldStart;el('np')
       G.format=p.format||'adventure';
       G.voice=p.voice||'classic';
       G.settingTemplate=null;
-      renderSettingTemplates();renderMechFineTune();renderFormatCards();renderVoiceCards();renderSetupChars();
+      renderSettingTemplates();renderMechFineTune();renderFormatCards();renderVoiceCards();renderDifficultyCards();renderSetupChars();
       notif('Сценарий «'+p.name+'» загружен!');}}else{el('wn').value='';el('wd').value='';el('ws').value='';el('np').value='';document.querySelectorAll('#genre-tags .tag').forEach(t=>t.classList.remove('on'));setupChars=[];renderSetupChars();notif('Пустой мир — заполните сами');}}
 async function generateWorldAI(){
   if(!user?.own_api_key&&parseInt(user?.tokens_balance||0)<200){notif('Недостаточно токенов для генерации','err');return;}
@@ -1814,6 +1825,23 @@ function renderFormatCards(){
     c.appendChild(d);
   });
 }
+var DIFFICULTY_DEFS={
+  easy:{name:'Лёгкая', icon:'🌿', tipShort:'Расслабленная игра', tipLong:'Нейросеть бережёт героя, избегает гибели, чаще награждает. Опасности мягкие. Для спокойного отыгрыша и истории.'},
+  normal:{name:'Средняя', icon:'⚖', tipShort:'Честный баланс', tipLong:'Сбалансированный риск и награда. Последствия закономерны, но мир не пытается убить специально. Рекомендуется.'},
+  hard:{name:'Высокая', icon:'💀', tipShort:'Мир опасен', tipLong:'Мир суров и неумолим. Враги умны, ресурсы скудны, ошибки дорого стоят. Нейросеть не поддаётся. Для хардкорных игроков.'}
+};
+function renderDifficultyCards(){
+  var c=el('difficulty-cards');if(!c)return;c.innerHTML='';
+  if(!G.difficulty)G.difficulty='normal';
+  Object.keys(DIFFICULTY_DEFS).forEach(function(did){
+    var d=DIFFICULTY_DEFS[did];var on=G.difficulty===did;
+    var card=document.createElement('div');
+    card.className='mc'+(on?' sel':'');
+    card.innerHTML='<div class="mc-title">'+d.icon+' '+d.name+' <span class="hint-ic" data-tip="'+d.tipLong.replace(/"/g,'&quot;')+'">?</span></div><div class="mc-desc">'+d.tipShort+'</div>';
+    card.onclick=function(){G.difficulty=did;renderDifficultyCards();};
+    c.appendChild(card);
+  });
+}
 function renderVoiceCards(){
   var c=el('voice-cards');if(!c)return;c.innerHTML='';
   Object.keys(VOICE_DEFS).forEach(function(vid){
@@ -1845,7 +1873,7 @@ function renderSettingTemplates(){
     var d=document.createElement('div');
     d.className='mc setting-card'+(on?' sel':'');
     d.innerHTML='<div class="mc-title">'+t.icon+' '+t.name+(t.tip?' <span class="hint-ic" data-tip="'+t.tip.replace(/"/g,'&quot;')+'">?</span>':'')+'</div><div class="mc-desc">'+t.desc+'</div>';
-    d.onclick=function(){applyTemplate(tid);renderSettingTemplates();renderMechFineTune();renderFormatCards();renderVoiceCards();if(typeof renderSetupChars==='function')renderSetupChars();};
+    d.onclick=function(){applyTemplate(tid);renderSettingTemplates();renderMechFineTune();renderFormatCards();renderVoiceCards();renderDifficultyCards();if(typeof renderSetupChars==='function')renderSetupChars();};
     c.appendChild(d);
   });
 }
@@ -1888,7 +1916,7 @@ function toggleMech(mk,on){
 }
 function renderSetupChars(){
   const e=el('ch-list');if(!e)return;e.innerHTML='';
-  const isDnd=document.querySelectorAll('.mc.sel[data-v="dnd"]').length>0;
+  const isDnd=!!(G.mechanics&&G.mechanics.stats);
   if(!setupChars.length){e.innerHTML='<p style="font-size:13px;color:var(--text3);padding:4px 0;line-height:1.6">Нет персонажей — история без конкретного героя</p>';return;}
   setupChars.forEach((c,i)=>{
     const r=document.createElement('div');r.className='char-sheet';
@@ -1949,10 +1977,40 @@ G.chars.forEach(c=>{
   enterGame(true);setTimeout(function(){autoSave();},500);}
 
 // ══ GAME ENGINE ══════════════════════════════════
+function showGameOver(outcome, text){
+  var icon=outcome==='победа'?'🏆':outcome==='поражение'?'💀':'🎬';
+  var title=outcome==='победа'?'Победа!':outcome==='поражение'?'Поражение':'Финал истории';
+  var ov=document.createElement('div');
+  ov.className='gameover-overlay';
+  ov.innerHTML='<div class="gameover-box">'
+    +'<div class="gameover-icon">'+icon+'</div>'
+    +'<div class="gameover-title">'+title+'</div>'
+    +(text?'<div class="gameover-text">'+esc(text)+'</div>':'')
+    +'<div class="gameover-stats">Мир: '+esc(G.worldName)+'</div>'
+    +'<div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;justify-content:center">'
+    +'<button class="btn primary" onclick="finishAndMenu()">В меню</button>'
+    +'<button class="btn" onclick="this.closest(\'.gameover-overlay\').remove()">Остаться</button>'
+    +'</div></div>';
+  document.body.appendChild(ov);
+  // Достижение
+  try{var p=getProgress();p.gamesFinished=(p.gamesFinished||0)+1;checkAchievements(p);saveProgress(p);}catch(e){}
+}
+function finishAndMenu(){
+  var ov=document.querySelector('.gameover-overlay');if(ov)ov.remove();
+  // Очистка состояния завершённой игры
+  G.slotId=null;
+  showMenu();
+}
 function beginStory(){
   var area=el('story');
   area.innerHTML='<div class="system-msg">История начинается...</div>';
-  var msg=G.worldStart||('Начни историю в мире "'+G.worldName+'". '+(G.chars.length?'Главный герой: '+(G.chars[G.activeChar]?G.chars[G.activeChar].name:'')+'. '+(G.chars[G.activeChar]?G.chars[G.activeChar].desc:''):''));
+  var hero=G.chars[G.activeChar];
+  var msg='Начни историю — напиши вступительную сцену.';
+  if(G.worldStart){
+    msg+=' Отталкивайся от завязки: "'+G.worldStart+'", но НЕ копируй её дословно — переосмысли, добавь свежие детали, чтобы начало было уникальным. ';
+  }
+  msg+=' Опиши обстановку и поставь героя перед выбором или событием. Не выписывай статус и цифры — только живая сцена.';
+  if(hero)msg+=' Герой: '+hero.name+(hero.desc?' — '+hero.desc:'')+'.';
   sendAI(msg,true);
 }
 function enterGame(isNew){migrateMechanics();document.body.classList.add('in-game');showPage('game-page');
@@ -2408,11 +2466,27 @@ function buildSys(){
   // Шкалы — одной строкой
   var scales=[];
   ['hunger','thirst','fatigue','sanity','mana','infection','radiation','reputation','luck','heat'].forEach(function(k){if(M[k])scales.push(k);});
+  // Явно отключённые тематические механики — чтобы нейросеть не выдумывала
+  var offNote='';
+  if(!M.radiation)offNote+=' В этом мире радиация НЕ отслеживается — не делай её темой, если игрок сам не вводит.';
+  if(!M.infection)offNote+=' Заражение/болезни не механика здесь.';
+  if(!M.mana)offNote+=' Магии-маны нет.';
   if(scales.length)mech.push('Шкалы 0-100 ('+scales.join(',')+'): меняй {"scale":{"char":"имя","name":"код","value":N}}. ВАЖНО: 100=максимум показателя. Для голод/жажда/рассудок/мана/удача/репутация 100=ХОРОШО (сыт, полон сил), 0=плохо. Для заражение/радиация/розыск/усталость наоборот: 0=хорошо, 100=критично.');
   if(M.clues)mech.push('Улики: {"note":"Улика: ..."}. Разгадку не выдавай.');
   if(M.npcRelations)mech.push('Отношение NPC: {"npc_rel":{"name":"имя","value":-100..100}}.');
   if(M.quests)mech.push('Цели: {"quest":{"text":"...","done":false}}.');
 
+  // Актуальный инвентарь активных героев (чтобы нейросеть знала что есть/чего нет)
+  var invLine='';
+  if(M.inventory){
+    var invParts=[];
+    (activeParty||[G.activeChar]).forEach(function(i){
+      var c=G.chars[i];if(!c)return;
+      var items=(inventory[c.name]||[]).map(function(it){return it.name;});
+      if(items.length)invParts.push(c.name+': '+items.join(', '));
+    });
+    if(invParts.length)invLine='\nИнвентарь — '+invParts.join('; ')+'. Не упоминай предметов, которых тут нет.';
+  }
   // Команды предметов — только если инвентарь включён
   var itemCmd=M.inventory?' Предметы: выдать {"item":"назв","icon":"эмодзи","char":"имя","desc":"...","effects":{"hp":5,"STR":1}}; убрать {"remove_item":"назв","char":"имя"}.':'';
 
@@ -2426,10 +2500,12 @@ function buildSys(){
     +'\nМир: '+G.worldName+'. '+G.worldDesc.slice(0,220)
     +(G.genres.length?' ['+G.genres.join(',')+']':'')
     +'\nГерои: '+chars
+    +invLine
     +(G.npcs?'\nNPC: '+G.npcs.slice(0,130):'')
     +(mech.length?'\n'+mech.join(' '):'')
+    +offNote
     +itemCmd
-    +'\n{"note":"факт"}=журнал.'
+    +'\n{"note":"факт"}=журнал. Когда история подходит к логическому финалу (цель достигнута, герой погиб, или сюжет завершён) — заверши её командой {"gameover":{"outcome":"победа"или"поражение"или"финал","text":"краткий эпилог"}} и яркой финальной сценой. Не растягивай бесконечно.'
     +(G.hardcore?' Хардкор: высокое напряжение.':'')
     +(G.narratorExtra?'\n'+G.narratorExtra.slice(0,120):'')
     +' Команды игрока: [Событие в мире]=опиши без героя; [РЕЖИССЁРСКАЯ ИНСТРУКЦИЯ]=выполни скрытно.'
@@ -2567,6 +2643,10 @@ function handleMetaObject(o){
     charStats[xc].xp=(parseInt(charStats[xc].xp)||0)+(parseInt(o.xp.amount)||0);
     if(rightTab==='chars')renderCharPanel();
     notif('+'+(o.xp.amount||0)+' XP — '+xc,'info');
+    return true;
+  }
+  if(o.gameover&&o.gameover.outcome){
+    setTimeout(function(){showGameOver(o.gameover.outcome, o.gameover.text||'');},800);
     return true;
   }
   if(o.npc_rel&&o.npc_rel.name){
@@ -2908,10 +2988,10 @@ function renderFeaturesList(){
 applyHintsVisibility();
 (async()=>{if(location.search.includes('payment=success')){history.replaceState(null,'','/');notif('✓ Оплата прошла! Баланс обновляется...');}if(token){const me=await apiFetch('/api/auth/me');if(me.user){user=me.user;showMenu();await loadUserData();}else{token='';localStorage.removeItem('aq_token');}}})();
 </script>
-<div class="modal" id="sysbuilder-modal">
-  <div class="modal-box" style="max-width:520px">
-    <div class="modal-header"><div class="modal-title">➕ Своя игровая система</div><button class="modal-x" onclick="cm('sysbuilder-modal')">✕</button></div>
-    <div class="modal-body" style="max-height:70vh;overflow-y:auto">
+<div class="modal-wrap" id="sysbuilder-modal">
+  <div class="modal" style="width:min(560px,96vw)">
+    <div class="modal-hdr"><h2>➕ Своя игровая система</h2><button class="modal-close" onclick="cm('sysbuilder-modal')">✕</button></div>
+    <div class="modal-body" style="padding:16px;overflow-y:auto">
       <div class="settings-sec-body">
         <p style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6">Создайте собственные правила и механики. Лимит: 4 системы.</p>
         <div id="custom-systems-list" style="margin-bottom:12px"></div>
@@ -2943,10 +3023,10 @@ applyHintsVisibility();
     </div>
   </div>
 </div>
-<div class="modal" id="narrbuilder-modal">
-  <div class="modal-box" style="max-width:520px">
-    <div class="modal-header"><div class="modal-title">➕ Свой нарратор</div><button class="modal-x" onclick="cm('narrbuilder-modal')">✕</button></div>
-    <div class="modal-body" style="max-height:70vh;overflow-y:auto">
+<div class="modal-wrap" id="narrbuilder-modal">
+  <div class="modal" style="width:min(560px,96vw)">
+    <div class="modal-hdr"><h2>➕ Свой нарратор</h2><button class="modal-close" onclick="cm('narrbuilder-modal')">✕</button></div>
+    <div class="modal-body" style="padding:16px;overflow-y:auto">
       <div class="settings-sec-body">
         <p style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6">Создайте собственные стили повествования. Они появятся при выборе нарратора в настройках игры. Лимит: 4 нарратора.</p>
         <div id="custom-narrators-list" style="margin-bottom:12px"></div>
