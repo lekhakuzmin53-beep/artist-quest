@@ -582,6 +582,14 @@ body.in-game .theme-float{display:none}
 .gameover-text{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:8px}
 .gameover-stats{font-size:12px;color:var(--text3);margin-top:8px}
 .menu-version{font-size:11px;color:var(--text3);margin-top:4px;letter-spacing:.05em;opacity:.7}
+.card-bar{display:flex;gap:6px;padding:6px 8px;overflow-x:auto;border-top:.5px solid var(--border);align-items:center}
+.card-chip{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:62px;padding:6px 8px;background:var(--bg3);border:.5px solid var(--border2);border-radius:8px;cursor:pointer;transition:all .15s;position:relative}
+.card-chip:hover{border-color:var(--ac);transform:translateY(-2px)}
+.card-chip-icon{font-size:20px;line-height:1}
+.card-chip-name{font-size:9px;color:var(--text2);text-align:center;line-height:1.1;max-width:58px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.card-bar-label{flex-shrink:0;font-size:10px;color:var(--text3);margin-right:2px}
+.card-bar-add{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:transparent;border:.5px dashed var(--border2);color:var(--text3);cursor:pointer;font-size:16px}
+.card-bar-add:hover{border-color:var(--ac);color:var(--ac)}
 /* ─── STAT BUTTONS (единый стиль, реагирует на тему) ─── */
 .stat-pm{width:22px;height:22px;border-radius:5px;border:.5px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;font-size:13px;font-weight:600;line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:0;transition:all .12s;flex-shrink:0}
 .stat-pm:hover{border-color:var(--ac);color:var(--ac);background:var(--bg3)}
@@ -997,6 +1005,7 @@ to{transform:scale(1.12)}}
             <button class="meta-btn" onclick="om('qa-modal');renderQAEditor()">✏</button>
           </div>
         </div>
+        <div class="card-bar" id="card-bar" style="display:none"></div>
         <div class="input-mode-row" id="input-mode-row">
           <button class="im-btn on" id="im-action" data-mode="action" onclick="setInputMode('action')">🎭 Герой</button>
           <button class="im-btn" id="im-world" data-mode="world" onclick="setInputMode('world')">🌍 Окружение</button>
@@ -1237,7 +1246,7 @@ let token=localStorage.getItem('aq_token')||'';
 let user=null,prices=null;
 let G={worldName:'',worldDesc:'',genres:[],worldStart:'',chars:[],activeChar:0,charMode:'single',mode:'game',detail:3,hardcore:false,lang:'ru',narratorStyle:'classic',narratorExtra:'',rules:'free',customRules:'',npcs:'',slotId:null,useOwnKey:false,gameModel:'',
   format:'adventure',voice:'classic',
-  mechanics:{dice:false,fixedDamage:false,stats:false,hp:false,ac:false,levels:false,cards:false,
+  mechanics:{dice:false,fixedDamage:false,stats:false,luckStat:false,hp:false,ac:false,levels:false,cards:false,
     hunger:false,thirst:false,fatigue:false,sanity:false,mana:false,infection:false,reputation:false,luck:false,heat:false,radiation:false,
     inventory:true,skills:true,traits:true,clues:false,npcRelations:false,quests:false}}
 
@@ -1287,6 +1296,7 @@ var MECH_DEFS = {
   dice:        {name:'Проверки кубиком (d20)', icon:'🎲', group:'num', tipShort:'Случайный бросок при проверках навыка', tipLong:'При важных действиях нарратор просит бросить d20. Результат + модификатор характеристики сравнивается со сложностью. Классика D&D.'},
   fixedDamage: {name:'Фиксированный урон', icon:'🗡', group:'num', tipShort:'Урон без рандома: всегда предсказуем', tipLong:'У героя фиксированное число урона, оружие даёт бонус (меч +2). Никакого рандома — тактический, предсказуемый бой. Несовместимо с кубиком на уроне.'},
   stats:       {name:'Характеристики', icon:'💪', group:'num', tipShort:'Сила, Ловкость, Телосложение и др.', tipLong:'Шесть характеристик влияют на броски, HP и КБ. Распределяются как в Baldur\'s Gate 3 (point-buy).'},
+  luckStat:    {name:'Удача (7-я характеристика)', icon:'🍀', group:'num', tipShort:'Добавить Удачу как в SPECIAL', tipLong:'Добавляет седьмую характеристику — Удачу (как в Fallout SPECIAL). Влияет на случайные исходы, криты, находки. Работает только вместе с обычными характеристиками.'},
   hp:          {name:'Здоровье (HP)', icon:'❤', group:'num', tipShort:'Урон, лечение, смерть', tipLong:'Нарратор отслеживает очки здоровья, сообщает урон и лечение. На нуле — гибель или тяжёлое ранение.'},
   ac:          {name:'Класс брони (КБ)', icon:'🛡', group:'num', tipShort:'Защита от Ловкости и типа брони', tipLong:'КБ определяет, насколько трудно попасть по герою. Зависит от Ловкости и типа надетой брони (лёгкая/средняя/тяжёлая).'},
   levels:      {name:'Уровни и опыт', icon:'⬆', group:'num', tipShort:'Рост персонажа за достижения', tipLong:'Герой получает опыт за успехи и растёт в уровнях, становясь сильнее. Нарратор начисляет XP.'},
@@ -1373,7 +1383,8 @@ let customNarrators=JSON.parse(localStorage.getItem('aq_narrators')||'[]');
 let customSystems=JSON.parse(localStorage.getItem('aq_systems')||'[]');
 let partyMode='single';
 let activeParty=[0]; // индексы героев, выполняющих действие (можно выбрать произвольный набор)
-let inventory={}; // {charName: [{icon,name,desc}]}
+let inventory={};
+let cardDecks={}; // {charName: [{icon,name,desc}]}
 let charStats={}; // {charName: {abilities,equipment,traits}} — live during game
 let blockVariants={};
 let currentStep=0;
@@ -1577,7 +1588,7 @@ function updateGameBal(){const gb=el('game-bal'),gbn=el('game-bal-num');if(!user
 // ══ SAVES ════════════════════════════════════════
 function renderSavesGrid(gridId,saves,isModal){const grid=el(gridId);if(!grid)return;grid.innerHTML='';const slotMap={};saves.forEach(s=>slotMap[s.slot]=s);for(let i=0;i<10;i++){const s=slotMap[i];const d=document.createElement('div');d.className='save-card '+(s?'has':'empty');if(s){const dt=new Date(s.updated_at).toLocaleDateString('ru',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});const isHC=s.data?.hardcore||s.hardcore;d.innerHTML=`<div class="save-slot-label">${isHC?'☠ Хардкор':'Слот '+(i+1)}</div><div class="save-world-name">${esc(s.world_name||s.name)}</div><div class="save-date">${dt}</div><div class="save-actions"><button class="btn primary btn-sm" style="flex:1" onclick="event.stopPropagation();${isModal?'cm(\'saves-modal\');':''}loadSaveAndPlay(${i})">▶ Играть</button><button class="btn danger btn-sm" onclick="event.stopPropagation();delSave(${i})">🗑</button></div>`;}else{d.innerHTML=`<div class="save-slot-label">Слот ${i+1}</div><div class="save-world-name" style="color:var(--text3)">Пусто</div><div class="save-date">—</div><button class="btn btn-sm" style="margin-top:8px;width:100%" onclick="${isModal?'cm(\'saves-modal\');':''}newWorldInSlot(${i})">+ Новый мир</button>`;}grid.appendChild(d);}}
 async function openSaves(){const sv=await apiFetch('/api/saves');renderSavesGrid('saves-modal-grid',sv.saves||[],true);om('saves-modal');}
-async function loadSaveAndPlay(slot){const data=await apiFetch('/api/saves/'+slot);if(data.error){notif('Ошибка загрузки: '+data.error,'err');return;}const sv=data.save;Object.assign(G,sv.data||sv);G.slotId=slot;history=sv.data?._history||sv._history||[];journal=sv.data?._journal||sv._journal||[];summaryCache=sv.data?._summary||sv._summary||'';inventory=sv.data?._inventory||sv._inventory||{};charStats=sv.data?._charStats||sv._charStats||{};enterGame(false);}
+async function loadSaveAndPlay(slot){const data=await apiFetch('/api/saves/'+slot);if(data.error){notif('Ошибка загрузки: '+data.error,'err');return;}const sv=data.save;Object.assign(G,sv.data||sv);G.slotId=slot;history=sv.data?._history||sv._history||[];journal=sv.data?._journal||sv._journal||[];summaryCache=sv.data?._summary||sv._summary||'';inventory=sv.data?._inventory||sv._inventory||{};cardDecks=sv.data?._cardDecks||sv._cardDecks||{};charStats=sv.data?._charStats||sv._charStats||{};enterGame(false);}
 async function delSave(slot){if(!confirm('Удалить слот '+(slot+1)+'?'))return;await apiFetch('/api/saves/'+slot,{method:'DELETE'});notif('Сохранение удалено');const sv=await apiFetch('/api/saves');renderSavesGrid('saves-modal-grid',sv.saves||[],true);}
 function newWorldInSlot(slot){G.slotId=slot;showPage('create-page');initCreatePage();}
 
@@ -1676,8 +1687,9 @@ function addCG(){const i=el('cg'),v=i.value.trim();if(!v)return;const b=document
 function addCh(){var i=el('nc'),name=i.value.trim()||'Безымянный';setupChars.push({name:name,cls:'',desc:'',appearance:'',abilities:'',equipment:'',traits:'',inventory:[]});i.value='';renderSetupChars();if(setupChars.length>=2){var p=document.querySelector('#step-2 [data-v="party"]');if(p&&!p.classList.contains('sel')){window._autoCharMode=true;MC_GROUPS.charMode=null;selMC(p,'charMode');window._autoCharMode=false;}}}
 function rmCh(i){setupChars.splice(i,1);renderSetupChars();if(setupChars.length<=1){var s=document.querySelector('#step-2 [data-v="single"]');if(s&&!s.classList.contains('sel')){window._autoCharMode=true;MC_GROUPS.charMode=null;selMC(s,'charMode');window._autoCharMode=false;}}}
 // ── D&D / BG3 система характеристик ──
-var STAT_RU = {STR:'Сила', DEX:'Ловкость', CON:'Телосложение', INT:'Интеллект', WIS:'Мудрость', CHA:'Харизма'};
-var STAT_ORDER = ['STR','DEX','CON','INT','WIS','CHA'];
+var STAT_RU = {STR:'Сила', DEX:'Ловкость', CON:'Телосложение', INT:'Интеллект', WIS:'Мудрость', CHA:'Харизма', LCK:'Удача'};
+var STAT_ORDER = ['STR','DEX','CON','INT','WIS','CHA']
+function activeStatOrder(){return (G.mechanics&&G.mechanics.luckStat)?['STR','DEX','CON','INT','WIS','CHA','LCK']:STAT_ORDER;};
 // Тип брони влияет на формулу КБ (как в D&D 5e / BG3)
 var ARMOR_TYPES = {
   none:   {name:'Без брони',      base:10, dexCap:99},  // 10 + Лов
@@ -1757,7 +1769,7 @@ function makeDndStatsHtml(c, i) {
   // Характеристики (point-buy)
   if(mech.stats!==false){
     var grid='';
-    STAT_ORDER.forEach(function(stat){
+    activeStatOrder().forEach(function(stat){
       var v = Math.max(8, Math.min(15, parseInt(c.stats[stat])||8));
       var mod = abilityMod(v);
       grid += '<div style="text-align:center;padding:6px 2px;background:var(--bg);border-radius:6px;border:.5px solid var(--border)">'
@@ -2035,6 +2047,45 @@ function finishAndMenu(){
   G.slotId=null;
   showMenu();
 }
+function renderCardBar(){
+  var bar=el('card-bar');if(!bar)return;
+  var M=G.mechanics||{};
+  if(!M.cards){bar.style.display='none';return;}
+  var hero=G.chars[G.activeChar];if(!hero){bar.style.display='none';return;}
+  var deck=cardDecks[hero.name]||[];
+  bar.style.display='flex';
+  bar.innerHTML='<span class="card-bar-label">🃏 Карты:</span>';
+  if(!deck.length){
+    bar.innerHTML+='<span style="font-size:10px;color:var(--text3)">пока нет — создавай в бою</span>';
+  }
+  deck.forEach(function(card,i){
+    var chip=document.createElement('div');
+    chip.className='card-chip';
+    chip.title=card.desc||card.name;
+    chip.innerHTML='<span class="card-chip-icon">'+(card.icon||'🃏')+'</span><span class="card-chip-name">'+esc(card.name)+'</span>';
+    chip.onclick=function(){playCard(hero.name,i);};
+    bar.appendChild(chip);
+  });
+  var add=document.createElement('button');
+  add.className='card-bar-add';add.textContent='+';add.title='Создать карту';
+  add.onclick=function(){addCardManual(hero.name);};
+  bar.appendChild(add);
+}
+function playCard(charName,idx){
+  var deck=cardDecks[charName]||[];var card=deck[idx];if(!card)return;
+  var pi=el('pi');if(!pi)return;
+  var txt=pi.value.trim();
+  pi.value=(txt?txt+' ':'')+'[Разыгрываю карту "'+card.name+'": '+(card.desc||card.name)+']';
+  pi.focus();
+}
+function addCardManual(charName){
+  var name=prompt('Название карты:');if(!name)return;
+  var desc=prompt('Что делает карта?')||'';
+  if(!cardDecks[charName])cardDecks[charName]=[];
+  cardDecks[charName].push({name:name.slice(0,40),desc:desc.slice(0,120),icon:'🃏'});
+  renderCardBar();
+  notif('Карта "'+name+'" добавлена');
+}
 function beginStory(){
   var area=el('story');
   area.innerHTML='<div class="system-msg">История начинается...</div>';
@@ -2047,7 +2098,7 @@ function beginStory(){
   if(hero)msg+=' Герой: '+hero.name+(hero.desc?' — '+hero.desc:'')+'.';
   sendAI(msg,true);
 }
-function enterGame(isNew){migrateMechanics();document.body.classList.add('in-game');showPage('game-page');
+function enterGame(isNew){migrateMechanics();document.body.classList.add('in-game');showPage('game-page');if(typeof renderCardBar==='function')renderCardBar();
   // Onboarding hint for first-timers
   const p=getProgress();
   if((p.games||0)<=1&&isNew&&globalSettings.hints!==false){setTimeout(()=>{notif('💡 Пишите действия внизу. Наведите на текст нарратора — появятся кнопки «Изменить» и «Другой ответ»','info');},3000);}el('g-wn').textContent=G.worldName;el('g-wt').textContent=G.genres.join(' · ')||G.mode;el('hcb').classList.toggle('hidden',!G.hardcore);el('game-uname').textContent=user?.username||'';const provLabel=G.useOwnKey&&user?.own_api_key?(PROVIDERS_INFO[user.own_provider]?.name||'Свой ключ'):'Встроенная нейросеть';el('g-prov').textContent='🤖 '+provLabel+(G.rules==='dnd'?' · ⚔ D&D':'');updateGameBal();if(prices)buildPkgMini('pkg-grid-game');partyMode='single';activeParty=[0];blockVariants={};renderGChars();renderJournal();renderQA();switchRightTab('journal');// Notes restore
@@ -2250,7 +2301,7 @@ function renderCharPanel(){
     if(mech.stats!==false){
       var stats=cs.stats||{STR:10,DEX:10,CON:10,INT:10,WIS:10,CHA:10};
       html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:10px">';
-      STAT_ORDER.forEach(function(st){
+      activeStatOrder().forEach(function(st){
         var v=Math.max(1,Math.min(30,parseInt(stats[st])||10));
         var mod=abilityMod(v);
         var mc=mod>=0?'var(--success)':'var(--danger)';
@@ -2466,7 +2517,7 @@ function buildSys(){
   if(M.stats){
     chars=G.chars.map(function(c,i){
       var cs=charStats[c.name]||{};var st=cs.stats||{};
-      var mods=STAT_ORDER.map(function(s){var v=parseInt(st[s])||10;var m=abilityMod(v);return s+(m>=0?'+':'')+m;}).join('');
+      var mods=activeStatOrder().map(function(s){var v=parseInt(st[s])||10;var m=abilityMod(v);return s+(m>=0?'+':'')+m;}).join('');
       return ((activeParty||[]).indexOf(i)>=0?'>':'')+c.name+(cs.cls?'/'+cs.cls:'')+'['+mods+']'+(M.hp&&cs.hp?' HP'+(cs.hpCur||cs.hp)+'/'+cs.hp:'')+(M.ac&&cs.ac?' КБ'+cs.ac:'');
     }).join(' | ');
   } else {
@@ -2476,7 +2527,7 @@ function buildSys(){
       // Даже без D&D-механики статов — если заданы, покажем сильные/слабые стороны словами
       if(cs.stats&&Object.keys(cs.stats).length){
         var hi=[],lo=[];
-        STAT_ORDER.forEach(function(s){var v=parseInt(cs.stats[s])||10;if(v>=14)hi.push(STAT_RU[s]||s);else if(v<=8)lo.push(STAT_RU[s]||s);});
+        activeStatOrder().forEach(function(s){var v=parseInt(cs.stats[s])||10;if(v>=14)hi.push(STAT_RU[s]||s);else if(v<=8)lo.push(STAT_RU[s]||s);});
         if(hi.length)extra+=' силён:'+hi.join(',');
         if(lo.length)extra+=' слаб:'+lo.join(',');
       }
@@ -2496,7 +2547,7 @@ function buildSys(){
   if(M.fixedDamage)mech.push('Урон фиксирован (без рандома): базовый героя + бонус оружия, всегда предсказуем.');
   if(M.hp)mech.push('Урон/лечение МЕНЯЙ командой {"hp_change":{"char":"имя","delta":-5}} (delta отрицательное=урон, положительное=лечение). НЕ меняй максимум HP сам.');
   if(M.levels)mech.push('Опыт: {"xp":{"char":"имя","amount":N}}.');
-  if(M.cards)mech.push('Карты-способности: герой разыгрывает карты из колоды каждый ход.');
+  if(M.cards)mech.push('Карты-способности: у героя колода карт. Когда он осваивает новый приём/заклинание — создай карту командой {"card":{"char":"имя","name":"Название","desc":"эффект","icon":"эмодзи"}}. Когда игрок пишет [Разыгрываю карту "X"] — опиши её эффект в сцене.');
   // Шкалы — одной строкой
   var scales=[];
   ['hunger','thirst','fatigue','sanity','mana','infection','radiation','reputation','luck','heat'].forEach(function(k){if(M[k])scales.push(k);});
@@ -2677,6 +2728,16 @@ function handleMetaObject(o){
     charStats[xc].xp=(parseInt(charStats[xc].xp)||0)+(parseInt(o.xp.amount)||0);
     if(rightTab==='chars')renderCharPanel();
     notif('+'+(o.xp.amount||0)+' XP — '+xc,'info');
+    return true;
+  }
+  if(o.card&&o.card.name){
+    var ccn=o.card.char||(G.chars[G.activeChar]&&G.chars[G.activeChar].name)||'Герой';
+    if(!cardDecks[ccn])cardDecks[ccn]=[];
+    if(!cardDecks[ccn].find(function(c){return c.name===o.card.name;})){
+      cardDecks[ccn].push({name:String(o.card.name).slice(0,40),desc:String(o.card.desc||'').slice(0,120),icon:o.card.icon||'🃏'});
+      if(typeof renderCardBar==='function')renderCardBar();
+      notif('Новая карта: '+o.card.name,'info');
+    }
     return true;
   }
   if(o.gameover&&o.gameover.outcome){
@@ -2886,11 +2947,11 @@ async function autoSave(){
       }catch(e){G.slotId=0;}
     }
   }
-  const data={...G,_history:history.slice(-24),_journal:journal.slice(0,25),_summary:summaryCache,_inventory:inventory,_charStats:charStats};
+  const data={...G,_history:history.slice(-24),_journal:journal.slice(0,25),_summary:summaryCache,_inventory:inventory,_charStats:charStats,_cardDecks:cardDecks};
   await apiFetch('/api/saves/'+G.slotId,{method:'POST',body:JSON.stringify({data,name:G.worldName})}).catch(()=>{});
 }
 async function manSave(){if(G.hardcore){// Hardcore autosaves to slot 0 only, manual save allowed as explicit trigger
-notif('Хардкор: сохранено в слот 1','info');await autoSave();return;}if(G.slotId===null){const sv=await apiFetch('/api/saves');const used=new Set((sv.saves||[]).map(s=>s.slot));for(let i=0;i<10;i++){if(!used.has(i)){G.slotId=i;break;}}if(G.slotId===null)G.slotId=0;}const data={...G,_history:history.slice(-24),_journal:journal.slice(0,25),_summary:summaryCache,_inventory:inventory,_charStats:charStats};await apiFetch('/api/saves/'+G.slotId,{method:'POST',body:JSON.stringify({data,name:G.worldName})});notif('✓ Сохранено (Слот '+(G.slotId+1)+')');}
+notif('Хардкор: сохранено в слот 1','info');await autoSave();return;}if(G.slotId===null){const sv=await apiFetch('/api/saves');const used=new Set((sv.saves||[]).map(s=>s.slot));for(let i=0;i<10;i++){if(!used.has(i)){G.slotId=i;break;}}if(G.slotId===null)G.slotId=0;}const data={...G,_history:history.slice(-24),_journal:journal.slice(0,25),_summary:summaryCache,_inventory:inventory,_charStats:charStats,_cardDecks:cardDecks};await apiFetch('/api/saves/'+G.slotId,{method:'POST',body:JSON.stringify({data,name:G.worldName})});notif('✓ Сохранено (Слот '+(G.slotId+1)+')');}
 
 // ── INPUT ─────────────────────────────────────────
 var inputMode='action'; // 'action' | 'world' | 'direct'
