@@ -30,7 +30,7 @@ body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.6;col
 
 .hidden{display:none!important}
 .page{display:none;width:100%;height:100%}
-.page.active{display:flex;flex-direction:column;height:100%;overflow:hidden}
+.page.active{display:flex;flex-direction:column;height:100vh;max-height:100vh;overflow:hidden;animation:pagein .25s ease}
 
 /* ─── BUTTONS ─── */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:40px;padding:0 18px;background:var(--bg2);border:.5px solid var(--border2);border-radius:var(--rad);font-family:'Inter',sans-serif;font-size:14px;font-weight:500;cursor:pointer;color:var(--text2);transition:all .15s;white-space:nowrap}
@@ -164,7 +164,7 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
 
 /* ─── SETTINGS PAGE ─── */
 #settings-page{background:var(--bg);overflow-y:auto}
-.settings-body{max-width:760px;margin:0 auto;padding:20px;display:flex;flex-direction:column;gap:14px;width:100%;overflow-y:auto;flex:1 1 auto;min-height:0;height:calc(100vh - 46px)}
+.settings-body{max-width:760px;margin:0 auto;padding:20px 20px 60px;display:flex;flex-direction:column;gap:14px;width:100%}
 .settings-sec{border:.5px solid var(--border2);border-radius:var(--rad);overflow:hidden}
 .settings-sec-hdr{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--bg2);cursor:pointer;transition:background .15s;min-height:48px}
 .settings-sec-hdr:hover{background:var(--bg3)}
@@ -370,7 +370,7 @@ select.input{cursor:pointer;appearance:none;padding-right:30px;background-image:
 /* Story block fade in */
 .story-block{animation:fadein .3s ease}
 /* Page transitions */
-.page.active{animation:pagein .25s ease}
+
 @keyframes pagein{from{opacity:0}to{opacity:1}}
 /* Menu item hover slide */
 .menu-item{transition:all .2s ease}
@@ -664,7 +664,7 @@ to{transform:scale(1.12)}}
       <button class="tb-btn" onclick="showMenu()">← В меню</button>
     </div>
   </div>
-  <div class="settings-body">
+  <div style="flex:1;overflow-y:auto;min-height:0"><div class="settings-body">
 
     <!-- General -->
     <div class="settings-sec" id="set-general">
@@ -762,7 +762,7 @@ to{transform:scale(1.12)}}
       </div>
     </div>
 
-  </div>
+  </div></div>
 </div>
 
 <!-- ══════════ CREATE GAME PAGE ══════════ -->
@@ -1521,10 +1521,20 @@ try{
 
 // ══ CUSTOM NARRATORS & SYSTEMS ════════════════════
 function renderCustomNarrators(){const c=el('custom-narrators-list');if(!c)return;c.innerHTML='';customNarrators.forEach((n,i)=>{const d=document.createElement('div');d.className='custom-list-item';d.innerHTML=`<div><div class="custom-list-name">${esc(n.name)}</div><div class="custom-list-desc">${esc(n.desc.slice(0,60))}...</div></div><button class="btn danger btn-xs" onclick="deleteNarrator(${i})">🗑</button>`;c.appendChild(d);});el('narrators-badge').textContent=`${customNarrators.length} / 4`;}
-function saveCustomNarrator(){if(customNarrators.length>=4){el('nar-err').textContent='Лимит: 4 нарратора';return;}const name=el('nar-name').value.trim();const desc=el('nar-desc').value.trim();if(!name||!desc){el('nar-err').textContent='Заполните все поля';return;}customNarrators.push({id:'nar_'+Date.now(),name,desc});localStorage.setItem('aq_narrators',JSON.stringify(customNarrators));el('nar-name').value='';el('nar-desc').value='';el('nar-err').textContent='';renderCustomNarrators();if(typeof renderVoiceCards==='function')renderVoiceCards();cm('narrbuilder-modal');notif('Нарратор сохранён!');}
+function saveCustomNarrator(){if(customNarrators.length>=4){el('nar-err').textContent='Лимит: 4 нарратора';return;}const name=el('nar-name').value.trim();const desc=el('nar-desc').value.trim();if(!name||!desc){el('nar-err').textContent='Заполните все поля';return;}customNarrators.push({id:'nar_'+Date.now(),name,desc});localStorage.setItem('aq_narrators',JSON.stringify(customNarrators));el('nar-name').value='';el('nar-desc').value='';el('nar-err').textContent='';renderCustomNarrators();
+  if(typeof renderVoiceCards==='function')renderVoiceCards();
+  if(typeof buildNarratorPick==='function')buildNarratorPick();
+  cm('narrbuilder-modal');
+  setTimeout(function(){var np=el('custom-narrator-pick');if(np){np.scrollIntoView({behavior:'smooth',block:'center'});var f=np.querySelector('.mc');if(f){f.style.outline='2px solid var(--ac)';setTimeout(function(){f.style.outline='';},1500);}}},150);
+  notif('Нарратор создан! Выберите его в списке стилей.');}
 function deleteNarrator(i){customNarrators.splice(i,1);localStorage.setItem('aq_narrators',JSON.stringify(customNarrators));renderCustomNarrators();}
 function renderCustomSystems(){const c=el('custom-systems-list');if(!c)return;c.innerHTML='';customSystems.forEach((s,i)=>{const d=document.createElement('div');d.className='custom-list-item';d.innerHTML=`<div><div class="custom-list-name">${esc(s.name)}</div><div class="custom-list-desc">${esc(s.desc.slice(0,60))}...</div></div><button class="btn danger btn-xs" onclick="deleteSystem(${i})">🗑</button>`;c.appendChild(d);});el('systems-badge').textContent=`${customSystems.length} / 4`;}
-function saveCustomSystem(){if(customSystems.length>=4){el('sys-err').textContent='Лимит: 4 системы';return;}const name=el('sys-name').value.trim();const desc=el('sys-desc').value.trim();if(!name||!desc){el('sys-err').textContent='Заполните все поля';return;}var mech={};document.querySelectorAll('#sys-mech-tags [data-m]').forEach(function(b){mech[b.dataset.m]=b.classList.contains('on');});customSystems.push({id:'sys_'+Date.now(),name,desc,mech});localStorage.setItem('aq_systems',JSON.stringify(customSystems));el('sys-name').value='';el('sys-desc').value='';el('sys-err').textContent='';renderCustomSystems();if(typeof renderSettingTemplates==='function')renderSettingTemplates();cm('sysbuilder-modal');notif('Система сохранена! Выберите её в списке.');}
+function saveCustomSystem(){if(customSystems.length>=4){el('sys-err').textContent='Лимит: 4 системы';return;}const name=el('sys-name').value.trim();const desc=el('sys-desc').value.trim();if(!name||!desc){el('sys-err').textContent='Заполните все поля';return;}var mech={};document.querySelectorAll('#sys-mech-tags [data-m]').forEach(function(b){mech[b.dataset.m]=b.classList.contains('on');});customSystems.push({id:'sys_'+Date.now(),name,desc,mech});localStorage.setItem('aq_systems',JSON.stringify(customSystems));el('sys-name').value='';el('sys-desc').value='';el('sys-err').textContent='';renderCustomSystems();
+  if(typeof renderSettingTemplates==='function')renderSettingTemplates();
+  if(typeof buildRulesPick==='function')buildRulesPick();
+  cm('sysbuilder-modal');
+  setTimeout(function(){var crs=el('custom-rules-systems');if(crs){crs.scrollIntoView({behavior:'smooth',block:'center'});var f=crs.querySelector('.mc');if(f){f.style.outline='2px solid var(--ac)';setTimeout(function(){f.style.outline='';},1500);}}},150);
+  notif('Система создана! Выберите её карточку ниже.');}
 function deleteSystem(i){customSystems.splice(i,1);localStorage.setItem('aq_systems',JSON.stringify(customSystems));renderCustomSystems();}
 
 // ══ API ══════════════════════════════════════════
@@ -1575,7 +1585,7 @@ function newWorldInSlot(slot){G.slotId=slot;showPage('create-page');initCreatePa
 function initCreatePage(){document.body.classList.remove('in-game');currentStep=0;selectedPreset=null;aiChoice='server';setupChars=[];MC_GROUPS.charMode=null;MC_GROUPS.mode=null;MC_GROUPS.narratorStyle=null;MC_GROUPS.rules=null;MC_GROUPS.hardcore=null;// Reset form
 ['wn','wd','ws','np','ne','cr'].forEach(id=>{const e=el(id);if(e)e.value='';});document.querySelectorAll('#genre-tags .tag').forEach(t=>t.classList.remove('on'));window._autoCharMode=true;['mode','charMode','hardcore','narratorStyle','rules'].forEach(g=>{MC_GROUPS[g]=null;const first=document.querySelector(`[onclick*="selMC(this,'${g}')"]`);if(first)selMC(first,g);});window._autoCharMode=false;document.querySelector('[data-lang="ru"]')?.classList.add('on');el('det').value=globalSettings.detail||3;el('dv').textContent=detLabels[(globalSettings.detail||3)-1];
   applyTemplate('roleplay');G.format='adventure';G.voice='classic';
-  renderSettingTemplates();renderMechFineTune();renderFormatCards();renderVoiceCards();renderDifficultyCards();
+  renderSettingTemplates();renderMechFineTune();renderFormatCards();renderVoiceCards();renderDifficultyCards();if(typeof buildRulesPick==='function')buildRulesPick();if(typeof buildNarratorPick==='function')buildNarratorPick();
   var ft=el('mech-fine-tune');if(ft)ft.style.display='none';
   var ftb=el('fine-tune-toggle');if(ftb)ftb.innerHTML='⚙ Тонкая настройка механик ▾';
   renderSetupChars();buildPresetGrid();buildNarratorPick();buildRulesPick();updateAIPicker();goStep(0);}
@@ -1587,7 +1597,7 @@ el('wn').value=p.name;el('wd').value=p.desc;el('ws').value=p.worldStart;el('np')
       G.format=p.format||'adventure';
       G.voice=p.voice||'classic';
       G.settingTemplate=null;
-      renderSettingTemplates();renderMechFineTune();renderFormatCards();renderVoiceCards();renderDifficultyCards();renderSetupChars();
+      renderSettingTemplates();renderMechFineTune();renderFormatCards();renderVoiceCards();renderDifficultyCards();if(typeof buildRulesPick==='function')buildRulesPick();if(typeof buildNarratorPick==='function')buildNarratorPick();renderSetupChars();
       notif('Сценарий «'+p.name+'» загружен!');}}else{el('wn').value='';el('wd').value='';el('ws').value='';el('np').value='';document.querySelectorAll('#genre-tags .tag').forEach(t=>t.classList.remove('on'));setupChars=[];renderSetupChars();notif('Пустой мир — заполните сами');}}
 async function generateWorldAI(){
   if(!user?.own_api_key&&parseInt(user?.tokens_balance||0)<200){notif('Недостаточно токенов для генерации','err');return;}
@@ -1625,7 +1635,21 @@ async function generateWorldAI(){
   }
   if(btn)btn.disabled=false;
 }
-function buildNarratorPick(){const c=el('custom-narrator-pick');if(!c)return;c.innerHTML='';customNarrators.forEach(n=>{const d=document.createElement('div');d.className='mc';d.setAttribute('onclick',`selMC(this,'narratorStyle')`);d.dataset.v='custom_'+n.id;d.innerHTML=`<div class="mc-title">✦ ${esc(n.name)}</div><div class="mc-desc">${esc(n.desc.slice(0,60))}...</div>`;c.appendChild(d);});}
+function buildNarratorPick(){
+  var c=el('custom-narrator-pick');if(!c)return;c.innerHTML='';
+  (customNarrators||[]).forEach(function(n){
+    var d=document.createElement('div');
+    d.className='mc'+(G.voice==='custom_'+n.id?' sel':'');
+    d.innerHTML='<div class="mc-title">✦ '+esc(n.name)+'</div><div class="mc-desc">'+esc((n.desc||'').slice(0,60))+'</div>';
+    d.onclick=function(){
+      G.voice='custom_'+n.id;
+      G.narratorCustomId=n.id;
+      if(typeof renderVoiceCards==='function')renderVoiceCards();
+      buildNarratorPick();
+    };
+    c.appendChild(d);
+  });
+}
 function buildRulesPick(){
   var c=el('custom-rules-systems');if(!c)return;c.innerHTML='';
   (customSystems||[]).forEach(function(s){
@@ -1883,7 +1907,7 @@ function renderSettingTemplates(){
     var d=document.createElement('div');
     d.className='mc setting-card'+(on?' sel':'');
     d.innerHTML='<div class="mc-title">'+t.icon+' '+t.name+(t.tip?' <span class="hint-ic" data-tip="'+t.tip.replace(/"/g,'&quot;')+'">?</span>':'')+'</div><div class="mc-desc">'+t.desc+'</div>';
-    d.onclick=function(){applyTemplate(tid);renderSettingTemplates();renderMechFineTune();renderFormatCards();renderVoiceCards();renderDifficultyCards();if(typeof renderSetupChars==='function')renderSetupChars();};
+    d.onclick=function(){applyTemplate(tid);renderSettingTemplates();renderMechFineTune();renderFormatCards();renderVoiceCards();renderDifficultyCards();if(typeof buildRulesPick==='function')buildRulesPick();if(typeof buildNarratorPick==='function')buildNarratorPick();if(typeof renderSetupChars==='function')renderSetupChars();};
     c.appendChild(d);
   });
 }
