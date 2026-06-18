@@ -129,7 +129,7 @@ router.post('/request-reset', async (req, res) => {
         await sendCodeEmail(mail, code, 'reset');
       } catch (e) {
         console.error('Ошибка отправки письма:', e.message);
-        return res.status(500).json({ error: 'Не удалось отправить письмо. Попробуйте позже.' });
+        return res.status(500).json({ error: 'Не удалось отправить письмо', detail: e.message });
       }
     }
     // Всегда отвечаем одинаково — чтобы нельзя было перебором узнать чужие email
