@@ -3,6 +3,12 @@ const express = require('express');
 const bcrypt  = require('bcryptjs');
 const jwt     = require('jsonwebtoken');
 const pool    = require('../db/pool');
+const { sendCodeEmail } = require('../lib/mailer');
+
+// In-memory хранилище кодов сброса: email -> { code, expires, attempts }
+const resetCodes = new Map();
+function genCode(){ return String(Math.floor(100000 + Math.random()*900000)); }
+setInterval(() => { const now=Date.now(); for(const [k,v] of resetCodes){ if(v.expires<now) resetCodes.delete(k); } }, 60000);
 const router  = express.Router();
 
 function makeToken(userId) {
@@ -102,6 +108,55 @@ router.post('/admin-reset-password', async (req, res) => {
     );
     if (!rowCount) return res.status(404).json({ error: 'Email не найден' });
     res.json({ ok: true, message: 'Пароль обновлён' });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
+// POST /api/auth/request-reset — запросить код восстановления на почту
+router.post('/request-reset', async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ error: 'Укажите email' });
+    const mail = email.toLowerCase();
+    // Проверяем, есть ли пользователь (но не раскрываем это явно)
+    const { rows } = await pool.query('SELECT id FROM users WHERE email = $1', [mail]);
+    if (rows.length) {
+      const code = genCode();
+      resetCodes.set(mail, { code, expires: Date.now() + 15*60*1000, attempts: 0 });
+      try {
+        await sendCodeEmail(mail, code, 'reset');
+      } catch (e) {
+        console.error('Ошибка отправки письма:', e.message);
+        return res.status(500).json({ error: 'Не удалось отправить письмо. Попробуйте позже.' });
+      }
+    }
+    // Всегда отвечаем одинаково — чтобы нельзя было перебором узнать чужие email
+    res.json({ ok: true, message: 'Если email зарегистрирован, код отправлен на почту' });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
+// POST /api/auth/confirm-reset — подтвердить код и задать новый пароль
+router.post('/confirm-reset', async (req, res) => {
+  try {
+    const { email, code, newPassword } = req.body;
+    if (!email || !code || !newPassword) return res.status(400).json({ error: 'Заполните все поля' });
+    if (newPassword.length < 6) return res.status(400).json({ error: 'Пароль минимум 6 символов' });
+    const mail = email.toLowerCase();
+    const entry = resetCodes.get(mail);
+    if (!entry) return res.status(400).json({ error: 'Код не запрашивался или истёк' });
+    if (entry.expires < Date.now()) { resetCodes.delete(mail); return res.status(400).json({ error: 'Код истёк, запросите новый' }); }
+    entry.attempts++;
+    if (entry.attempts > 5) { resetCodes.delete(mail); return res.status(429).json({ error: 'Слишком много попыток' }); }
+    if (entry.code !== String(code).trim()) return res.status(400).json({ error: 'Неверный код' });
+    const hash = await bcrypt.hash(newPassword, 12);
+    await pool.query('UPDATE users SET password_hash = $1, updated_at = NOW() WHERE email = $2', [hash, mail]);
+    resetCodes.delete(mail);
+    res.json({ ok: true, message: 'Пароль изменён' });
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: 'Ошибка сервера' });

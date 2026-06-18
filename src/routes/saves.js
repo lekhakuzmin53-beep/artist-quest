@@ -16,7 +16,7 @@ router.get('/', auth, async (req, res) => {
 // GET /api/saves/:slot — загрузить сохранение
 router.get('/:slot', auth, async (req, res) => {
   const slot = parseInt(req.params.slot);
-  if (isNaN(slot) || slot < 0 || slot > 9) return res.status(400).json({ error: 'Неверный слот' });
+  if (isNaN(slot) || slot < 0 || slot > 5) return res.status(400).json({ error: 'Неверный слот' });
 
   const { rows } = await pool.query(
     'SELECT data FROM saves WHERE user_id=$1 AND slot=$2',
@@ -29,7 +29,7 @@ router.get('/:slot', auth, async (req, res) => {
 // POST /api/saves/:slot — записать сохранение
 router.post('/:slot', auth, async (req, res) => {
   const slot = parseInt(req.params.slot);
-  if (isNaN(slot) || slot < 0 || slot > 9) return res.status(400).json({ error: 'Неверный слот' });
+  if (isNaN(slot) || slot < 0 || slot > 5) return res.status(400).json({ error: 'Неверный слот' });
 
   const { data, name } = req.body;
   if (!data) return res.status(400).json({ error: 'Нет данных сохранения' });
